@@ -606,7 +606,7 @@
     }
 
     /* ==========================================================================
-       INVESTMENT PLANS PREVIEW (DYNAMIC FROM SUPABASE)
+       INVESTMENT PLANS PREVIEW (CONNECTED TO SUPABASE)
        ========================================================================== */
     .plans-grid {
       display: grid;
@@ -1175,7 +1175,6 @@
 
         <!-- Desktop Auth-Aware Actions -->
         <div class="nav-desktop-auth" id="desktop-auth-container">
-          <!-- Populated by JavaScript according to session state -->
           <a href="/login.html" class="btn btn-outline btn-sm">Login</a>
           <a href="/register.html" class="btn btn-primary btn-sm">Get Started</a>
         </div>
@@ -1205,7 +1204,6 @@
     </ul>
 
     <div class="mobile-auth-stack" id="mobile-auth-container">
-      <!-- Populated dynamically: Login/Register or Dashboard/Logout -->
       <a href="/login.html" class="btn btn-secondary btn-block">Login</a>
       <a href="/register.html" class="btn btn-primary btn-block">Get Started</a>
     </div>
@@ -1308,7 +1306,6 @@
         <p class="section-subtitle">Real-time plans loaded directly from the database. Terms are enforced server-side.</p>
       </div>
 
-      <!-- Container dynamically populated via Supabase query -->
       <div id="plans-container" class="plans-grid">
         <div class="plans-empty-state">
           <div class="empty-icon">⏳</div>
@@ -1365,7 +1362,7 @@
   </section>
 
   <!-- ==========================================================================
-       REFERRAL SYSTEM SECTION (3-LEVEL)
+       REFERRAL SECTION (3-TIER HIERARCHY)
        ========================================================================== -->
   <section class="section" id="referrals">
     <div class="container">
@@ -1472,7 +1469,7 @@
 
   <!-- ==========================================================================
        SECURITY & TRUST ARCHITECTURE
-       ========================================================================== */
+       ========================================================================== -->
   <section class="section" id="security">
     <div class="container">
       <div class="section-header">
