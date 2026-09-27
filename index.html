@@ -4,275 +4,1843 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>NOVEXA — Premium Wealth & Manual Investment Platform</title>
+  <meta name="description" content="NOVEXA is a premier manual investment platform offering configured daily yields processed at midnight, 3-level partner commissions, and manual ledger accounting.">
+  
   <style>
+    /* ==========================================================================
+       NOVEXA UNIFIED DESIGN SYSTEM TOKENS
+       ========================================================================== */
     :root {
       --bg-dark: #070B19;
       --bg-card: #0F172A;
+      --bg-elevated: #131E3A;
+      --bg-surface: #0B1120;
       --accent: #2563EB;
-      --accent-glow: rgba(37, 99, 235, 0.35);
+      --accent-hover: #1D4ED8;
+      --accent-glow: rgba(37, 99, 235, 0.3);
       --gold: #F59E0B;
-      --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
+      --gold-glow: rgba(245, 158, 11, 0.2);
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
       --border: #1E293B;
+      --border-focus: #3B82F6;
       --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+    }
+
     body {
       background-color: var(--bg-dark);
-      color: var(--text-main);
+      color: var(--text-primary);
       min-height: 100vh;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* Container System: Strict Mobile-First Boundaries */
     .container {
       width: 100%;
-      max-width: 480px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 24px 20px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
+      padding: 0 20px;
     }
-    .header {
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 0 32px;
+      }
+    }
+
+    /* ==========================================================================
+       NAVBAR (STICKY, AUTH-AWARE, DESKTOP + MOBILE DRAWER)
+       ========================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(7, 11, 25, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .navbar.scrolled {
+      background: rgba(7, 11, 25, 0.95);
+      border-bottom-color: rgba(37, 99, 235, 0.25);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .nav-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 32px;
+      height: 68px;
     }
+
     .brand {
-      font-size: 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #38BDF8);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      color: #FFFFFF;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .brand-text {
+      font-size: 20px;
       font-weight: 800;
-      letter-spacing: 2px;
-      background: linear-gradient(135deg, #FFFFFF, #93C5FD);
+      letter-spacing: 2.5px;
+      background: linear-gradient(135deg, #FFFFFF 30%, #93C5FD 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .badge-live {
-      font-size: 11px;
-      font-weight: 600;
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--success);
-      padding: 4px 10px;
-      border-radius: 20px;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      display: flex;
+
+    .nav-desktop-links {
+      display: none;
       align-items: center;
-      gap: 6px;
+      gap: 28px;
+      list-style: none;
     }
-    .pulse-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 8px var(--success);
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.15s ease;
+      position: relative;
     }
-    .hero {
-      text-align: center;
-      margin: 16px 0 32px 0;
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: #FFFFFF;
     }
-    .hero-title {
-      font-size: 30px;
-      line-height: 1.25;
-      font-weight: 800;
-      margin-bottom: 14px;
+
+    .nav-link:hover::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 2px;
     }
-    .hero-title span {
-      color: #60A5FA;
+
+    .nav-desktop-auth {
+      display: none;
+      align-items: center;
+      gap: 14px;
     }
-    .hero-desc {
-      font-size: 15px;
-      line-height: 1.5;
-      color: var(--text-muted);
-      margin-bottom: 24px;
+
+    /* Mobile Hamburger Trigger */
+    .btn-mobile-menu {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      gap: 5px;
+      z-index: 1001;
+      padding: 0;
     }
-    .bonus-card {
-      background: linear-gradient(145deg, #131E3A, #0C1326);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 28px;
-      text-align: left;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+
+    .btn-mobile-menu span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: var(--text-primary);
+      border-radius: 2px;
+      transition: var(--transition);
     }
-    .bonus-label {
-      font-size: 12px;
-      color: var(--gold);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+
+    .btn-mobile-menu.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
     }
-    .bonus-amount {
-      font-size: 26px;
-      font-weight: 800;
-      color: #FFF;
-      margin: 4px 0;
+
+    .btn-mobile-menu.open span:nth-child(2) {
+      opacity: 0;
     }
-    .bonus-rule {
-      font-size: 12px;
-      color: var(--text-muted);
+
+    .btn-mobile-menu.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
     }
-    .action-stack {
+
+    /* Mobile Drawer */
+    .mobile-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 998;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+    }
+
+    .mobile-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 82%;
+      max-width: 320px;
+      height: 100vh;
+      background: #090E1F;
+      border-left: 1px solid var(--border);
+      z-index: 999;
+      transform: translateX(100%);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      padding: 84px 24px 32px 24px;
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .mobile-drawer.open {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .mobile-nav-link {
+      display: block;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: color 0.15s ease;
+    }
+
+    .mobile-nav-link:hover,
+    .mobile-nav-link.active {
+      color: #FFFFFF;
+    }
+
+    .mobile-auth-stack {
+      margin-top: auto;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-bottom: 36px;
+      padding-top: 20px;
     }
+
+    @media (min-width: 900px) {
+      .btn-mobile-menu {
+        display: none;
+      }
+      .nav-desktop-links {
+        display: flex;
+      }
+      .nav-desktop-auth {
+        display: flex;
+      }
+    }
+
+    /* ==========================================================================
+       BUTTON SYSTEM
+       ========================================================================== */
     .btn {
-      width: 100%;
-      padding: 16px;
-      border-radius: 12px;
-      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
       font-weight: 600;
-      text-align: center;
       text-decoration: none;
+      border: 1px solid transparent;
       cursor: pointer;
-      display: inline-block;
-      transition: all 0.2s ease;
-      border: none;
+      transition: var(--transition);
+      user-select: none;
+      text-align: center;
+      min-height: 44px;
     }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
     .btn-primary {
-      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
       color: #FFFFFF;
       box-shadow: 0 4px 20px var(--accent-glow);
     }
-    .btn-primary:active {
-      transform: scale(0.98);
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #3B82F6, var(--accent));
+      box-shadow: 0 6px 24px rgba(37, 99, 235, 0.45);
     }
+
     .btn-secondary {
-      background: #1E293B;
-      color: #F8FAFC;
-      border: 1px solid #334155;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-primary);
+      border-color: var(--border);
     }
-    .btn-secondary:active {
-      background: #334155;
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: #334155;
     }
-    .tier-summary {
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-card);
+      border-color: var(--text-secondary);
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 13px;
+      min-height: 36px;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    /* ==========================================================================
+       HERO SECTION
+       ========================================================================== */
+    .hero {
+      position: relative;
+      padding: 48px 0 60px 0;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, rgba(7, 11, 25, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .welcome-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #FBBF24;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .welcome-pill span.icon {
+      font-size: 14px;
+    }
+
+    .hero-title {
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 18px;
+    }
+
+    @media (min-width: 768px) {
+      .hero-title {
+        font-size: 48px;
+        letter-spacing: -1px;
+      }
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #60A5FA, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 30px;
+      padding: 0 10px;
+    }
+
+    @media (min-width: 768px) {
+      .hero-desc {
+        font-size: 17px;
+      }
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+      padding: 0 10px;
+    }
+
+    @media (min-width: 480px) {
+      .hero-actions {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .hero-actions .btn {
+        min-width: 170px;
+      }
+    }
+
+    /* Trust Highlights Strip */
+    .hero-trust-bar {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding-top: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .hero-trust-bar {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .trust-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 30px;
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      text-align: left;
     }
-    .tier-header {
+
+    .trust-card-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .trust-card-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       SECTION HEADINGS
+       ========================================================================== */
+    .section {
+      padding: 60px 0;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 36px auto;
+    }
+
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #60A5FA;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 12px;
+    }
+
+    @media (min-width: 768px) {
+      .section-title {
+        font-size: 34px;
+      }
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
+       HOW IT WORKS SECTION
+       ========================================================================== */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .steps-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px;
+      position: relative;
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .step-card:hover {
+      border-color: rgba(37, 99, 235, 0.4);
+      transform: translateY(-3px);
+    }
+
+    .step-num {
       font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.1);
+      width: fit-content;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .step-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-primary);
+    }
+
+    .step-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       INVESTMENT PLANS PREVIEW (DYNAMIC FROM SUPABASE)
+       ========================================================================== */
+    .plans-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 640px) {
+      .plans-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .plans-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .plan-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 26px 22px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      transition: var(--transition);
+    }
+
+    .plan-card:hover {
+      border-color: var(--border-focus);
+      box-shadow: 0 14px 40px rgba(37, 99, 235, 0.2);
+    }
+
+    .plan-header {
+      margin-bottom: 18px;
+    }
+
+    .plan-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .plan-tagline {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .plan-roi-box {
+      background: #0B1120;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .plan-roi-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .plan-roi-val {
+      font-size: 28px;
+      font-weight: 800;
+      color: #38BDF8;
+    }
+
+    .plan-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      flex-grow: 1;
+    }
+
+    .plan-feature-item {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+      padding-bottom: 8px;
+    }
+
+    .plan-feature-item span:last-child {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Polished Empty State for Plans */
+    .plans-empty-state {
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-xl);
+      padding: 48px 24px;
+      text-align: center;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .empty-icon {
+      font-size: 36px;
+      margin-bottom: 14px;
+    }
+
+    .empty-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .empty-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       DAILY INCOME TIMELINE SECTION
+       ========================================================================== */
+    .timeline-container {
+      background: linear-gradient(145deg, #0B1120, #0F172A);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 30px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .timeline-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .timeline-flow {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+    }
+
+    .flow-node {
+      background: #070B19;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+
+    .flow-node.highlight {
+      border-color: #2563EB;
+      box-shadow: 0 0 20px rgba(37, 99, 235, 0.25);
+    }
+
+    .flow-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #60A5FA;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .flow-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 18px;
+    }
+
+    @media (max-width: 767px) {
+      .flow-arrow {
+        transform: rotate(90deg);
+        height: 16px;
+      }
+    }
+
+    .timeline-notice {
+      background: rgba(37, 99, 235, 0.08);
+      border-left: 3px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       REFERRAL SECTION (3-TIER HIERARCHY)
+       ========================================================================== */
+    .referral-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px 20px;
+      max-width: 840px;
+      margin: 0 auto;
+    }
+
+    .ref-levels-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    @media (min-width: 640px) {
+      .ref-levels-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .ref-level-card {
+      background: #0B1120;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 18px;
+      text-align: center;
+      position: relative;
+    }
+
+    .ref-level-card.tier-1 {
+      border-color: rgba(37, 99, 235, 0.5);
+      background: linear-gradient(180deg, #101935, #0B1120);
+    }
+
+    .ref-badge {
+      font-size: 11px;
       font-weight: 700;
       color: #93C5FD;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
     }
-    .tier-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      text-align: center;
-    }
-    .tier-box {
-      background: #0B1120;
-      padding: 12px 6px;
-      border-radius: 10px;
-      border: 1px solid #1E293B;
-    }
-    .tier-level {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 2px;
-    }
-    .tier-pct {
-      font-size: 18px;
-      font-weight: 800;
+
+    .ref-pct {
+      font-size: 34px;
+      font-weight: 900;
       color: #38BDF8;
+      margin-bottom: 4px;
     }
-    .footer {
-      margin-top: auto;
-      text-align: center;
+
+    .ref-desc {
       font-size: 12px;
-      color: #64748B;
-      padding-top: 20px;
+      color: var(--text-secondary);
     }
-    .footer-links {
+
+    .ref-cta-box {
+      text-align: center;
+      padding-top: 10px;
+    }
+
+    /* ==========================================================================
+       MANUAL DEPOSITS & WITHDRAWALS ARCHITECTURE
+       ========================================================================== */
+    .manual-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .manual-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .manual-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 26px 22px;
+    }
+
+    .manual-card-header {
       display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 8px;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
     }
-    .footer-links a {
+
+    .manual-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: #0B1120;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .manual-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .manual-pipeline {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .pipeline-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       SECURITY & TRUST ARCHITECTURE
+       ========================================================================== */
+    .security-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .security-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .security-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .security-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 18px;
+    }
+
+    .security-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .security-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       FAQ ACCORDION
+       ========================================================================== */
+    .faq-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .faq-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .faq-item.active {
+      border-color: rgba(37, 99, 235, 0.4);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 18px 20px;
+      text-align: left;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      gap: 14px;
+    }
+
+    .faq-icon {
+      font-size: 16px;
+      transition: transform 0.25s ease;
       color: var(--text-muted);
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
+      color: #60A5FA;
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .faq-item.active .faq-answer {
+      padding: 0 20px 18px 20px;
+      max-height: 300px;
+    }
+
+    /* ==========================================================================
+       PREMIUM FOOTER
+       ========================================================================== */
+    .footer {
+      background: #040710;
+      border-top: 1px solid var(--border);
+      padding: 60px 0 32px 0;
+      margin-top: auto;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+      margin-bottom: 40px;
+    }
+
+    @media (min-width: 640px) {
+      .footer-grid {
+        grid-template-columns: 2fr 1fr 1fr;
+      }
+    }
+
+    .footer-brand-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-width: 320px;
+    }
+
+    .footer-heading {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #FFFFFF;
+      margin-bottom: 14px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-link {
+      color: var(--text-secondary);
       text-decoration: none;
+      font-size: 13px;
+      transition: color 0.15s ease;
+    }
+
+    .footer-link:hover {
+      color: #FFFFFF;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    @media (min-width: 640px) {
+      .footer-bottom {
+        flex-direction: row;
+      }
+    }
+
+    /* Animation keyframes */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <div class="brand">NOVEXA</div>
-      <div class="badge-live">
-        <span class="pulse-dot"></span>
-        Operational
+
+  <!-- ==========================================================================
+       STICKY NAVIGATION BAR
+       ========================================================================== -->
+  <header class="navbar" id="navbar">
+    <div class="container">
+      <div class="nav-inner">
+        <!-- Brand Logo -->
+        <a href="/index.html" class="brand">
+          <div class="brand-mark">N</div>
+          <span class="brand-text">NOVEXA</span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <ul class="nav-desktop-links">
+          <li><a href="/index.html" class="nav-link active">Home</a></li>
+          <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+          <li><a href="#plans" class="nav-link">Plans</a></li>
+          <li><a href="#daily-income" class="nav-link">Daily Income</a></li>
+          <li><a href="#referrals" class="nav-link">Referrals</a></li>
+          <li><a href="#faq" class="nav-link">FAQ</a></li>
+        </ul>
+
+        <!-- Desktop Auth-Aware Actions -->
+        <div class="nav-desktop-auth" id="desktop-auth-container">
+          <!-- Populated by JavaScript according to session state -->
+          <a href="/login.html" class="btn btn-outline btn-sm">Login</a>
+          <a href="/register.html" class="btn btn-primary btn-sm">Get Started</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button class="btn-mobile-menu" id="btn-mobile-menu" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
-    </header>
-
-    <section class="hero">
-      <h1 class="hero-title">High-Yield Wealth <span>Engineered Simply.</span></h1>
-      <p class="hero-desc">Secure manual investments, guaranteed midnight yields credited directly to your verified wallet.</p>
-    </section>
-
-    <div class="bonus-card">
-      <div class="bonus-label">Instant Welcome Reward</div>
-      <div class="bonus-amount">₦1,000.00</div>
-      <div class="bonus-rule">Automatically credited to your account upon new registration.</div>
     </div>
+  </header>
 
-    <div class="action-stack">
-      <a href="/register.html" class="btn btn-primary">Create Your Account</a>
-      <a href="/login.html" class="btn btn-secondary">Member Sign In</a>
+  <!-- Mobile Backdrop & Drawer -->
+  <div class="mobile-backdrop" id="mobile-backdrop"></div>
+  <aside class="mobile-drawer" id="mobile-drawer">
+    <ul class="mobile-nav-list">
+      <li><a href="/index.html" class="mobile-nav-link active" data-nav>Home</a></li>
+      <li><a href="#how-it-works" class="mobile-nav-link" data-nav>How It Works</a></li>
+      <li><a href="#plans" class="mobile-nav-link" data-nav>Plans</a></li>
+      <li><a href="#daily-income" class="mobile-nav-link" data-nav>Daily Income</a></li>
+      <li><a href="#referrals" class="mobile-nav-link" data-nav>Referrals</a></li>
+      <li><a href="#manual-system" class="mobile-nav-link" data-nav>Deposits & Payouts</a></li>
+      <li><a href="#faq" class="mobile-nav-link" data-nav>FAQ</a></li>
+      <li><a href="/support.html" class="mobile-nav-link" data-nav>Support</a></li>
+    </ul>
+
+    <div class="mobile-auth-stack" id="mobile-auth-container">
+      <!-- Populated dynamically: Login/Register or Dashboard/Logout -->
+      <a href="/login.html" class="btn btn-secondary btn-block">Login</a>
+      <a href="/register.html" class="btn btn-primary btn-block">Get Started</a>
     </div>
+  </aside>
 
-    <section class="tier-summary">
-      <div class="tier-header">3-Level Partner Commission</div>
-      <div class="tier-grid">
-        <div class="tier-box">
-          <div class="tier-level">Level 1</div>
-          <div class="tier-pct">15%</div>
+  <!-- ==========================================================================
+       HERO SECTION
+       ========================================================================== -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="welcome-pill">
+          <span class="icon">🎁</span>
+          <span>₦1,000 Welcome Bonus Credited on Registration</span>
         </div>
-        <div class="tier-box">
-          <div class="tier-level">Level 2</div>
-          <div class="tier-pct">3%</div>
+
+        <h1 class="hero-title">
+          Engineered Wealth. <br><span>Manual Security.</span>
+        </h1>
+
+        <p class="hero-desc">
+          Participate in configured investment plans with automated midnight yields, 3-tier partner referral rewards, and audited manual bank processing.
+        </p>
+
+        <div class="hero-actions" id="hero-actions-container">
+          <a href="/register.html" class="btn btn-primary">Get Started</a>
+          <a href="/login.html" class="btn btn-secondary">Member Login</a>
         </div>
-        <div class="tier-box">
-          <div class="tier-level">Level 3</div>
-          <div class="tier-pct">1%</div>
+
+        <!-- Trust Highlights Strip -->
+        <div class="hero-trust-bar">
+          <div class="trust-card">
+            <div class="trust-card-title">Processing</div>
+            <div class="trust-card-val">Daily at 00:00</div>
+          </div>
+          <div class="trust-card">
+            <div class="trust-card-title">Commissions</div>
+            <div class="trust-card-val">15% - 3% - 1%</div>
+          </div>
+          <div class="trust-card">
+            <div class="trust-card-title">Transfers</div>
+            <div class="trust-card-val">Manual Review</div>
+          </div>
+          <div class="trust-card">
+            <div class="trust-card-title">Security</div>
+            <div class="trust-card-val">Supabase RLS</div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <footer class="footer">
-      <div class="footer-links">
-        <a href="/terms.html">Terms</a>
-        <a href="/privacy.html">Privacy</a>
-        <a href="/support.html">Help & Support</a>
+  <!-- ==========================================================================
+       HOW IT WORKS SECTION
+       ========================================================================== -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Platform Workflow</span>
+        <h2 class="section-title">How NOVEXA Works</h2>
+        <p class="section-subtitle">A straightforward 4-step process designed for financial clarity and manual review integrity.</p>
       </div>
-      <div>&copy; <span id="year"></span> NOVEXA. All rights reserved.</div>
-    </footer>
-  </div>
 
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">Step 01</div>
+          <h3 class="step-title">Create Account</h3>
+          <p class="step-text">Register with your verified email and phone number. Your account is immediately provisioned with a ₦1,000 welcome credit.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">Step 02</div>
+          <h3 class="step-title">Choose a Plan</h3>
+          <p class="step-text">Browse active investment plans configured in our database, with transparent daily ROI percentages and specified durations.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">Step 03</div>
+          <h3 class="step-title">Fund & Activate</h3>
+          <p class="step-text">Transfer funds manually using official NOVEXA bank instructions and submit payment proof for administrative verification.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">Step 04</div>
+          <h3 class="step-title">Receive Daily Yields</h3>
+          <p class="step-text">Eligible active plans receive daily earnings credited directly to your wallet every midnight at 00:00.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       INVESTMENT PLANS PREVIEW (CONNECTED TO SUPABASE)
+       ========================================================================== -->
+  <section class="section" id="plans">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Configured Plans</span>
+        <h2 class="section-title">Investment Portfolios</h2>
+        <p class="section-subtitle">Real-time plans loaded directly from the database. Terms are enforced server-side.</p>
+      </div>
+
+      <!-- Container dynamically populated via Supabase query -->
+      <div id="plans-container" class="plans-grid">
+        <div class="plans-empty-state">
+          <div class="empty-icon">⏳</div>
+          <div class="empty-title">Loading Available Plans...</div>
+          <p class="empty-text">Connecting to the NOVEXA database to fetch verified investment terms.</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 36px;">
+        <a href="/plans.html" class="btn btn-outline">Explore Full Plan Catalog &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DAILY INCOME EXPLANATION
+       ========================================================================== -->
+  <section class="section" id="daily-income">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Midnight Yields</span>
+        <h2 class="section-title">Daily Income Engine</h2>
+        <p class="section-subtitle">How returns are calculated and credited automatically every 24 hours.</p>
+      </div>
+
+      <div class="timeline-container">
+        <div class="timeline-flow">
+          <div class="flow-node">
+            <div class="flow-tag">Stage 1</div>
+            <div class="flow-label">Investment Initiated</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-node">
+            <div class="flow-tag">Stage 2</div>
+            <div class="flow-label">Active Portfolio</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-node highlight">
+            <div class="flow-tag">00:00 Midnight</div>
+            <div class="flow-label">Serverless Trigger</div>
+          </div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-node">
+            <div class="flow-tag">Stage 4</div>
+            <div class="flow-label">Wallet Credited</div>
+          </div>
+        </div>
+
+        <div class="timeline-notice">
+          <strong>Idempotent Accounting:</strong> All daily income calculations execute via atomic database operations at 00:00 midnight. System audit logs prevent any duplicate credits for the same calendar date.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       REFERRAL SYSTEM SECTION (3-LEVEL)
+       ========================================================================== -->
+  <section class="section" id="referrals">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Partner Program</span>
+        <h2 class="section-title">3-Level Referral Rewards</h2>
+        <p class="section-subtitle">Earn structured referral commissions when partners in your network activate investment plans.</p>
+      </div>
+
+      <div class="referral-container">
+        <div class="ref-levels-grid">
+          <div class="ref-level-card tier-1">
+            <div class="ref-badge">Level 1 (Direct)</div>
+            <div class="ref-pct">15%</div>
+            <div class="ref-desc">Earned immediately on every plan funded by direct invitees.</div>
+          </div>
+
+          <div class="ref-level-card">
+            <div class="ref-badge">Level 2 (Secondary)</div>
+            <div class="ref-pct">3%</div>
+            <div class="ref-desc">Earned when your direct partners invite their own partners.</div>
+          </div>
+
+          <div class="ref-level-card">
+            <div class="ref-badge">Level 3 (Tertiary)</div>
+            <div class="ref-pct">1%</div>
+            <div class="ref-desc">Earned on third-generation team member activations.</div>
+          </div>
+        </div>
+
+        <div class="ref-cta-box">
+          <a href="/register.html" class="btn btn-primary">Create Account to Get Referral Link</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       MANUAL DEPOSITS & WITHDRAWALS ARCHITECTURE
+       ========================================================================== -->
+  <section class="section" id="manual-system">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Manual Processing</span>
+        <h2 class="section-title">Secure Banking Workflow</h2>
+        <p class="section-subtitle">NOVEXA employs audited manual reviews for all deposits and cashouts to maintain solvency and oversight.</p>
+      </div>
+
+      <div class="manual-grid">
+        <!-- Deposit Pipeline -->
+        <div class="manual-card">
+          <div class="manual-card-header">
+            <div class="manual-icon">📥</div>
+            <h3 class="manual-title">Deposit Pipeline</h3>
+          </div>
+          <ul class="manual-pipeline">
+            <li class="pipeline-step">
+              <span class="pipeline-dot"></span>
+              <span>Review official verified deposit account details on the authenticated portal.</span>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-dot"></span>
+              <span>Execute manual bank transfer through your financial institution.</span>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-dot"></span>
+              <span>Submit transaction reference and depositor information.</span>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-dot"></span>
+              <span>Admin reviews proof and balance is atomically credited to your wallet.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Withdrawal Pipeline -->
+        <div class="manual-card">
+          <div class="manual-card-header">
+            <div class="manual-icon">📤</div>
+            <h3 class="manual-title">Withdrawal Pipeline</h3>
+          </div>
+          <ul class="manual-pipeline">
+            <li class="pipeline-step">
+              <span class="pipeline-dot"></span>
+              <span>Submit cashout request indicating withdrawal amount and bank destination.</span>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-dot"></span>
+              <span>Wallet balance is reserved and queued in pending audit state.</span>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-dot"></span>
+              <span>Compliance officer audits request and performs manual bank payout.</span>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-dot"></span>
+              <span>Request marked completed and notification dispatched to your dashboard.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECURITY & TRUST ARCHITECTURE
+       ========================================================================== */
+  <section class="section" id="security">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Verified Integrity</span>
+        <h2 class="section-title">Engineered Controls</h2>
+        <p class="section-subtitle">Built on PostgreSQL and Supabase infrastructure with explicit architectural boundaries.</p>
+      </div>
+
+      <div class="security-grid">
+        <div class="security-card">
+          <div class="security-title">🔒 Supabase Auth & JWT</div>
+          <p class="security-text">Industry-standard encrypted authentication tokens ensure sessions are cryptographically signed and stored securely.</p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-title">🛡️ Row Level Security (RLS)</div>
+          <p class="security-text">Database policies enforce strict isolation. Users cannot view or modify transactions belonging to any other user.</p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-title">⚡ Server-Side RPC Functions</div>
+          <p class="security-text">Balances, welcome bonuses, and payouts are handled by server-side PostgreSQL procedures rather than vulnerable client scripts.</p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-title">📜 Immutable Ledger</div>
+          <p class="security-text">Every naira movement is recorded as an immutable transaction reference with explicit before and after balance tracking.</p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-title">👥 Human Verification</div>
+          <p class="security-text">Deposit confirmations and withdrawals undergo human administrative review before funds are moved or ledger entries finalize.</p>
+        </div>
+
+        <div class="security-card">
+          <div class="security-title">🔔 Instant Notifications</div>
+          <p class="security-text">Receive real-time dashboard alerts whenever a deposit is verified, yield is paid, or team member registers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FAQ ACCORDION
+       ========================================================================== -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Clear Answers</span>
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Direct, technical answers regarding NOVEXA platform operations.</p>
+      </div>
+
+      <div class="faq-wrapper">
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is NOVEXA?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            NOVEXA is a manual investment platform designed for capital allocation into configured plans with daily returns, 3-tier partner referral commissions, and administrative review of all financial operations.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How does daily income work?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            When you activate an investment plan from your available balance, the plan generates its configured daily percentage. Income is calculated daily based on active contract terms and credited directly to your wallet balance.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>When is daily income processed?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            Daily yields are processed automatically once per day at 00:00 (midnight). An idempotent database cron mechanism prevents any double-crediting.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do manual deposits work?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            After signing in, navigate to the Deposit page to see the verified NOVEXA bank account details. Complete your bank transfer and submit the transaction reference. The administrator verifies the payment and approves the balance credit.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do withdrawals work?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            Submit a withdrawal request on the Wallet page indicating your Nigerian bank details. The request is placed in pending review. Once the administrative team completes the payout, the status is updated to completed.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How does the 3-level referral system operate?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            You receive 15% commission on investments made by direct referrals (Level 1), 3% on partners invited by your referrals (Level 2), and 1% on partners invited at Level 3.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is the ₦1,000 welcome bonus?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            Every newly registered user receives a ₦1,000 credit in their wallet immediately upon successful registration. This is awarded once per account via an atomic server-side trigger.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Where can I view my transactions?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            All balance changes—including deposits, daily income, referral commissions, and withdrawals—are tracked with unique reference codes on your personal Transactions page.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do I contact customer support?</span>
+            <span class="faq-icon">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            You can submit an inquiry through the Support Tickets page on your dashboard or access the official contact options configured in site settings.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="/index.html" class="brand">
+            <div class="brand-mark">N</div>
+            <span class="brand-text">NOVEXA</span>
+          </a>
+          <p class="footer-desc">
+            A manual investment platform delivering configured daily yields, structured referral rewards, and ledger accounting.
+          </p>
+        </div>
+
+        <div>
+          <div class="footer-heading">Platform</div>
+          <ul class="footer-links">
+            <li><a href="/index.html" class="footer-link">Home</a></li>
+            <li><a href="#how-it-works" class="footer-link">How It Works</a></li>
+            <li><a href="#plans" class="footer-link">Investment Plans</a></li>
+            <li><a href="#referrals" class="footer-link">Referral Program</a></li>
+            <li><a href="#faq" class="footer-link">Platform FAQ</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-heading">Legal & Help</div>
+          <ul class="footer-links">
+            <li><a href="/terms.html" class="footer-link">Terms of Service</a></li>
+            <li><a href="/privacy.html" class="footer-link">Privacy Policy</a></li>
+            <li><a href="/support.html" class="footer-link">Support Desk</a></li>
+            <li><a href="/login.html" class="footer-link">Investor Sign In</a></li>
+            <li><a href="/register.html" class="footer-link">Open Account</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; <span id="year"></span> NOVEXA. All rights reserved.</div>
+        <div>Engineered with Supabase & Modern Web Standards</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       CLIENT SCRIPT: STICKY NAV, AUTH CHECK, DRAWER, FAQ & SUPABASE PLANS
+       ========================================================================== -->
   <script type="module">
-    import { supabase } from '/supabase-client.js';
+    import { supabase, formatNaira, logoutUser } from '/supabase-client.js';
 
+    // 1. Set current copyright year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Check if user is already logged in and redirect to dashboard
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        window.location.replace('/dashboard.html');
+    // 2. Sticky Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
       }
+    }, { passive: true });
+
+    // 3. Mobile Navigation Drawer Controls
+    const mobileBtn = document.getElementById('btn-mobile-menu');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const mobileBackdrop = document.getElementById('mobile-backdrop');
+    const navLinks = document.querySelectorAll('[data-nav]');
+
+    function toggleDrawer(open) {
+      const isOpen = open !== undefined ? open : !mobileDrawer.classList.contains('open');
+      mobileBtn.classList.toggle('open', isOpen);
+      mobileDrawer.classList.toggle('open', isOpen);
+      mobileBackdrop.classList.toggle('open', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
+    mobileBtn.addEventListener('click', () => toggleDrawer());
+    mobileBackdrop.addEventListener('click', () => toggleDrawer(false));
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => toggleDrawer(false));
     });
+
+    // 4. Auth-Aware Navigation (Login/Register vs. Dashboard/Logout)
+    async function configureAuthNav() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const desktopAuth = document.getElementById('desktop-auth-container');
+      const mobileAuth = document.getElementById('mobile-auth-container');
+      const heroActions = document.getElementById('hero-actions-container');
+
+      if (session && session.user) {
+        // Authenticated UI
+        desktopAuth.innerHTML = `
+          <a href="/dashboard.html" class="btn btn-primary btn-sm">Dashboard</a>
+          <button id="btn-desktop-logout" class="btn btn-outline btn-sm">Logout</button>
+        `;
+        mobileAuth.innerHTML = `
+          <a href="/dashboard.html" class="btn btn-primary btn-block">Go to Dashboard</a>
+          <button id="btn-mobile-logout" class="btn btn-secondary btn-block">Logout</button>
+        `;
+        heroActions.innerHTML = `
+          <a href="/dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+          <a href="/plans.html" class="btn btn-secondary">View Available Plans</a>
+        `;
+
+        document.getElementById('btn-desktop-logout')?.addEventListener('click', logoutUser);
+        document.getElementById('btn-mobile-logout')?.addEventListener('click', logoutUser);
+      } else {
+        // Guest UI
+        desktopAuth.innerHTML = `
+          <a href="/login.html" class="btn btn-outline btn-sm">Login</a>
+          <a href="/register.html" class="btn btn-primary btn-sm">Get Started</a>
+        `;
+        mobileAuth.innerHTML = `
+          <a href="/login.html" class="btn btn-secondary btn-block">Member Login</a>
+          <a href="/register.html" class="btn btn-primary btn-block">Create Account</a>
+        `;
+        heroActions.innerHTML = `
+          <a href="/register.html" class="btn btn-primary">Get Started</a>
+          <a href="/login.html" class="btn btn-secondary">Member Login</a>
+        `;
+      }
+    }
+
+    // 5. Dynamic Investment Plans Loader from Supabase
+    async function loadPlans() {
+      const container = document.getElementById('plans-container');
+      try {
+        const { data: plans, error } = await supabase
+          .from('plans')
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order', { ascending: true });
+
+        if (error) {
+          console.warn('Database note fetching plans:', error.message);
+          renderEmptyPlans(container);
+          return;
+        }
+
+        if (!plans || plans.length === 0) {
+          renderEmptyPlans(container);
+          return;
+        }
+
+        container.innerHTML = '';
+        plans.forEach(plan => {
+          const card = document.createElement('div');
+          card.className = 'plan-card';
+          card.innerHTML = `
+            <div class="plan-header">
+              <h3 class="plan-name">${plan.name}</h3>
+              <p class="plan-tagline">${plan.tagline || 'Configured Capital Plan'}</p>
+            </div>
+
+            <div class="plan-roi-box">
+              <div class="plan-roi-label">Daily Return</div>
+              <div class="plan-roi-val">${plan.daily_roi_percent}%</div>
+            </div>
+
+            <ul class="plan-features">
+              <li class="plan-feature-item">
+                <span>Minimum Investment</span>
+                <span>${formatNaira(plan.minimum_amount)}</span>
+              </li>
+              <li class="plan-feature-item">
+                <span>Maximum Investment</span>
+                <span>${formatNaira(plan.maximum_amount)}</span>
+              </li>
+              <li class="plan-feature-item">
+                <span>Duration</span>
+                <span>${plan.duration_days} Days</span>
+              </li>
+              <li class="plan-feature-item">
+                <span>Total Calculated Return</span>
+                <span>${(plan.daily_roi_percent * plan.duration_days).toFixed(1)}%</span>
+              </li>
+            </ul>
+
+            <a href="/login.html" class="btn btn-primary btn-block">Invest Now</a>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        renderEmptyPlans(container);
+      }
+    }
+
+    function renderEmptyPlans(container) {
+      container.innerHTML = `
+        <div class="plans-empty-state">
+          <div class="empty-icon">📁</div>
+          <div class="empty-title">Investment Plans In Staging</div>
+          <p class="empty-text">
+            Investment plans will appear here once configured and published by the platform administration in Supabase.
+          </p>
+        </div>
+      `;
+    }
+
+    // 6. Interactive FAQ Accordion
+    function setupFaq() {
+      const items = document.querySelectorAll('.faq-item');
+      items.forEach(item => {
+        const questionBtn = item.querySelector('.faq-question');
+        questionBtn.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          items.forEach(i => i.classList.remove('active'));
+          if (!isActive) {
+            item.classList.add('active');
+          }
+        });
+      });
+    }
+
+    // Run initialization
+    configureAuthNav();
+    loadPlans();
+    setupFaq();
   </script>
 </body>
 </html>
