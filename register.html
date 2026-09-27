@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NOVEXA — Create Account</title>
+  <style>
+    :root {
+      --bg-dark: #070B19;
+      --bg-card: #0F172A;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-glow: rgba(37, 99, 235, 0.35);
+      --gold: #F59E0B;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --border: #1E293B;
+      --border-focus: #3B82F6;
+      --input-bg: #0B1120;
+      --danger: #EF4444;
+      --success: #10B981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 40px 16px;
+    }
+
+    .auth-wrapper {
+      width: 100%;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .top-bar {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+
+    .back-home:hover {
+      color: #FFFFFF;
+    }
+
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 26px 20px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #FFFFFF, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .brand-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .bonus-pill {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #FBBF24;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .alert-banner {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #FCA5A5;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-bottom: 18px;
+      line-height: 1.4;
+      display: none;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 14px;
+      color: #FFFFFF;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .form-input::placeholder {
+      color: #475569;
+    }
+
+    .toggle-pwd {
+      position: absolute;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px;
+      user-select: none;
+    }
+
+    .ref-feedback {
+      font-size: 12px;
+      margin-top: 6px;
+      display: none;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ref-feedback.valid {
+      color: var(--success);
+      display: flex;
+    }
+
+    .ref-feedback.invalid {
+      color: var(--danger);
+      display: flex;
+    }
+
+    .pwd-requirements {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #FFFFFF;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.985);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .auth-footer a {
+      color: #60A5FA;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="top-bar">
+      <a href="/index.html" class="back-home">&larr; Return to Home</a>
+    </div>
+
+    <div class="auth-card">
+      <div class="brand-header">
+        <div class="brand-title">NOVEXA</div>
+        <p class="brand-subtitle">Open your high-yield investment account</p>
+      </div>
+
+      <div class="bonus-pill">
+        🎁 ₦1,000 Welcome Bonus automatically credited upon registration
+      </div>
+
+      <div id="error-banner" class="alert-banner"></div>
+
+      <form id="register-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="full_name">Full Legal Name</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="full_name" 
+              name="full_name" 
+              class="form-input" 
+              placeholder="e.g. Chukwuma Adebayo" 
+              required
+              autocomplete="name"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <div class="input-wrapper">
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-input" 
+              placeholder="name@example.com" 
+              required
+              autocomplete="email"
+              inputmode="email"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone Number</label>
+          <div class="input-wrapper">
+            <input 
+              type="tel" 
+              id="phone" 
+              name="phone" 
+              class="form-input" 
+              placeholder="e.g. 08012345678" 
+              required
+              autocomplete="tel"
+              inputmode="tel"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="Minimum 8 characters" 
+              required
+              autocomplete="new-password"
+            >
+            <button type="button" class="toggle-pwd" id="toggle-pwd" tabindex="-1">Show</button>
+          </div>
+          <div class="pwd-requirements">Must be at least 8 characters with letters and numbers.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirm_password">Confirm Password</label>
+          <div class="input-wrapper">
+            <input 
+              type="password" 
+              id="confirm_password" 
+              name="confirm_password" 
+              class="form-input" 
+              placeholder="Re-enter password" 
+              required
+              autocomplete="new-password"
+            >
+            <button type="button" class="toggle-pwd" id="toggle-confirm-pwd" tabindex="-1">Show</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="referral_code">Referral Code (Optional)</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="referral_code" 
+              name="referral_code" 
+              class="form-input" 
+              placeholder="e.g. NOVEXA7K4P2"
+              autocomplete="off"
+              style="text-transform: uppercase;"
+            >
+          </div>
+          <div id="ref-feedback" class="ref-feedback"></div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <span class="spinner" id="btn-spinner"></span>
+          <span id="btn-text">Create Account & Claim ₦1,000</span>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? 
+        <a href="/login.html">Sign in here</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, redirectIfAuthenticated, verifyReferralCode, showToast } from '/supabase-client.js';
+
+    const registerForm = document.getElementById('register-form');
+    const fullNameInput = document.getElementById('full_name');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const referralInput = document.getElementById('referral_code');
+    const refFeedback = document.getElementById('ref-feedback');
+    const togglePwd = document.getElementById('toggle-pwd');
+    const toggleConfirmPwd = document.getElementById('toggle-confirm-pwd');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const btnText = document.getElementById('btn-text');
+    const errorBanner = document.getElementById('error-banner');
+
+    function showError(msg) {
+      errorBanner.textContent = msg;
+      errorBanner.style.display = 'block';
+    }
+
+    function clearError() {
+      errorBanner.textContent = '';
+      errorBanner.style.display = 'none';
+    }
+
+    function setLoading(isLoading) {
+      btnSubmit.disabled = isLoading;
+      if (isLoading) {
+        btnSpinner.style.display = 'inline-block';
+        btnText.textContent = 'Creating Account...';
+      } else {
+        btnSpinner.style.display = 'none';
+        btnText.textContent = 'Create Account & Claim ₦1,000';
+      }
+    }
+
+    // Redirect active authenticated user
+    redirectIfAuthenticated();
+
+    // Toggle password fields
+    togglePwd.addEventListener('click', () => {
+      const isPwd = passwordInput.getAttribute('type') === 'password';
+      passwordInput.setAttribute('type', isPwd ? 'text' : 'password');
+      togglePwd.textContent = isPwd ? 'Hide' : 'Show';
+    });
+
+    toggleConfirmPwd.addEventListener('click', () => {
+      const isPwd = confirmPasswordInput.getAttribute('type') === 'password';
+      confirmPasswordInput.setAttribute('type', isPwd ? 'text' : 'password');
+      toggleConfirmPwd.textContent = isPwd ? 'Hide' : 'Show';
+    });
+
+    // Handle Referral Query Param (?ref=NOVEXA7K4P2)
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryRef = urlParams.get('ref') || urlParams.get('sponsor');
+    if (queryRef) {
+      const cleanRef = queryRef.trim().toUpperCase();
+      referralInput.value = cleanRef;
+      validateReferralInput(cleanRef);
+    }
+
+    let refDebounce = null;
+    referralInput.addEventListener('input', () => {
+      clearTimeout(refDebounce);
+      const val = referralInput.value.trim().toUpperCase();
+      if (!val) {
+        refFeedback.className = 'ref-feedback';
+        refFeedback.style.display = 'none';
+        return;
+      }
+      refDebounce = setTimeout(() => validateReferralInput(val), 400);
+    });
+
+    async function validateReferralInput(code) {
+      const res = await verifyReferralCode(code);
+      if (res && res.valid) {
+        refFeedback.className = 'ref-feedback valid';
+        refFeedback.textContent = `✓ Referred by ${res.sponsor_name || 'Verified Sponsor'}`;
+        refFeedback.style.display = 'flex';
+      } else {
+        refFeedback.className = 'ref-feedback invalid';
+        refFeedback.textContent = `✗ ${res.message || 'Invalid referral code'}`;
+        refFeedback.style.display = 'flex';
+      }
+    }
+
+    // Form submission
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const fullName = fullNameInput.value.trim();
+      const email = emailInput.value.trim().toLowerCase();
+      const phone = phoneInput.value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+      const referralCode = referralInput.value.trim().toUpperCase();
+
+      // Client-side validations
+      if (!fullName || fullName.length < 3) {
+        showError('Please enter your full legal name (at least 3 characters).');
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showError('Please provide a valid email address.');
+        return;
+      }
+
+      // Nigerian or international phone check (at least 10 digits)
+      const phoneDigits = phone.replace(/[^0-9+]/g, '');
+      if (phoneDigits.length < 10 || phoneDigits.length > 15) {
+        showError('Please provide a valid phone number (e.g. 08012345678 or +234...).');
+        return;
+      }
+
+      if (password.length < 8) {
+        showError('Password must be at least 8 characters long.');
+        return;
+      }
+
+      const hasLetter = /[a-zA-Z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      if (!hasLetter || !hasNumber) {
+        showError('Password must include both letters and numbers for account security.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showError('Passwords do not match. Please verify your password entry.');
+        return;
+      }
+
+      // If user typed a referral code, verify before signup
+      if (referralCode) {
+        const refCheck = await verifyReferralCode(referralCode);
+        if (!refCheck.valid) {
+          showError('The referral code entered is invalid. Please clear it or enter a valid code.');
+          return;
+        }
+      }
+
+      setLoading(true);
+
+      try {
+        const { data: authData, error: authErr } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: fullName,
+              phone_number: phone,
+              referral_code: referralCode || null
+            }
+          }
+        });
+
+        if (authErr) {
+          let userMsg = 'Unable to create your account. Please check your details.';
+          if (authErr.message.toLowerCase().includes('already registered')) {
+            userMsg = 'An account with this email address already exists. Please sign in instead.';
+          } else if (authErr.message.toLowerCase().includes('weak')) {
+            userMsg = 'Please use a stronger password.';
+          }
+          showError(userMsg);
+          setLoading(false);
+          return;
+        }
+
+        // If email confirmation is enabled on Supabase project and session is not returned
+        if (authData.user && !authData.session) {
+          showToast('Account created! Please check your email to verify your account.', 'success');
+          setTimeout(() => window.location.replace('/login.html'), 2000);
+          return;
+        }
+
+        // Account created & authenticated
+        showToast('Registration successful! ₦1,000 bonus credited.', 'success');
+        setTimeout(() => window.location.replace('/dashboard.html'), 1000);
+      } catch (err) {
+        showError('A network error occurred. Please verify your connection.');
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
