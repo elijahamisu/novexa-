@@ -2,317 +2,1473 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>NOVEXA — Investor Dashboard</title>
   <style>
+    /* ==========================================================================
+       NOVEXA FINTECH DESIGN SYSTEM TOKENS
+       ========================================================================== */
     :root {
       --bg-dark: #070B19;
       --bg-card: #0F172A;
+      --bg-elevated: #131E3A;
+      --bg-surface: #0B1120;
       --accent: #2563EB;
+      --accent-hover: #1D4ED8;
       --accent-glow: rgba(37, 99, 235, 0.35);
+      --accent-cyan: #38BDF8;
       --gold: #F59E0B;
-      --text-main: #F8FAFC;
-      --text-muted: #94A3B8;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
       --border: #1E293B;
+      --border-light: rgba(255, 255, 255, 0.08);
+      --border-focus: #3B82F6;
       --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
+
     body {
       background-color: var(--bg-dark);
-      color: var(--text-main);
-      padding-bottom: 84px;
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px));
+      -webkit-font-smoothing: antialiased;
     }
-    .header {
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #0B1120;
+
+    /* Container: Mobile-First Max Width 480px, scales cleanly to larger screens */
+    .app-container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    @media (min-width: 768px) {
+      .app-container {
+        padding: 0 24px;
+      }
+    }
+
+    /* ==========================================================================
+       TOP APP HEADER
+       ========================================================================== */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(7, 11, 25, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+      margin-bottom: 16px;
     }
-    .brand-mini {
-      font-size: 16px;
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .brand-name {
+      font-size: 19px;
       font-weight: 800;
-      letter-spacing: 1.5px;
-      background: linear-gradient(135deg, #FFFFFF, #93C5FD);
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #FFF 30%, #93C5FD);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .user-greeting {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .user-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: #FFF;
-    }
+
     .header-actions {
       display: flex;
-      gap: 8px;
       align-items: center;
+      gap: 10px;
     }
+
     .icon-btn {
-      background: #1E293B;
-      color: #FFF;
-      border: 1px solid #334155;
-      padding: 7px 12px;
-      border-radius: 8px;
+      position: relative;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
       text-decoration: none;
-      font-size: 12px;
       cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover {
+      border-color: #334155;
+      color: #FFF;
+    }
+
+    .icon-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--danger);
+      color: #FFF;
+      font-size: 10px;
+      font-weight: 800;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-dark);
+    }
+
+    .avatar-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1E293B, #0F172A);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .avatar-btn:hover {
+      border-color: var(--accent-cyan);
+    }
+
+    /* ==========================================================================
+       WELCOME GREETING
+       ========================================================================== */
+    .welcome-area {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 18px;
+    }
+
+    .greeting-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .user-fullname {
+      font-size: 20px;
+      font-weight: 800;
+      color: #FFF;
+      margin-top: 2px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: var(--success);
+      font-size: 11px;
       font-weight: 600;
     }
-    .icon-btn:hover {
-      background: #334155;
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
     }
-    .content {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 18px;
-    }
+
+    /* ==========================================================================
+       MAIN BALANCE CARD
+       ========================================================================== */
     .balance-card {
-      background: linear-gradient(135deg, #1E3A8A, #0F172A);
-      border: 1px solid #3B82F6;
-      border-radius: 18px;
-      padding: 22px;
+      position: relative;
+      background: linear-gradient(145deg, #0e1d42 0%, #091124 100%);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      border-radius: var(--radius-xl);
+      padding: 22px 20px;
       margin-bottom: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
     }
-    .balance-label {
+
+    .balance-card::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .balance-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .balance-title {
       font-size: 12px;
+      font-weight: 600;
+      color: #93C5FD;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: #93C5FD;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .balance-val {
+
+    .btn-toggle-balance {
+      background: transparent;
+      border: none;
+      color: #93C5FD;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+
+    .btn-toggle-balance:hover {
+      color: #FFF;
+    }
+
+    .btn-toggle-balance svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .balance-amount {
       font-size: 32px;
       font-weight: 800;
-      margin: 8px 0 18px 0;
+      letter-spacing: -0.5px;
       color: #FFFFFF;
+      margin-bottom: 18px;
     }
-    .quick-actions {
+
+    .balance-card-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-    .btn-action {
-      background: #FFFFFF;
-      color: #0F172A;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 12px;
-      border-radius: 10px;
-      text-align: center;
+
+    .btn-fund {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #FFF;
       text-decoration: none;
-      display: block;
-    }
-    .btn-action-alt {
-      background: rgba(255, 255, 255, 0.12);
-      color: #FFFFFF;
-      font-weight: 700;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
       font-size: 14px;
-      padding: 12px;
-      border-radius: 10px;
+      font-weight: 700;
       text-align: center;
-      text-decoration: none;
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      transition: var(--transition);
     }
-    .ref-banner {
+
+    .btn-fund:active {
+      transform: scale(0.98);
+    }
+
+    .btn-cashout {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFF;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .btn-cashout:active {
+      background: rgba(255, 255, 255, 0.14);
+      transform: scale(0.98);
+    }
+
+    /* ==========================================================================
+       QUICK ACTIONS GRID
+       ========================================================================== */
+    .quick-actions-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .quick-action-item {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 20px;
+      border-radius: var(--radius-md);
+      padding: 12px 6px;
+      text-align: center;
+      text-decoration: none;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-    }
-    .ref-header {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 6px;
+      transition: var(--transition);
     }
-    .ref-title {
-      font-size: 12px;
+
+    .quick-action-item:active {
+      transform: scale(0.97);
+    }
+
+    .qa-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #090E1F;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-cyan);
+    }
+
+    .qa-icon-wrap svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .qa-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       EARNINGS SNAPSHOT DUAL-CARD
+       ========================================================================== */
+    .earnings-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .earning-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .earning-card-label {
+      font-size: 11px;
+      font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
-      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
     }
-    .ref-box {
+
+    .earning-card-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .earning-card-val.highlight {
+      color: #38BDF8;
+    }
+
+    /* ==========================================================================
+       MIDNIGHT COUNTDOWN SECTION
+       ========================================================================== */
+    .midnight-card {
+      background: linear-gradient(145deg, #0d152a, #070B19);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 16px;
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #0B1120;
-      border: 1px solid #1E293B;
-      padding: 10px 14px;
-      border-radius: 10px;
+      gap: 12px;
     }
-    .ref-code {
-      font-size: 15px;
+
+    .midnight-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .midnight-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .midnight-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .midnight-timer {
+      font-size: 17px;
       font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: #38BDF8;
+      background: #0B1120;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
       letter-spacing: 1px;
-      color: #60A5FA;
     }
-    .copy-btn {
+
+    /* ==========================================================================
+       SECTION HEADERS WITH ACTION LINK
+       ========================================================================== */
+    .section-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-heading {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFF;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .section-link {
+      font-size: 12px;
+      color: #60A5FA;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .section-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ==========================================================================
+       ACTIVE INVESTMENTS LIST
+       ========================================================================== */
+    .investments-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .investment-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      transition: var(--transition);
+    }
+
+    .inv-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .inv-plan-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .inv-status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      text-transform: uppercase;
+    }
+
+    .inv-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+      padding: 10px;
+      background: #090E1F;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .inv-metric-col {
+      text-align: center;
+    }
+
+    .inv-metric-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+    }
+
+    .inv-metric-val {
+      font-size: 12px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .inv-progress-track {
+      width: 100%;
+      height: 5px;
+      background: #1E293B;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .inv-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-cyan));
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    /* Polished Empty States */
+    .empty-card {
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 30px 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .empty-card-icon {
+      font-size: 26px;
+      color: var(--text-muted);
+    }
+
+    .empty-card-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      max-width: 260px;
+    }
+
+    .empty-card-btn {
+      margin-top: 4px;
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #FFF;
+      background: var(--accent);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+    }
+
+    /* ==========================================================================
+       RECENT TRANSACTIONS LIST
+       ========================================================================== */
+    .tx-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .tx-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tx-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .tx-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .tx-icon-credit {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .tx-icon-debit {
+      background: rgba(239, 68, 68, 0.12);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .tx-meta {
+      min-width: 0;
+    }
+
+    .tx-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tx-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .tx-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .tx-amount {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .tx-amount.credit {
+      color: var(--success);
+    }
+
+    .tx-amount.debit {
+      color: var(--text-primary);
+    }
+
+    .tx-status {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: capitalize;
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       REFERRAL SUMMARY CARD
+       ========================================================================== */
+    .referral-summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 16px;
+      margin-bottom: 24px;
+    }
+
+    .ref-sum-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .ref-sum-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .ref-sum-link {
+      font-size: 12px;
+      color: #60A5FA;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .ref-code-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #090E1F;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      margin-bottom: 12px;
+    }
+
+    .ref-code-text {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #38BDF8;
+    }
+
+    .btn-copy-mini {
       background: var(--accent);
       color: #FFF;
       border: none;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-    }
-    .stat-card-title {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    .stat-card-val {
-      font-size: 18px;
+      font-size: 11px;
       font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-copy-mini:active {
+      transform: scale(0.95);
+    }
+
+    .ref-stats-pill {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-light);
+      padding-top: 10px;
+    }
+
+    .ref-stats-pill strong {
       color: #FFF;
     }
-    .nav-bar {
+
+    /* ==========================================================================
+       OFFICIAL NOVEXA BOTTOM NAVIGATION STANDARD
+       (Matches User Reference Standard Exactly)
+       ========================================================================== */
+    .novexa-bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      background: #0B1120;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
-      z-index: 100;
-      max-width: 480px;
-      margin: 0 auto;
+      z-index: 1000;
+      background: #FFFFFF; /* High-contrast white foundation from reference */
+      border-top: 1px solid #E2E8F0;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+      padding-bottom: env(safe-area-inset-bottom, 8px);
     }
-    .nav-item {
+
+    .nav-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      height: 64px;
+      padding: 0 4px;
+    }
+
+    /* Responsive Adaptation: Floating Dock on Desktop */
+    @media (min-width: 768px) {
+      .novexa-bottom-nav {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 20px;
+        width: 480px;
+        border-radius: 20px;
+        border: 1px solid #CBD5E1;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        padding-bottom: 0;
+      }
+      .nav-bar-inner {
+        height: 66px;
+      }
+    }
+
+    .nav-tab-item {
+      position: relative;
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      height: 100%;
       text-decoration: none;
-      color: var(--text-muted);
-      font-size: 11px;
-      font-weight: 500;
+      color: #64748B; /* Inactive slate tone */
+      transition: color 0.15s ease;
+      cursor: pointer;
+      user-select: none;
     }
-    .nav-item.active {
-      color: #60A5FA;
+
+    .nav-tab-icon {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-tab-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.15s ease, stroke 0.15s ease;
+    }
+
+    .nav-tab-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1px;
+      line-height: 1;
+    }
+
+    /* Active Horizontal Line Indicator (Reference Requirement) */
+    .nav-tab-indicator {
+      position: absolute;
+      bottom: 6px;
+      width: 22px;
+      height: 3px;
+      background: transparent;
+      border-radius: 3px;
+      transition: background-color 0.2s ease, width 0.2s ease;
+    }
+
+    /* Active State Styling */
+    .nav-tab-item.active {
+      color: #0F172A; /* Deep solid focus */
+    }
+
+    .nav-tab-item.active .nav-tab-icon svg {
+      stroke: #2563EB; /* Premium Royal Blue */
+      transform: translateY(-1px);
+    }
+
+    .nav-tab-item.active .nav-tab-label {
+      color: #0F172A;
       font-weight: 700;
+    }
+
+    .nav-tab-item.active .nav-tab-indicator {
+      background: #2563EB; /* Clean active underline */
+      width: 26px;
+    }
+
+    /* ==========================================================================
+       SKELETON / LOADING SHIMMER
+       ========================================================================== */
+    .skeleton {
+      background: linear-gradient(90deg, #1E293B 25%, #334155 50%, #1E293B 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--radius-sm);
+      color: transparent !important;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div>
-      <div class="brand-mini">NOVEXA</div>
-      <div class="user-greeting">Investor: <span id="user-display-name" class="user-name">Loading...</span></div>
-    </div>
-    <div class="header-actions">
-      <a href="/notifications.html" class="icon-btn">Alerts</a>
-      <button id="btn-logout" class="icon-btn">Exit</button>
+
+  <!-- Top App Bar -->
+  <header class="top-header">
+    <div class="app-container">
+      <div class="header-inner">
+        <a href="/dashboard.html" class="brand-group">
+          <div class="brand-icon">N</div>
+          <span class="brand-name">NOVEXA</span>
+        </a>
+
+        <div class="header-actions">
+          <a href="/notifications.html" class="icon-btn" aria-label="Notifications">
+            <svg viewBox="0 0 24 24">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span id="notif-count" class="notif-badge">0</span>
+          </a>
+
+          <a href="/profile.html" class="avatar-btn" id="header-avatar" aria-label="Profile">
+            --
+          </a>
+        </div>
+      </div>
     </div>
   </header>
 
-  <main class="content">
-    <div class="balance-card">
-      <div class="balance-label">Total Available Balance</div>
-      <div class="balance-val" id="wallet-balance">₦0.00</div>
-      <div class="quick-actions">
-        <a href="/deposit.html" class="btn-action">+ Deposit</a>
-        <a href="/withdraw.html" class="btn-action-alt">Withdraw</a>
+  <main class="app-container">
+    <!-- Welcome Greeting -->
+    <section class="welcome-area">
+      <div>
+        <div class="greeting-text" id="time-greeting">Welcome back,</div>
+        <div class="user-fullname" id="user-name">Investor</div>
       </div>
-    </div>
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        <span>Active</span>
+      </div>
+    </section>
 
-    <!-- Live Referral Card -->
-    <div class="ref-banner">
-      <div class="ref-header">
-        <span class="ref-title">Your Referral Code (15% / 3% / 1%)</span>
+    <!-- Main Balance Card -->
+    <section class="balance-card">
+      <div class="balance-top">
+        <span class="balance-title">Available Portfolio Balance</span>
+        <button class="btn-toggle-balance" id="btn-toggle-privacy" aria-label="Toggle balance privacy">
+          <svg id="eye-icon" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
       </div>
-      <div class="ref-box">
-        <span class="ref-code" id="my-ref-code">--------</span>
-        <button class="copy-btn" id="btn-copy-ref">Copy Link</button>
-      </div>
-    </div>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-card-title">Total Invested</div>
-        <div class="stat-card-val" id="total-invested">₦0.00</div>
+      <div class="balance-amount" id="balance-display">₦0.00</div>
+
+      <div class="balance-card-actions">
+        <a href="/deposit.html" class="btn-fund">
+          <span>+ Deposit</span>
+        </a>
+        <a href="/withdraw.html" class="btn-cashout">
+          <span>&uarr; Withdraw</span>
+        </a>
       </div>
-      <div class="stat-card">
-        <div class="stat-card-title">Total Earned</div>
-        <div class="stat-card-val" id="total-earned">₦0.00</div>
+    </section>
+
+    <!-- Quick Action Icons -->
+    <section class="quick-actions-bar">
+      <a href="/deposit.html" class="quick-action-item">
+        <div class="qa-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        <span class="qa-label">Deposit</span>
+      </a>
+
+      <a href="/withdraw.html" class="quick-action-item">
+        <div class="qa-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </div>
+        <span class="qa-label">Withdraw</span>
+      </a>
+
+      <a href="/plans.html" class="quick-action-item">
+        <div class="qa-icon-wrap">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        </div>
+        <span class="qa-label">Invest</span>
+      </a>
+
+      <a href="/transactions.html" class="quick-action-item">
+        <div class="qa-icon-wrap">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <span class="qa-label">Ledger</span>
+      </a>
+    </section>
+
+    <!-- Dual Earnings Snapshot -->
+    <section class="earnings-row">
+      <div class="earning-card">
+        <div class="earning-card-label">Today's Earnings</div>
+        <div class="earning-card-val highlight" id="today-earnings">₦0.00</div>
       </div>
-    </div>
+      <div class="earning-card">
+        <div class="earning-card-label">Total Earnings</div>
+        <div class="earning-card-val" id="total-earnings">₦0.00</div>
+      </div>
+    </section>
+
+    <!-- Midnight Processing Countdown -->
+    <section class="midnight-card">
+      <div class="midnight-info">
+        <span class="midnight-badge">Automated Daily Settlement</span>
+        <span class="midnight-title">Next Yield Processing (00:00)</span>
+      </div>
+      <div class="midnight-timer" id="midnight-countdown">--:--:--</div>
+    </section>
+
+    <!-- Active Investments Section -->
+    <section>
+      <div class="section-bar">
+        <span class="section-heading">Active Portfolios</span>
+        <a href="/plans.html" class="section-link">+ New Plan</a>
+      </div>
+
+      <div id="investments-container" class="investments-stack">
+        <!-- Rendered via JS from Supabase -->
+      </div>
+    </section>
+
+    <!-- Recent Transactions Section -->
+    <section>
+      <div class="section-bar">
+        <span class="section-heading">Recent Transactions</span>
+        <a href="/transactions.html" class="section-link">View All</a>
+      </div>
+
+      <div id="transactions-container" class="tx-stack">
+        <!-- Rendered via JS from Supabase -->
+      </div>
+    </section>
+
+    <!-- Referral Summary Card -->
+    <section class="referral-summary-card">
+      <div class="ref-sum-top">
+        <span class="ref-sum-title">Referral Partner Program</span>
+        <a href="/referrals.html" class="ref-sum-link">View Network &rarr;</a>
+      </div>
+
+      <div class="ref-code-box">
+        <span class="ref-code-text" id="display-ref-code">NOVEXA------</span>
+        <button class="btn-copy-mini" id="btn-copy-code">Copy Link</button>
+      </div>
+
+      <div class="ref-stats-pill">
+        <span>Accumulated Partner Commissions:</span>
+        <strong id="ref-earned-val">₦0.00</strong>
+      </div>
+    </section>
   </main>
 
-  <nav class="nav-bar">
-    <a href="/dashboard.html" class="nav-item active">Dashboard</a>
-    <a href="/plans.html" class="nav-item">Plans</a>
-    <a href="/investments.html" class="nav-item">Investments</a>
-    <a href="/referrals.html" class="nav-item">Referrals</a>
-    <a href="/profile.html" class="nav-item">Profile</a>
+  <!-- ==========================================================================
+       OFFICIAL NOVEXA AUTHENTICATED BOTTOM NAVIGATION
+       ========================================================================== -->
+  <nav class="novexa-bottom-nav" aria-label="Main Navigation">
+    <div class="nav-bar-inner">
+      <!-- 1. Home (Active on dashboard.html) -->
+      <a href="/dashboard.html" class="nav-tab-item active" aria-label="Home Dashboard">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Home</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <!-- 2. Plans -->
+      <a href="/plans.html" class="nav-tab-item" aria-label="Investment Plans">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Plans</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <!-- 3. Wallet -->
+      <a href="/wallet.html" class="nav-tab-item" aria-label="Wallet & Balances">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+            <circle cx="17" cy="15" r="1"></circle>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Wallet</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <!-- 4. Referrals -->
+      <a href="/referrals.html" class="nav-tab-item" aria-label="Referrals & Team">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Referrals</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <!-- 5. Profile -->
+      <a href="/profile.html" class="nav-tab-item" aria-label="Account Profile">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <span class="nav-tab-label">Profile</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+    </div>
   </nav>
 
+  <!-- ==========================================================================
+       DASHBOARD CONTROLLER SCRIPT
+       ========================================================================== -->
   <script type="module">
-    import { requireAuth, logoutUser, formatNaira, showToast } from '/supabase-client.js';
+    import { supabase, requireAuth, formatNaira, showToast } from '/supabase-client.js';
 
-    let userProfile = null;
+    let currentBalance = 0;
+    let isBalanceHidden = sessionStorage.getItem('nvx_hide_balance') === 'true';
 
-    async function initDashboard() {
-      const authResult = await requireAuth();
-      if (!authResult) return;
-
-      userProfile = authResult.profile;
-
-      if (!userProfile) {
-        showToast('Initializing profile...', 'info');
-        return;
-      }
-
-      document.getElementById('user-display-name').textContent = userProfile.full_name || 'Investor';
-      document.getElementById('wallet-balance').textContent = formatNaira(userProfile.wallet_balance);
-      document.getElementById('total-invested').textContent = formatNaira(userProfile.total_invested);
-      document.getElementById('total-earned').textContent = formatNaira(userProfile.total_earned);
-      document.getElementById('my-ref-code').textContent = userProfile.referral_code;
+    // 1. Time-of-day greeting
+    function setGreeting(name) {
+      const hour = new Date().getHours();
+      let phrase = 'Good evening,';
+      if (hour < 12) phrase = 'Good morning,';
+      else if (hour < 17) phrase = 'Good afternoon,';
+      
+      document.getElementById('time-greeting').textContent = phrase;
+      document.getElementById('user-name').textContent = name || 'Investor';
     }
 
-    document.getElementById('btn-copy-ref').addEventListener('click', () => {
-      if (!userProfile || !userProfile.referral_code) return;
-      const refUrl = `${window.location.origin}/register.html?ref=${userProfile.referral_code}`;
-      navigator.clipboard.writeText(refUrl).then(() => {
-        showToast('Referral link copied to clipboard!', 'success');
-      }).catch(() => {
-        showToast(`Code: ${userProfile.referral_code}`, 'info');
+    // 2. Balance Privacy Toggle
+    const balanceDisplay = document.getElementById('balance-display');
+    const eyeBtn = document.getElementById('btn-toggle-privacy');
+
+    function updateBalanceUI() {
+      if (isBalanceHidden) {
+        balanceDisplay.textContent = '₦••••••••';
+      } else {
+        balanceDisplay.textContent = formatNaira(currentBalance);
+      }
+    }
+
+    eyeBtn.addEventListener('click', () => {
+      isBalanceHidden = !isBalanceHidden;
+      sessionStorage.setItem('nvx_hide_balance', isBalanceHidden);
+      updateBalanceUI();
+    });
+
+    // 3. Midnight Countdown (Live in Browser)
+    function startMidnightCountdown() {
+      const timerEl = document.getElementById('midnight-countdown');
+      
+      function updateTimer() {
+        const now = new Date();
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+        const diffMs = tomorrow - now;
+
+        if (diffMs <= 0) {
+          timerEl.textContent = '00h 00m 00s';
+          setTimeout(() => location.reload(), 1500);
+          return;
+        }
+
+        const hrs = Math.floor(diffMs / (1000 * 60 * 60));
+        const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        timerEl.textContent = `${String(hrs).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
+
+    // 4. Load Dashboard Data from Supabase
+    async function loadDashboard() {
+      const auth = await requireAuth();
+      if (!auth) return;
+
+      const { user, profile } = auth;
+
+      // Header initials and greeting
+      const fullName = profile.full_name || 'NOVEXA Investor';
+      setGreeting(fullName);
+      
+      const initials = fullName
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(w => w[0].toUpperCase())
+        .join('') || 'NV';
+      document.getElementById('header-avatar').textContent = initials;
+
+      // Balance & Total Earned
+      currentBalance = Number(profile.wallet_balance) || 0;
+      updateBalanceUI();
+      document.getElementById('total-earnings').textContent = formatNaira(profile.total_earned || 0);
+
+      // Referral Code & Link Setup
+      const refCode = profile.referral_code || 'NOVEXA';
+      document.getElementById('display-ref-code').textContent = refCode;
+      
+      document.getElementById('btn-copy-code').addEventListener('click', () => {
+        const refUrl = `${window.location.origin}/register.html?ref=${refCode}`;
+        navigator.clipboard.writeText(refUrl).then(() => {
+          showToast('Referral link copied to clipboard!', 'success');
+        }).catch(() => {
+          showToast(`Code: ${refCode}`, 'info');
+        });
       });
-    });
 
-    document.getElementById('btn-logout').addEventListener('click', async () => {
-      await logoutUser();
-    });
+      // Query Unread Notifications Count
+      try {
+        const { count: unreadCount } = await supabase
+          .from('notifications')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('is_read', false);
 
-    initDashboard();
+        if (unreadCount && unreadCount > 0) {
+          const badge = document.getElementById('notif-count');
+          badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+          badge.style.display = 'flex';
+        }
+      } catch (err) {
+        console.warn('Notification count check skipped:', err.message);
+      }
+
+      // Query Today's Earnings
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const { data: todayEarns } = await supabase
+          .from('earnings')
+          .select('amount')
+          .eq('user_id', user.id)
+          .eq('earning_date', todayStr);
+
+        const todayTotal = (todayEarns || []).reduce((acc, row) => acc + Number(row.amount), 0);
+        document.getElementById('today-earnings').textContent = formatNaira(todayTotal);
+      } catch (err) {
+        console.warn('Today earnings note:', err.message);
+      }
+
+      // Query Referral Commissions Total
+      try {
+        const { data: refComms } = await supabase
+          .from('referral_commissions')
+          .select('amount')
+          .eq('sponsor_id', user.id);
+
+        const refTotal = (refComms || []).reduce((acc, row) => acc + Number(row.amount), 0);
+        document.getElementById('ref-earned-val').textContent = formatNaira(refTotal);
+      } catch (err) {
+        console.warn('Ref commission note:', err.message);
+      }
+
+      // Query Active Investments (joined with plans)
+      loadActiveInvestments(user.id);
+
+      // Query Recent Transactions
+      loadRecentTransactions(user.id);
+    }
+
+    async function loadActiveInvestments(userId) {
+      const container = document.getElementById('investments-container');
+      try {
+        const { data: investments, error } = await supabase
+          .from('investments')
+          .select('*, plans(name)')
+          .eq('user_id', userId)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false });
+
+        if (error || !investments || investments.length === 0) {
+          container.innerHTML = `
+            <div class="empty-card">
+              <div class="empty-card-icon">📂</div>
+              <div class="empty-card-text">You have no active investments accumulating midnight yields.</div>
+              <a href="/plans.html" class="empty-card-btn">Explore Plans</a>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = '';
+        investments.forEach(inv => {
+          const planName = inv.plans?.name || 'Investment Plan';
+          const totalDays = Number(inv.duration_days) || 1;
+          const accruedDays = Number(inv.days_accrued) || 0;
+          const remainingDays = Math.max(0, totalDays - accruedDays);
+          const progressPct = Math.min(100, Math.round((accruedDays / totalDays) * 100));
+
+          const card = document.createElement('div');
+          card.className = 'investment-card';
+          card.innerHTML = `
+            <div class="inv-top-row">
+              <span class="inv-plan-name">${planName}</span>
+              <span class="inv-status">Active</span>
+            </div>
+
+            <div class="inv-metrics-grid">
+              <div class="inv-metric-col">
+                <div class="inv-metric-label">Invested</div>
+                <div class="inv-metric-val">${formatNaira(inv.amount)}</div>
+              </div>
+              <div class="inv-metric-col">
+                <div class="inv-metric-label">Daily ROI</div>
+                <div class="inv-metric-val" style="color:var(--accent-cyan);">${formatNaira(inv.daily_income)}</div>
+              </div>
+              <div class="inv-metric-col">
+                <div class="inv-metric-label">Remaining</div>
+                <div class="inv-metric-val">${remainingDays} Days</div>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:6px;">
+              <span>Progress (${accruedDays}/${totalDays} days)</span>
+              <span>${progressPct}%</span>
+            </div>
+            <div class="inv-progress-track">
+              <div class="inv-progress-fill" style="width: ${progressPct}%;"></div>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        container.innerHTML = `<div class="empty-card"><div class="empty-card-text">Unable to load investments.</div></div>`;
+      }
+    }
+
+    async function loadRecentTransactions(userId) {
+      const container = document.getElementById('transactions-container');
+      try {
+        const { data: txs, error } = await supabase
+          .from('transactions')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(5);
+
+        if (error || !txs || txs.length === 0) {
+          container.innerHTML = `
+            <div class="empty-card">
+              <div class="empty-card-icon">📜</div>
+              <div class="empty-card-text">No transaction ledger entries recorded yet.</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = '';
+        txs.forEach(tx => {
+          const isCredit = ['deposit', 'daily_income', 'welcome_bonus', 'referral_commission', 'gift_code_redemption'].includes(tx.type);
+          const iconSign = isCredit ? '+' : '-';
+          const iconClass = isCredit ? 'tx-icon-credit' : 'tx-icon-debit';
+          const amtClass = isCredit ? 'credit' : 'debit';
+          
+          let title = tx.description || tx.type.replace(/_/g, ' ');
+          if (tx.type === 'welcome_bonus') title = 'Welcome Registration Bonus';
+          if (tx.type === 'daily_income') title = 'Midnight Daily Yield';
+          if (tx.type === 'deposit') title = 'Wallet Deposit';
+          if (tx.type === 'withdrawal') title = 'Wallet Cashout';
+
+          const formattedDate = new Date(tx.created_at).toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+
+          const item = document.createElement('div');
+          item.className = 'tx-item';
+          item.innerHTML = `
+            <div class="tx-left">
+              <div class="tx-icon-wrap ${iconClass}">${iconSign}</div>
+              <div class="tx-meta">
+                <div class="tx-name">${title}</div>
+                <div class="tx-date">${formattedDate}</div>
+              </div>
+            </div>
+            <div class="tx-right">
+              <div class="tx-amount ${amtClass}">${iconSign}${formatNaira(tx.amount)}</div>
+              <div class="tx-status">${tx.status}</div>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      } catch (err) {
+        container.innerHTML = `<div class="empty-card"><div class="empty-card-text">Unable to load transactions.</div></div>`;
+      }
+    }
+
+    // Initialize
+    loadDashboard();
+    startMidnightCountdown();
   </script>
 </body>
 </html>
