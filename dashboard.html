@@ -29,48 +29,60 @@
       padding-bottom: 84px;
     }
     .header {
-      padding: 18px 20px;
+      padding: 16px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: #0B1120;
       border-bottom: 1px solid var(--border);
     }
+    .brand-mini {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      background: linear-gradient(135deg, #FFFFFF, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
     .user-greeting {
-      font-size: 14px;
+      font-size: 12px;
       color: var(--text-muted);
     }
     .user-name {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: #FFF;
     }
     .header-actions {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       align-items: center;
     }
     .icon-btn {
       background: #1E293B;
       color: #FFF;
       border: 1px solid #334155;
-      padding: 8px 12px;
+      padding: 7px 12px;
       border-radius: 8px;
       text-decoration: none;
       font-size: 12px;
       cursor: pointer;
+      font-weight: 600;
+    }
+    .icon-btn:hover {
+      background: #334155;
     }
     .content {
       max-width: 480px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 18px;
     }
     .balance-card {
       background: linear-gradient(135deg, #1E3A8A, #0F172A);
       border: 1px solid #3B82F6;
       border-radius: 18px;
       padding: 22px;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .balance-label {
@@ -112,11 +124,57 @@
       text-decoration: none;
       display: block;
     }
+    .ref-banner {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ref-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ref-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .ref-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0B1120;
+      border: 1px solid #1E293B;
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+    .ref-code {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #60A5FA;
+    }
+    .copy-btn {
+      background: var(--accent);
+      color: #FFF;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .stat-card {
       background: var(--bg-card);
@@ -143,7 +201,7 @@
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-around;
-      padding: 10px 0;
+      padding: 12px 0;
       z-index: 100;
       max-width: 480px;
       margin: 0 auto;
@@ -167,8 +225,8 @@
 <body>
   <header class="header">
     <div>
-      <div class="user-greeting">Investor Portal</div>
-      <div class="user-name" id="user-display-name">Loading...</div>
+      <div class="brand-mini">NOVEXA</div>
+      <div class="user-greeting">Investor: <span id="user-display-name" class="user-name">Loading...</span></div>
     </div>
     <div class="header-actions">
       <a href="/notifications.html" class="icon-btn">Alerts</a>
@@ -183,6 +241,17 @@
       <div class="quick-actions">
         <a href="/deposit.html" class="btn-action">+ Deposit</a>
         <a href="/withdraw.html" class="btn-action-alt">Withdraw</a>
+      </div>
+    </div>
+
+    <!-- Live Referral Card -->
+    <div class="ref-banner">
+      <div class="ref-header">
+        <span class="ref-title">Your Referral Code (15% / 3% / 1%)</span>
+      </div>
+      <div class="ref-box">
+        <span class="ref-code" id="my-ref-code">--------</span>
+        <button class="copy-btn" id="btn-copy-ref">Copy Link</button>
       </div>
     </div>
 
@@ -207,35 +276,40 @@
   </nav>
 
   <script type="module">
-    import { supabase, formatNaira, showToast } from '/supabase-client.js';
+    import { requireAuth, logoutUser, formatNaira, showToast } from '/supabase-client.js';
+
+    let userProfile = null;
 
     async function initDashboard() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        window.location.replace('/login.html');
+      const authResult = await requireAuth();
+      if (!authResult) return;
+
+      userProfile = authResult.profile;
+
+      if (!userProfile) {
+        showToast('Initializing profile...', 'info');
         return;
       }
 
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-
-      if (error || !profile) {
-        showToast('Unable to load profile data', 'error');
-        return;
-      }
-
-      document.getElementById('user-display-name').textContent = profile.full_name || 'Investor';
-      document.getElementById('wallet-balance').textContent = formatNaira(profile.wallet_balance);
-      document.getElementById('total-invested').textContent = formatNaira(profile.total_invested);
-      document.getElementById('total-earned').textContent = formatNaira(profile.total_earned);
+      document.getElementById('user-display-name').textContent = userProfile.full_name || 'Investor';
+      document.getElementById('wallet-balance').textContent = formatNaira(userProfile.wallet_balance);
+      document.getElementById('total-invested').textContent = formatNaira(userProfile.total_invested);
+      document.getElementById('total-earned').textContent = formatNaira(userProfile.total_earned);
+      document.getElementById('my-ref-code').textContent = userProfile.referral_code;
     }
 
+    document.getElementById('btn-copy-ref').addEventListener('click', () => {
+      if (!userProfile || !userProfile.referral_code) return;
+      const refUrl = `${window.location.origin}/register.html?ref=${userProfile.referral_code}`;
+      navigator.clipboard.writeText(refUrl).then(() => {
+        showToast('Referral link copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast(`Code: ${userProfile.referral_code}`, 'info');
+      });
+    });
+
     document.getElementById('btn-logout').addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.replace('/login.html');
+      await logoutUser();
     });
 
     initDashboard();
