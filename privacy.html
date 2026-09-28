@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA — Privacy Policy</title>
+  <style>
+    :root {
+      --bg-dark: #070B19;
+      --bg-card: #0F172A;
+      --bg-elevated: #131E3A;
+      --bg-surface: #0B1120;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-cyan: #38BDF8;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .public-container {
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 20px 60px 20px;
+    }
+
+    .public-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(7, 11, 25, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      margin-bottom: 28px;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #FFF 30%, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 10px;
+    }
+
+    .btn-nav-link:hover {
+      color: #FFF;
+    }
+
+    .policy-title-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 26px 20px;
+      margin-bottom: 28px;
+    }
+
+    .policy-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      margin-bottom: 6px;
+    }
+
+    .policy-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 6px;
+    }
+
+    .policy-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .policy-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px;
+      margin-bottom: 16px;
+    }
+
+    .section-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .section-heading {
+      font-size: 16px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 10px;
+    }
+
+    .policy-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .policy-text p {
+      margin-bottom: 10px;
+    }
+
+    .policy-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    .public-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: #FFF;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="public-header">
+    <div class="public-container" style="padding-bottom:0;">
+      <div class="header-inner">
+        <a href="/index.html" class="brand-group">
+          <div class="brand-icon">N</div>
+          <span class="brand-name">NOVEXA</span>
+        </a>
+
+        <div class="header-links">
+          <a href="/terms.html" class="btn-nav-link">Terms</a>
+          <a href="/login.html" class="btn-nav-link">Sign In</a>
+          <a href="/register.html" class="btn-nav-link" style="color:#60A5FA;">Open Account</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="public-container">
+    <div class="policy-title-card">
+      <div class="policy-badge">User Data Protection Protocol</div>
+      <h1 class="policy-title">Privacy Policy</h1>
+      <div class="policy-meta">Last Updated: Current Operating Period &bull; Standard Version 1.0</div>
+    </div>
+
+    <!-- Section 1 -->
+    <article class="policy-section">
+      <div class="section-num">01. Overview</div>
+      <h2 class="section-heading">Introduction</h2>
+      <div class="policy-text">
+        <p>NOVEXA ("we", "us", or "our") respects the privacy of our investors and users ("you"). This Privacy Policy details the types of personal and operational information we collect through our manual investment web application, how that information is safeguarded, and how you can exercise your privacy rights.</p>
+      </div>
+    </article>
+
+    <!-- Section 2 -->
+    <article class="policy-section">
+      <div class="section-num">02. Data Scope</div>
+      <h2 class="section-heading">Information We Collect</h2>
+      <div class="policy-text">
+        <p>We gather only the data required to securely maintain your account, verify manual bank deposits, execute manual cashouts, and maintain the immutable transactions ledger.</p>
+      </div>
+    </article>
+
+    <!-- Section 3 -->
+    <article class="policy-section">
+      <div class="section-num">03. User Profiles</div>
+      <h2 class="section-heading">Account Information</h2>
+      <div class="policy-text">
+        <p>When you register for an account, we collect your full legal name, email address, telephone contact number, and referral association. Passwords are cryptographically salted and hashed through Supabase Authentication; plaintext passwords are never stored or accessible by personnel.</p>
+      </div>
+    </article>
+
+    <!-- Section 4 -->
+    <article class="policy-section">
+      <div class="section-num">04. Ledger Records</div>
+      <h2 class="section-heading">Transaction Information</h2>
+      <div class="policy-text">
+        <p>Each transaction record—including manual deposit requests, investment activations, daily midnight yield accruals, referral commission distributions, and withdrawal requests—is stored as an immutable audit record with timestamps, before/after balances, and unique reference codes.</p>
+      </div>
+    </article>
+
+    <!-- Section 5 -->
+    <article class="policy-section">
+      <div class="section-num">05. Telemetry</div>
+      <h2 class="section-heading">Device and Technical Information</h2>
+      <div class="policy-text">
+        <p>For session security and fraud prevention, we automatically capture standard telemetry including browser type, operating system, approximate geographic IP location, and token refresh activity during login sessions.</p>
+      </div>
+    </article>
+
+    <!-- Section 6 -->
+    <article class="policy-section">
+      <div class="section-num">06. Operations</div>
+      <h2 class="section-heading">How Information Is Used</h2>
+      <div class="policy-text">
+        <p>Your information is utilized solely to operate platform infrastructure: managing user balances, executing idempotent midnight interest calculations, delivering account notifications, verifying manual deposit receipts, and resolving customer support tickets.</p>
+      </div>
+    </article>
+
+    <!-- Section 7 -->
+    <article class="policy-section">
+      <div class="section-num">07. Authentication</div>
+      <h2 class="section-heading">Account Security</h2>
+      <div class="policy-text">
+        <p>All authenticated sessions are governed by JSON Web Tokens (JWT) verified server-side through Row Level Security (RLS) policies. Users are strictly isolated so that no investor can access or modify another user's financial profile.</p>
+      </div>
+    </article>
+
+    <!-- Section 8 -->
+    <article class="policy-section">
+      <div class="section-num">08. Inflow Verification</div>
+      <h2 class="section-heading">Payment and Deposit Information</h2>
+      <div class="policy-text">
+        <p>When you initiate a manual bank transfer deposit, you supply the depositor name, bank transaction reference, and optional payment proof screenshot. These records are reviewed strictly by administrative personnel to confirm inflow before wallet balances are credited.</p>
+      </div>
+    </article>
+
+    <!-- Section 9 -->
+    <article class="policy-section">
+      <div class="section-num">09. Outflow Protocol</div>
+      <h2 class="section-heading">Withdrawal Information</h2>
+      <div class="policy-text">
+        <p>Withdrawal requests require your beneficiary bank name, 10-digit account number, and account title. This information is utilized exclusively by compliance officers to dispatch manual bank transfers. In general dashboard displays, bank account numbers are partially masked for privacy.</p>
+      </div>
+    </article>
+
+    <!-- Section 10 -->
+    <article class="policy-section">
+      <div class="section-num">10. Partner Hierarchy</div>
+      <h2 class="section-heading">Referral Information</h2>
+      <div class="policy-text">
+        <p>Our 3-tier partner referral structure tracks relationships at Level 1, Level 2, and Level 3. In the referral dashboard, downline members' identities are displayed using masked formats (e.g. Chukwuma A.) without exposing their emails, phone numbers, or wallet balances.</p>
+      </div>
+    </article>
+
+    <!-- Section 11 -->
+    <article class="policy-section">
+      <div class="section-num">11. Storage</div>
+      <h2 class="section-heading">Cookies and Local Storage</h2>
+      <div class="policy-text">
+        <p>We do not use invasive advertising tracking cookies. We utilize browser LocalStorage exclusively to maintain your authenticated session token and preserve UI preferences such as balance privacy toggles across browser tabs.</p>
+      </div>
+    </article>
+
+    <!-- Section 12 -->
+    <article class="policy-section">
+      <div class="section-num">12. Messaging</div>
+      <h2 class="section-heading">Communications</h2>
+      <div class="policy-text">
+        <p>We send account notifications regarding deposit approvals, cashout dispatch updates, daily yield settlements, and system maintenance directly to your dashboard alert center.</p>
+      </div>
+    </article>
+
+    <!-- Section 13 -->
+    <article class="policy-section">
+      <div class="section-num">13. Lifecycle</div>
+      <h2 class="section-heading">Data Retention</h2>
+      <div class="policy-text">
+        <p>Financial ledger records, deposit submissions, withdrawal receipts, and cron logs are preserved indefinitely to maintain mathematical solvency audits and satisfy financial integrity requirements.</p>
+      </div>
+    </article>
+
+    <!-- Section 14 -->
+    <article class="policy-section">
+      <div class="section-num">14. Zero Commercialization</div>
+      <h2 class="section-heading">Data Sharing</h2>
+      <div class="policy-text">
+        <p>We do not sell, rent, monetize, or trade your personal or financial data to third-party advertisers or commercial data brokers under any circumstances.</p>
+      </div>
+    </article>
+
+    <!-- Section 15 -->
+    <article class="policy-section">
+      <div class="section-num">15. Infrastructure</div>
+      <h2 class="section-heading">Third-Party Services</h2>
+      <div class="policy-text">
+        <p>Our application operates using enterprise cloud infrastructure providers including Supabase (PostgreSQL hosting, storage, and authentication) and Vercel (frontend deployment and scheduled edge triggers).</p>
+      </div>
+    </article>
+
+    <!-- Section 16 -->
+    <article class="policy-section">
+      <div class="section-num">16. Control</div>
+      <h2 class="section-heading">User Rights</h2>
+      <div class="policy-text">
+        <p>You possess the right to inspect your personal profile data, request corrections to your contact phone number or legal name via the profile editor, and request account deactivation through the Support Desk.</p>
+      </div>
+    </article>
+
+    <!-- Section 17 -->
+    <article class="policy-section">
+      <div class="section-num">17. Technical Protections</div>
+      <h2 class="section-heading">Security Measures</h2>
+      <div class="policy-text">
+        <p>All network traffic is encrypted via Transport Layer Security (TLS 1.3). Database tables are guarded by PostgreSQL Row Level Security (RLS), and balance adjustments are restricted to atomic server-side stored procedures.</p>
+      </div>
+    </article>
+
+    <!-- Section 18 -->
+    <article class="policy-section">
+      <div class="section-num">18. Age Compliance</div>
+      <h2 class="section-heading">Children's Privacy</h2>
+      <div class="policy-text">
+        <p>NOVEXA is strictly engineered for individuals who are at least 18 years of age. We do not knowingly enroll or process data belonging to minors.</p>
+      </div>
+    </article>
+
+    <!-- Section 19 -->
+    <article class="policy-section">
+      <div class="section-num">19. Revisions</div>
+      <h2 class="section-heading">Changes to This Privacy Policy</h2>
+      <div class="policy-text">
+        <p>We reserve the right to revise this policy to reflect platform upgrades. Any revisions will be published immediately on this page with an updated operational date.</p>
+      </div>
+    </article>
+
+    <!-- Section 20 -->
+    <article class="policy-section">
+      <div class="section-num">20. Support</div>
+      <h2 class="section-heading">Contact and Inquiries</h2>
+      <div class="policy-text">
+        <p>For questions or privacy inquiries, contact our compliance team through the Support Center on your dashboard or via our official email desk at support@novexa.com.</p>
+      </div>
+    </article>
+
+    <footer class="public-footer">
+      <div class="footer-links">
+        <a href="/index.html">Home</a>
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/support.html">Support</a>
+        <a href="/login.html">Sign In</a>
+        <a href="/register.html">Open Account</a>
+      </div>
+      <div>&copy; <span id="year"></span> NOVEXA. All rights reserved.</div>
+    </footer>
+  </main>
+
+  <script type="module">
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
