@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA — Terms of Service & Operating Protocol</title>
+  <style>
+    :root {
+      --bg-dark: #070B19;
+      --bg-card: #0F172A;
+      --bg-elevated: #131E3A;
+      --bg-surface: #0B1120;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-cyan: #38BDF8;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .public-container {
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 20px 60px 20px;
+    }
+
+    .public-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(7, 11, 25, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      margin-bottom: 28px;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #FFF 30%, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 10px;
+    }
+
+    .btn-nav-link:hover {
+      color: #FFF;
+    }
+
+    .legal-title-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 26px 20px;
+      margin-bottom: 28px;
+    }
+
+    .legal-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      margin-bottom: 6px;
+    }
+
+    .legal-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 6px;
+    }
+
+    .legal-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .terms-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px 20px;
+      margin-bottom: 18px;
+    }
+
+    .section-num {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .section-heading {
+      font-size: 17px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 10px;
+    }
+
+    .terms-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .public-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      color: #FFF;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="public-header">
+    <div class="public-container" style="padding-bottom:0;">
+      <div class="header-inner">
+        <a href="/index.html" class="brand-group">
+          <div class="brand-icon">N</div>
+          <span class="brand-name">NOVEXA</span>
+        </a>
+
+        <div class="header-links">
+          <a href="/login.html" class="btn-nav-link">Sign In</a>
+          <a href="/register.html" class="btn-nav-link" style="color:#60A5FA;">Open Account</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="public-container">
+    <div class="legal-title-card">
+      <div class="legal-badge">Official Operating Protocol</div>
+      <h1 class="legal-title">Terms of Service</h1>
+      <div class="legal-meta">Governing User Agreement &bull; Effective: Current Calendar Period &bull; System Version 1.0</div>
+    </div>
+
+    <!-- 1. Introduction -->
+    <article class="terms-section">
+      <div class="section-num">01. Protocol Scope</div>
+      <h2 class="section-heading">Introduction & Acceptance</h2>
+      <p class="terms-text">
+        These Terms of Service constitute a legally binding agreement between you ("User" or "Investor") and NOVEXA. By accessing, registering, depositing funds, or activating investment plans on the platform, you represent that you have read, comprehended, and agreed to all conditions stated herein.
+      </p>
+    </article>
+
+    <!-- 2. Eligibility -->
+    <article class="terms-section">
+      <div class="section-num">02. Compliance</div>
+      <h2 class="section-heading">User Eligibility & Identity Verification</h2>
+      <p class="terms-text">
+        Participation is restricted to individuals of legal age (at least 18 years old) with valid commercial banking capabilities. Users must provide authentic personal details including full legal names, verifiable email addresses, and phone numbers during enrollment.
+      </p>
+    </article>
+
+    <!-- 3. Account Maintenance -->
+    <article class="terms-section">
+      <div class="section-num">03. Credentials</div>
+      <h2 class="section-heading">Account Security & Self-Responsibility</h2>
+      <p class="terms-text">
+        You are solely responsible for preserving the confidentiality of your authentication credentials. NOVEXA utilizes cryptographic token sessions powered by Supabase Auth; any action executed under your authenticated session is deemed authorized by you.
+      </p>
+    </article>
+
+    <!-- 4. Investment Plans -->
+    <article class="terms-section">
+      <div class="section-num">04. Capital Terms</div>
+      <h2 class="section-heading">Investment Plans & Yield Accrual</h2>
+      <p class="terms-text">
+        NOVEXA offers manually reviewed capital investment plans. Each plan dictates a defined duration, minimum and maximum allocation bounds, and a configured daily percentage return. All rates are governed strictly by database configuration and are never guaranteed beyond the contract parameters.
+      </p>
+    </article>
+
+    <!-- 5. Daily Processing -->
+    <article class="terms-section">
+      <div class="section-num">05. Settlement Cycle</div>
+      <h2 class="section-heading">Midnight (00:00) Daily Income Processing</h2>
+      <p class="terms-text">
+        Eligible active investments accrue their configured daily return once every 24 hours at precisely 00:00 midnight local platform time. Accruals execute via atomic, idempotent server-side procedures with full ledger audit logging to preclude duplicate credits.
+      </p>
+    </article>
+
+    <!-- 6. Manual Deposits -->
+    <article class="terms-section">
+      <div class="section-num">06. Inflow Protocol</div>
+      <h2 class="section-heading">Manual Bank Transfers & Review Pipeline</h2>
+      <p class="terms-text">
+        Wallet funding is conducted exclusively via manual bank transfers to the verified corporate accounts specified in the authenticated portal. Submitting a deposit request does not automatically increment your balance. Balances are credited only after administrative confirmation of the transaction reference.
+      </p>
+    </article>
+
+    <!-- 7. Manual Withdrawals -->
+    <article class="terms-section">
+      <div class="section-num">07. Outflow Protocol</div>
+      <h2 class="section-heading">Cashouts & Solvency Controls</h2>
+      <p class="terms-text">
+        Withdrawals require administrative audit and manual banking dispatch. Upon submission, requested funds are deducted and placed in pending reserve to prevent double-spending. Minimum withdrawal thresholds and any applicable network charges configured in platform settings apply.
+      </p>
+    </article>
+
+    <!-- 8. Referral Program -->
+    <article class="terms-section">
+      <div class="section-num">08. Partner Rewards</div>
+      <h2 class="section-heading">3-Tier Referral Commissions</h2>
+      <p class="terms-text">
+        NOVEXA implements a 3-tier commission hierarchy: Level 1 (15%), Level 2 (3%), and Level 3 (1%). Commissions trigger exclusively upon qualifying capital plan activations. Self-referrals and circular referral trees are prohibited and blocked by database constraints.
+      </p>
+    </article>
+
+    <!-- 9. Gift Codes -->
+    <article class="terms-section">
+      <div class="section-num">09. Promotions</div>
+      <h2 class="section-heading">Promotional Gift Vouchers</h2>
+      <p class="terms-text">
+        Official gift codes provide promotional wallet credits. Each code is constrained by maximum redemptions, single-use per user verification, and optional expiration dates. System attempts to manipulate redemption limits will result in immediate disqualification.
+      </p>
+    </article>
+
+    <!-- 10. Ledger & Liability -->
+    <article class="terms-section">
+      <div class="section-num">10. Governance</div>
+      <h2 class="section-heading">Ledger Immutability & Limitation of Liability</h2>
+      <p class="terms-text">
+        Every credit and debit generates an immutable reference record in the transactions ledger. NOVEXA disclaims liability for external banking delays, network disruptions, or erroneous recipient bank information supplied during withdrawal submissions.
+      </p>
+    </article>
+
+    <footer class="public-footer">
+      <div class="footer-links">
+        <a href="/index.html">Home</a>
+        <a href="/plans.html">Plans</a>
+        <a href="/support.html">Support</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/login.html">Sign In</a>
+      </div>
+      <div>&copy; <span id="year"></span> NOVEXA Platform. All rights reserved.</div>
+    </footer>
+  </main>
+
+  <script type="module">
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
