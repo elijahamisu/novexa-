@@ -27,11 +27,13 @@ export default defineConfig({
         profile: resolve(__dirname, 'profile.html'),
         support: resolve(__dirname, 'support.html'),
         terms: resolve(__dirname, 'terms.html'),
-       // privacy: resolve(__dirname, 'privacy.html'),
+        privacy: resolve(__dirname, 'privacy.html'),
 
         // Admin Management Suite
-        //adminLogin: resolve(__dirname, 'admin/login.html'),
-        //adminIndex: resolve(__dirname, 'admin/index.html'),
+        //
+        
+        adminLogin: resolve(__dirname, 'admin/login.html'),
+        adminIndex: resolve(__dirname, 'admin/index.html'),
        // adminUsers: resolve(__dirname, 'admin/users.html'),
         //adminUserDetails: resolve(__dirname, 'admin/user-details.html'),
         //adminPlans: resolve(__dirname, 'admin/plans.html'),
