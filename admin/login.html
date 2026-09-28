@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA — Administration Portal Access</title>
+  <style>
+    :root {
+      --bg-dark: #050814;
+      --bg-card: #0A0F24;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-glow: rgba(37, 99, 235, 0.35);
+      --accent-cyan: #38BDF8;
+      --gold: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --border-focus: #3B82F6;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .admin-wrapper {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .admin-brand-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 24px;
+      color: #FFF;
+      margin: 0 auto 12px auto;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-cyan);
+    }
+
+    .login-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius-xl);
+      padding: 28px 22px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    .lock-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 20px;
+    }
+
+    .error-banner {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #FCA5A5;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      line-height: 1.4;
+      margin-bottom: 18px;
+      display: none;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #050814;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      font-size: 14px;
+      color: #FFF;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .toggle-pwd {
+      position: absolute;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #FFF;
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 18px var(--accent-glow);
+      margin-top: 8px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #FFF;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .admin-foot-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .admin-foot-link a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-wrapper">
+    <div class="admin-brand-header">
+      <div class="brand-mark">N</div>
+      <h1 class="brand-title">NOVEXA</h1>
+      <div class="brand-subtitle">Control Room Authentication</div>
+    </div>
+
+    <div class="login-card">
+      <div class="lock-pill">
+        <span>🔒 Restricted Administrative Access</span>
+      </div>
+
+      <div id="error-banner" class="error-banner"></div>
+
+      <form id="admin-login-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="email">Admin Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="email" class="form-input" placeholder="admin@novexa.com" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Security Password</label>
+          <div class="input-wrap">
+            <input type="password" id="password" class="form-input" placeholder="Enter password" required autocomplete="current-password">
+            <button type="button" class="toggle-pwd" id="toggle-pwd">Show</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <span class="spinner" id="btn-spinner"></span>
+          <span id="btn-text">Authenticate Console</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="admin-foot-link">
+      <a href="/index.html">&larr; Return to Public Platform</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, showToast } from '/supabase-client.js';
+
+    const loginForm = document.getElementById('admin-login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const togglePwd = document.getElementById('toggle-pwd');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnSpinner = document.getElementById('btn-spinner');
+    const btnText = document.getElementById('btn-text');
+    const errorBanner = document.getElementById('error-banner');
+
+    function showError(msg) {
+      errorBanner.textContent = msg;
+      errorBanner.style.display = 'block';
+    }
+
+    function clearError() {
+      errorBanner.textContent = '';
+      errorBanner.style.display = 'none';
+    }
+
+    function setLoading(isLoading) {
+      btnSubmit.disabled = isLoading;
+      btnSpinner.style.display = isLoading ? 'inline-block' : 'none';
+      btnText.textContent = isLoading ? 'Verifying Authorization...' : 'Authenticate Console';
+    }
+
+    // Toggle password view
+    togglePwd.addEventListener('click', () => {
+      const isPwd = passwordInput.getAttribute('type') === 'password';
+      passwordInput.setAttribute('type', isPwd ? 'text' : 'password');
+      togglePwd.textContent = isPwd ? 'Hide' : 'Show';
+    });
+
+    // Check existing session
+    async function checkExistingAdminSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session && session.user) {
+        const { data: adminCheck } = await supabase.rpc('check_is_admin');
+        if (adminCheck && adminCheck.is_admin) {
+          window.location.replace('/admin/index.html');
+        }
+      }
+    }
+    checkExistingAdminSession();
+
+    // Form Submission
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showError('Please supply both administrator email and password.');
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        // 1. Authenticate with Supabase
+        const { data: authData, error: authErr } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (authErr) {
+          showError('Invalid administrator credentials.');
+          setLoading(false);
+          return;
+        }
+
+        if (!authData.user) {
+          showError('Authentication failed.');
+          setLoading(false);
+          return;
+        }
+
+        // 2. Strict Server-Side Admin Role Verification
+        const { data: adminCheck, error: rpcErr } = await supabase.rpc('check_is_admin');
+
+        if (rpcErr || !adminCheck || !adminCheck.is_admin) {
+          // Immediately tear down unauthorized session
+          await supabase.auth.signOut();
+          showError('Access denied: Your account is not authorized for administrative access.');
+          setLoading(false);
+          return;
+        }
+
+        showToast(`Authorized: Welcome back, ${adminCheck.role.toUpperCase()}`, 'success');
+        window.location.replace('/admin/index.html');
+      } catch (err) {
+        showError('A network error occurred. Please try again.');
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
