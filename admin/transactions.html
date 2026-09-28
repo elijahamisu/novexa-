@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA Admin — Financial Ledger & Transactions</title>
+  <style>
+    :root {
+      --bg-dark: #050814;
+      --bg-card: #0A0F24;
+      --bg-elevated: #101735;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-cyan: #38BDF8;
+      --gold: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --border-focus: #3B82F6;
+      --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .admin-app {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .admin-sidebar {
+      display: none;
+      width: 250px;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 900;
+    }
+
+    @media (min-width: 1024px) {
+      .admin-sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+    }
+
+    .brand-text {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #FFF;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .menu-link:hover, .menu-link.active {
+      background: rgba(37, 99, 235, 0.15);
+      color: #93C5FD;
+    }
+
+    .admin-main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-top-nav {
+      background: rgba(8, 12, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 800;
+    }
+
+    .btn-mobile-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @media (min-width: 1024px) {
+      .btn-mobile-toggle {
+        display: none;
+      }
+    }
+
+    .admin-content-body {
+      padding: 20px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-heading {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    @media (min-width: 480px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .summary-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .sum-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .sum-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .sum-val.cyan { color: var(--accent-cyan); }
+    .sum-val.gold { color: var(--gold); }
+    .sum-val.green { color: var(--success); }
+
+    .filters-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      flex-grow: 1;
+      min-width: 220px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px 12px 38px;
+      font-size: 13px;
+      color: #FFF;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .filter-select {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #FFF;
+      outline: none;
+    }
+
+    .btn-action-refresh {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .tx-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .tx-table {
+        display: table;
+      }
+      .tx-cards-mobile {
+        display: none;
+      }
+    }
+
+    .tx-table th {
+      background: #080C1E;
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tx-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+    }
+
+    .status-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+
+    .status-badge.completed, .status-badge.approved {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+
+    .status-badge.pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold);
+    }
+
+    .status-badge.rejected, .status-badge.reversed {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    .tx-cards-mobile {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .tx-card-mob {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-inspect {
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #93C5FD;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-page {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-page:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .modal-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+      font-size: 13px;
+    }
+
+    .modal-row:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+    }
+
+    .mobile-drawer {
+      width: 260px;
+      height: 100%;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-app">
+    <!-- Desktop Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-mark">N</div>
+        <div class="brand-text">NOVEXA ADMIN</div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link active"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
+      </ul>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-top-nav">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer">&#9776;</button>
+          <div style="font-size:15px; font-weight:700; color:#FFF;">Central Financial Ledger</div>
+        </div>
+      </header>
+
+      <div class="admin-content-body">
+        <div class="page-title-row">
+          <div>
+            <h1 class="page-heading">Platform Financial Ledger</h1>
+            <div style="font-size:12px; color:var(--text-secondary);">Immutable accounting records for all platform credits, debits, and adjustments.</div>
+          </div>
+        </div>
+
+        <!-- Metric Summary Cards -->
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="sum-label">Total Transactions</div>
+            <div class="sum-val" id="metric-total-count">0</div>
+          </div>
+          <div class="summary-card">
+            <div class="sum-label">Total Inflow Volume</div>
+            <div class="sum-val green" id="metric-total-credits">₦0.00</div>
+          </div>
+          <div class="summary-card">
+            <div class="sum-label">Total Outflow Volume</div>
+            <div class="sum-val cyan" id="metric-total-debits">₦0.00</div>
+          </div>
+          <div class="summary-card">
+            <div class="sum-label">Pending Ledger Entries</div>
+            <div class="sum-val gold" id="metric-pending-count">0</div>
+          </div>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="filters-bar">
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="search-input" class="search-input" placeholder="Search reference, description, investor, or email...">
+          </div>
+
+          <select id="type-filter" class="filter-select">
+            <option value="all">All Types</option>
+            <option value="deposit">Deposits</option>
+            <option value="withdrawal">Withdrawals</option>
+            <option value="daily_income">Daily Yields</option>
+            <option value="plan_investment">Investments</option>
+            <option value="referral_commission">Commissions</option>
+            <option value="welcome_bonus">Welcome Bonuses</option>
+            <option value="gift_code_redemption">Gift Codes</option>
+          </select>
+
+          <select id="status-filter" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="reversed">Reversed</option>
+          </select>
+
+          <button type="button" class="btn-action-refresh" id="btn-refresh">&#8635; Refresh</button>
+        </div>
+
+        <!-- Transactions Table Container -->
+        <div class="table-container">
+          <table class="tx-table">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Investor</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Direction</th>
+                <th>Balance After</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-transactions">
+              <tr><td colspan="9" style="text-align:center; padding:30px;">Loading ledger entries...</td></tr>
+            </tbody>
+          </table>
+
+          <div class="tx-cards-mobile" id="mobile-tx-container">
+            <div style="text-align:center; padding:20px; color:var(--text-muted);">Loading ledger entries...</div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination-bar">
+            <span id="page-info">Showing records</span>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn-page" id="btn-prev">Previous</button>
+              <button type="button" class="btn-page" id="btn-next">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inspection Modal -->
+  <div class="modal-overlay" id="inspect-modal">
+    <div class="modal-card">
+      <h2 style="font-size:16px; font-weight:800; color:#FFF; margin-bottom:14px;">Ledger Transaction Receipt</h2>
+      <div id="modal-details-body"></div>
+      <div style="margin-top:18px; text-align:right;">
+        <button type="button" class="btn-inspect" id="btn-close-modal">Dismiss Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <span style="font-weight:800; font-size:16px;">ADMIN MODULES</span>
+        <button type="button" id="btn-close-drawer" style="background:none; border:none; color:#FFF; font-size:18px;">&times;</button>
+      </div>
+      <ul class="sidebar-menu" style="padding:0;">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link active"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, formatNaira } from '/supabase-client.js';
+
+    let currentPage = 1;
+    const pageSize = 20;
+    let totalRecords = 0;
+    let currentTransactions = [];
+    let searchDebounce = null;
+
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { window.location.replace('/admin/login.html'); return false; }
+      const { data: adminCheck } = await supabase.rpc('check_is_admin');
+      if (!adminCheck || !adminCheck.is_admin) {
+        await supabase.auth.signOut();
+        window.location.replace('/admin/login.html');
+        return false;
+      }
+      return true;
+    }
+
+    async function loadSummaryMetrics() {
+      const { data: allTx, error } = await supabase
+        .from('transactions')
+        .select('amount, type, status');
+
+      if (error || !allTx) return;
+
+      let totalCredits = 0;
+      let totalDebits = 0;
+      let pendingCnt = 0;
+
+      allTx.forEach(t => {
+        const isCredit = ['deposit', 'daily_income', 'welcome_bonus', 'referral_commission', 'gift_code_redemption'].includes(t.type);
+        if (t.status === 'completed' || t.status === 'approved') {
+          if (isCredit) totalCredits += Number(t.amount);
+          else totalDebits += Number(t.amount);
+        }
+        if (t.status === 'pending') pendingCnt++;
+      });
+
+      document.getElementById('metric-total-count').textContent = allTx.length;
+      document.getElementById('metric-total-credits').textContent = formatNaira(totalCredits);
+      document.getElementById('metric-total-debits').textContent = formatNaira(totalDebits);
+      document.getElementById('metric-pending-count').textContent = pendingCnt;
+    }
+
+    async function loadTransactions() {
+      const searchVal = document.getElementById('search-input').value.trim();
+      const typeFilter = document.getElementById('type-filter').value;
+      const statusFilter = document.getElementById('status-filter').value;
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      let query = supabase
+        .from('transactions')
+        .select('*, profiles(full_name, email)', { count: 'exact' });
+
+      if (typeFilter !== 'all') query = query.eq('type', typeFilter);
+      if (statusFilter !== 'all') query = query.eq('status', statusFilter);
+
+      if (searchVal) {
+        query = query.or(`reference.ilike.%${searchVal}%,description.ilike.%${searchVal}%`);
+      }
+
+      query = query.order('created_at', { ascending: false }).range(from, to);
+
+      const { data: txs, count, error } = await query;
+
+      if (error) {
+        console.error('Error fetching transactions:', error);
+        return;
+      }
+
+      totalRecords = count || 0;
+      currentTransactions = txs || [];
+
+      document.getElementById('page-info').textContent = `Showing ${Math.min(from + 1, totalRecords)} to ${Math.min(to + 1, totalRecords)} of ${totalRecords}`;
+      document.getElementById('btn-prev').disabled = currentPage <= 1;
+      document.getElementById('btn-next').disabled = to + 1 >= totalRecords;
+
+      renderTable();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tbody-transactions');
+      const mobContainer = document.getElementById('mobile-tx-container');
+
+      if (currentTransactions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);">No transaction records found.</td></tr>`;
+        mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No transaction records found.</div>`;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      mobContainer.innerHTML = '';
+
+      currentTransactions.forEach(t => {
+        const isCredit = ['deposit', 'daily_income', 'welcome_bonus', 'referral_commission', 'gift_code_redemption'].includes(t.type);
+        const directionSign = isCredit ? '+' : '-';
+        const directionColor = isCredit ? 'var(--success)' : '#FFF';
+        const dateStr = new Date(t.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        const userName = t.profiles?.full_name || 'Investor';
+        const userEmail = t.profiles?.email || '';
+
+        // Desktop Row
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${t.reference}</strong></td>
+          <td>
+            <div style="font-weight:700; color:#FFF;">${userName}</div>
+            <div style="font-size:11px; color:var(--text-muted);">${userEmail}</div>
+          </td>
+          <td>${t.type.replace(/_/g, ' ')}</td>
+          <td style="font-weight:800; color:${directionColor};">${directionSign}${formatNaira(t.amount)}</td>
+          <td><span style="font-size:11px; font-weight:700; color:${directionColor};">${isCredit ? 'CREDIT' : 'DEBIT'}</span></td>
+          <td>${formatNaira(t.balance_after)}</td>
+          <td><span class="status-badge ${t.status}">${t.status}</span></td>
+          <td style="font-size:11px;">${dateStr}</td>
+          <td><button type="button" class="btn-inspect btn-view-tx" data-id="${t.id}">Inspect</button></td>
+        `;
+        tbody.appendChild(tr);
+
+        // Mobile Card
+        const card = document.createElement('div');
+        card.className = 'tx-card-mob';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <div style="font-weight:800; font-size:15px; color:${directionColor};">${directionSign}${formatNaira(t.amount)}</div>
+              <div style="font-size:11px; color:var(--text-muted);">${t.type.replace(/_/g, ' ')} &bull; ${t.reference}</div>
+            </div>
+            <span class="status-badge ${t.status}">${t.status}</span>
+          </div>
+          <div style="font-size:12px; color:var(--text-secondary); border-top:1px dashed var(--border); padding-top:6px;">
+            <div>Investor: <strong>${userName}</strong> (${userEmail})</div>
+            <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
+          </div>
+          <button type="button" class="btn-inspect btn-view-tx" data-id="${t.id}" style="width:100%; margin-top:4px;">Inspect Transaction</button>
+        `;
+        mobContainer.appendChild(card);
+      });
+
+      // Attach Modal Listeners
+      document.querySelectorAll('.btn-view-tx').forEach(b => {
+        b.addEventListener('click', () => {
+          const txId = b.getAttribute('data-id');
+          const item = currentTransactions.find(x => x.id === txId);
+          if (!item) return;
+
+          const isCredit = ['deposit', 'daily_income', 'welcome_bonus', 'referral_commission', 'gift_code_redemption'].includes(item.type);
+          const modalBody = document.getElementById('modal-details-body');
+          modalBody.innerHTML = `
+            <div class="modal-row"><span style="color:var(--text-muted);">Transaction ID:</span><span style="font-weight:700; color:#FFF;">${item.id}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Reference:</span><span style="font-weight:700; color:var(--accent-cyan);">${item.reference}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Investor:</span><span style="font-weight:700; color:#FFF;">${item.profiles?.full_name || 'Investor'} (${item.profiles?.email})</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Category / Type:</span><span style="font-weight:700; color:#FFF;">${item.type.replace(/_/g, ' ')}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Amount Transacted:</span><span style="font-weight:800; font-size:15px; color:${isCredit ? 'var(--success)' : '#FFF'};">${isCredit ? '+' : '-'}${formatNaira(item.amount)}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Balance Before:</span><span>${formatNaira(item.balance_before)}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Balance After:</span><span style="font-weight:700; color:#FFF;">${formatNaira(item.balance_after)}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Description:</span><span>${item.description || 'Ledger event'}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Status:</span><span class="status-badge ${item.status}">${item.status}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Timestamp:</span><span>${new Date(item.created_at).toLocaleString('en-GB')}</span></div>
+          `;
+          document.getElementById('inspect-modal').style.display = 'flex';
+        });
+      });
+    }
+
+    document.getElementById('btn-close-modal').addEventListener('click', () => {
+      document.getElementById('inspect-modal').style.display = 'none';
+    });
+
+    document.getElementById('search-input').addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => { currentPage = 1; loadTransactions(); }, 350);
+    });
+
+    document.getElementById('type-filter').addEventListener('change', () => { currentPage = 1; loadTransactions(); });
+    document.getElementById('status-filter').addEventListener('change', () => { currentPage = 1; loadTransactions(); });
+    document.getElementById('btn-refresh').addEventListener('click', () => { loadSummaryMetrics(); loadTransactions(); });
+
+    document.getElementById('btn-prev').addEventListener('click', () => {
+      if (currentPage > 1) { currentPage--; loadTransactions(); }
+    });
+
+    document.getElementById('btn-next').addEventListener('click', () => {
+      currentPage++; loadTransactions();
+    });
+
+    // Mobile Drawer Controls
+    document.getElementById('btn-open-drawer').addEventListener('click', () => {
+      document.getElementById('mobile-drawer-overlay').style.display = 'block';
+    });
+    document.getElementById('btn-close-drawer').addEventListener('click', () => {
+      document.getElementById('mobile-drawer-overlay').style.display = 'none';
+    });
+
+    checkAuth().then(ok => {
+      if (ok) {
+        loadSummaryMetrics();
+        loadTransactions();
+      }
+    });
+  </script>
+</body>
+</html>
