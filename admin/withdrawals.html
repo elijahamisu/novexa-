@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA Admin — Cashout & Withdrawal Processing</title>
+  <style>
+    :root {
+      --bg-dark: #050814;
+      --bg-card: #0A0F24;
+      --bg-elevated: #101735;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-cyan: #38BDF8;
+      --gold: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --border-focus: #3B82F6;
+      --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .admin-app {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .admin-sidebar {
+      display: none;
+      width: 250px;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 900;
+    }
+
+    @media (min-width: 1024px) {
+      .admin-sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+    }
+
+    .brand-text {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #FFF;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .menu-link:hover, .menu-link.active {
+      background: rgba(37, 99, 235, 0.15);
+      color: #93C5FD;
+    }
+
+    .admin-main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-top-nav {
+      background: rgba(8, 12, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 800;
+    }
+
+    .btn-mobile-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @media (min-width: 1024px) {
+      .btn-mobile-toggle {
+        display: none;
+      }
+    }
+
+    .admin-content-body {
+      padding: 20px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-heading {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .policy-strip {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .policy-strip strong {
+      color: #FFF;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    @media (min-width: 480px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .summary-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .sum-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .sum-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .sum-val.cyan { color: var(--accent-cyan); }
+    .sum-val.gold { color: var(--gold); }
+
+    .filters-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      flex-grow: 1;
+      min-width: 220px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px 12px 38px;
+      font-size: 13px;
+      color: #FFF;
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .filter-select {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #FFF;
+      outline: none;
+    }
+
+    .btn-action-refresh {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .table-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .wth-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .wth-table {
+        display: table;
+      }
+      .wth-cards-mobile {
+        display: none;
+      }
+    }
+
+    .wth-table th {
+      background: #080C1E;
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wth-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+    }
+
+    .status-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+
+    .status-badge.pending {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--gold);
+    }
+
+    .status-badge.approved {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+
+    .status-badge.rejected {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    .wth-cards-mobile {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .wth-card-mob {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-review {
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #93C5FD;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+      font-size: 13px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .btn-approve {
+      flex: 1;
+      background: var(--success);
+      color: #050814;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-reject {
+      flex: 1;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #FCA5A5;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .mobile-drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+    }
+
+    .mobile-drawer {
+      width: 260px;
+      height: 100%;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-app">
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-mark">N</div>
+        <div class="brand-text">NOVEXA ADMIN</div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link active"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
+      </ul>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-top-nav">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer">&#9776;</button>
+          <div style="font-size:15px; font-weight:700; color:#FFF;">Withdrawal Processing</div>
+        </div>
+      </header>
+
+      <div class="admin-content-body">
+        <div class="page-title-row">
+          <div>
+            <h1 class="page-heading">Manual Cashout Execution Queue</h1>
+            <div style="font-size:12px; color:var(--text-secondary);">Verify destination accounts, review fee calculations, and authorize bank payout.</div>
+          </div>
+        </div>
+
+        <!-- Policy Strip -->
+        <div class="policy-strip">
+          <div>Platform Policy: <strong>15% Standard Withdrawal Processing Fee &bull; Min. ₦2,000.00</strong></div>
+          <span style="font-size:11px; color:var(--gold);">Authoritative Calculation</span>
+        </div>
+
+        <!-- Metric Summary Cards -->
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="sum-label">Pending Cashouts</div>
+            <div class="sum-val gold" id="metric-pending-count">0</div>
+          </div>
+          <div class="summary-card">
+            <div class="sum-label">Pending Reserved (₦)</div>
+            <div class="sum-val" id="metric-pending-amount">₦0.00</div>
+          </div>
+          <div class="summary-card">
+            <div class="sum-label">Processed Payouts</div>
+            <div class="sum-val cyan" id="metric-approved-amount">₦0.00</div>
+          </div>
+          <div class="summary-card">
+            <div class="sum-label">Rejected / Refunded</div>
+            <div class="sum-val" id="metric-rejected-count">0</div>
+          </div>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="filters-bar">
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="search-input" class="search-input" placeholder="Search reference, bank, account name, or withdrawal ID...">
+          </div>
+
+          <select id="status-filter" class="filter-select">
+            <option value="pending">Pending Review Only</option>
+            <option value="all">All Cashout Requests</option>
+            <option value="approved">Approved & Paid</option>
+            <option value="rejected">Rejected / Refunded</option>
+          </select>
+
+          <button type="button" class="btn-action-refresh" id="btn-refresh">&#8635; Refresh</button>
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-container">
+          <table class="wth-table">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Investor</th>
+                <th>Requested</th>
+                <th>Fee (15%)</th>
+                <th>Net Payout</th>
+                <th>Bank Destination</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-withdrawals">
+              <tr><td colspan="8" style="text-align:center; padding:30px;">Loading cashout queue...</td></tr>
+            </tbody>
+          </table>
+
+          <div class="wth-cards-mobile" id="mobile-withdrawals-container">
+            <div style="text-align:center; padding:20px; color:var(--text-muted);">Loading cashout queue...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div class="modal-overlay" id="review-modal">
+    <div class="modal-card">
+      <h2 style="font-size:16px; font-weight:800; color:#FFF; margin-bottom:14px;">Audit Cashout Request</h2>
+      <div id="modal-details-body"></div>
+
+      <div style="margin-top:14px;">
+        <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;" for="admin-notes">Audit Notes / Rejection Reason</label>
+        <input type="text" id="admin-notes" class="search-input" placeholder="Optional bank transfer reference or rejection reason">
+      </div>
+
+      <div class="modal-actions" id="modal-actions-box">
+        <button type="button" class="btn-approve" id="btn-approve-wth">Mark Paid & Complete</button>
+        <button type="button" class="btn-reject" id="btn-reject-wth">Reject & Refund Wallet</button>
+      </div>
+      <div style="margin-top:10px; text-align:center;">
+        <button type="button" id="btn-close-modal" style="background:none; border:none; color:var(--text-muted); font-size:12px; cursor:pointer;">Dismiss Window</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <span style="font-weight:800; font-size:16px;">ADMIN MODULES</span>
+        <button type="button" id="btn-close-drawer" style="background:none; border:none; color:#FFF; font-size:18px;">&times;</button>
+      </div>
+      <ul class="sidebar-menu" style="padding:0;">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link active"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, formatNaira, showToast } from '/supabase-client.js';
+
+    let allWithdrawals = [];
+    let currentSelectedWithdrawal = null;
+    let isProcessing = false;
+    let searchDebounce = null;
+    const feePct = 15.0;
+
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { window.location.replace('/admin/login.html'); return false; }
+      const { data: adminCheck } = await supabase.rpc('check_is_admin');
+      if (!adminCheck || !adminCheck.is_admin) {
+        await supabase.auth.signOut();
+        window.location.replace('/admin/login.html');
+        return false;
+      }
+      return true;
+    }
+
+    async function loadWithdrawals() {
+      const { data: withdrawals, error } = await supabase
+        .from('withdrawals')
+        .select('*, profiles(full_name, email)')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching withdrawals:', error);
+        return;
+      }
+
+      allWithdrawals = withdrawals || [];
+      calculateMetrics();
+      renderTable();
+    }
+
+    function calculateMetrics() {
+      let pendingCnt = 0;
+      let pendingAmt = 0;
+      let approvedAmt = 0;
+      let rejectedCnt = 0;
+
+      allWithdrawals.forEach(w => {
+        if (w.status === 'pending') {
+          pendingCnt++;
+          pendingAmt += Number(w.amount);
+        } else if (w.status === 'approved') {
+          approvedAmt += Number(w.amount);
+        } else if (w.status === 'rejected') {
+          rejectedCnt++;
+        }
+      });
+
+      document.getElementById('metric-pending-count').textContent = pendingCnt;
+      document.getElementById('metric-pending-amount').textContent = formatNaira(pendingAmt);
+      document.getElementById('metric-approved-amount').textContent = formatNaira(approvedAmt);
+      document.getElementById('metric-rejected-count').textContent = rejectedCnt;
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('tbody-withdrawals');
+      const mobContainer = document.getElementById('mobile-withdrawals-container');
+      const searchVal = document.getElementById('search-input').value.trim().toLowerCase();
+      const statusFilter = document.getElementById('status-filter').value;
+
+      const filtered = allWithdrawals.filter(w => {
+        if (statusFilter !== 'all' && w.status !== statusFilter) return false;
+        if (searchVal) {
+          const bank = (w.bank_name || '').toLowerCase();
+          const accName = (w.account_name || '').toLowerCase();
+          const ref = (w.reference || '').toLowerCase();
+          const user = (w.profiles?.full_name || '').toLowerCase();
+          return bank.includes(searchVal) || accName.includes(searchVal) || ref.includes(searchVal) || user.includes(searchVal);
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No withdrawals found matching current filters.</td></tr>`;
+        mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No withdrawals found.</div>`;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      mobContainer.innerHTML = '';
+
+      filtered.forEach(w => {
+        const userName = w.profiles?.full_name || 'Investor';
+        const userEmail = w.profiles?.email || '';
+        const amt = Number(w.amount);
+        const fee = Math.round(amt * (feePct / 100) * 100) / 100;
+        const net = amt - fee;
+        const maskedAcc = w.account_number.length >= 4 ? `***${w.account_number.slice(-4)}` : '****';
+
+        // Desktop Row
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${w.reference}</strong></td>
+          <td>
+            <div style="font-weight:700; color:#FFF;">${userName}</div>
+            <div style="font-size:11px; color:var(--text-muted);">${userEmail}</div>
+          </td>
+          <td style="color:#FFF; font-weight:700;">${formatNaira(amt)}</td>
+          <td style="color:var(--gold);">${formatNaira(fee)}</td>
+          <td style="color:var(--accent-cyan); font-weight:800;">${formatNaira(net)}</td>
+          <td>
+            <div style="font-weight:700; color:#FFF;">${w.bank_name}</div>
+            <div style="font-size:11px; color:var(--text-muted);">${maskedAcc} &bull; ${w.account_name}</div>
+          </td>
+          <td><span class="status-badge ${w.status}">${w.status}</span></td>
+          <td><button type="button" class="btn-review btn-review-item" data-id="${w.id}">Audit</button></td>
+        `;
+        tbody.appendChild(tr);
+
+        // Mobile Card
+        const card = document.createElement('div');
+        card.className = 'wth-card-mob';
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <div style="font-weight:800; color:#FFF; font-size:15px;">Net: ${formatNaira(net)}</div>
+              <div style="font-size:11px; color:var(--text-muted);">Gross: ${formatNaira(amt)} (15% Fee: ${formatNaira(fee)})</div>
+            </div>
+            <span class="status-badge ${w.status}">${w.status}</span>
+          </div>
+          <div style="font-size:12px; color:var(--text-secondary); border-top:1px dashed var(--border); padding-top:6px;">
+            <div>Bank: <strong>${w.bank_name}</strong> &bull; ${maskedAcc}</div>
+            <div>Beneficiary: <strong>${w.account_name}</strong></div>
+          </div>
+          <button type="button" class="btn-review btn-review-item" data-id="${w.id}" style="width:100%; margin-top:4px;">Audit & Execute Payout</button>
+        `;
+        mobContainer.appendChild(card);
+      });
+
+      // Audit Triggers
+      document.querySelectorAll('.btn-review-item').forEach(b => {
+        b.addEventListener('click', () => {
+          const wthId = b.getAttribute('data-id');
+          const wth = allWithdrawals.find(w => w.id === wthId);
+          if (!wth) return;
+
+          currentSelectedWithdrawal = wth;
+          document.getElementById('admin-notes').value = wth.admin_notes || '';
+
+          const amt = Number(wth.amount);
+          const fee = Math.round(amt * (feePct / 100) * 100) / 100;
+          const net = amt - fee;
+
+          const modalBody = document.getElementById('modal-details-body');
+          modalBody.innerHTML = `
+            <div class="modal-row"><span style="color:var(--text-muted);">Withdrawal ID:</span><span style="font-weight:700; color:#FFF;">${wth.id}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Reference:</span><span style="font-weight:700; color:var(--accent-cyan);">${wth.reference}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Investor:</span><span style="font-weight:700; color:#FFF;">${wth.profiles?.full_name || 'Investor'} (${wth.profiles?.email})</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Gross Amount Requested:</span><span style="font-weight:700; color:#FFF;">${formatNaira(amt)}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Processing Charge (15%):</span><span style="font-weight:700; color:var(--gold);">${formatNaira(fee)}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted); font-size:14px; font-weight:700;">Net Payout Due:</span><span style="font-weight:900; font-size:16px; color:var(--accent-cyan);">${formatNaira(net)}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Destination Bank:</span><span style="font-weight:700; color:#FFF;">${wth.bank_name}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Full Account Number:</span><span style="font-weight:800; font-size:15px; letter-spacing:1px; color:#FFF;">${wth.account_number}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Beneficiary Name:</span><span style="font-weight:700; color:#FFF;">${wth.account_name}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Current Status:</span><span class="status-badge ${wth.status}">${wth.status}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Submission Date:</span><span>${new Date(wth.created_at).toLocaleString('en-GB')}</span></div>
+          `;
+
+          const actionsBox = document.getElementById('modal-actions-box');
+          if (wth.status === 'pending') {
+            actionsBox.style.display = 'flex';
+          } else {
+            actionsBox.style.display = 'none';
+          }
+
+          document.getElementById('review-modal').style.display = 'flex';
+        });
+      });
+    }
+
+    // Modal Action Listeners
+    document.getElementById('btn-approve-wth').addEventListener('click', async () => {
+      if (!currentSelectedWithdrawal || isProcessing) return;
+      const amt = Number(currentSelectedWithdrawal.amount);
+      const net = amt - Math.round(amt * (feePct / 100) * 100) / 100;
+      if (!confirm(`Mark withdrawal as approved and paid (${formatNaira(net)} net transfer)?`)) return;
+
+      isProcessing = true;
+      const btn = document.getElementById('btn-approve-wth');
+      btn.disabled = true;
+      btn.textContent = 'Recording Approval...';
+
+      const notes = document.getElementById('admin-notes').value.trim();
+
+      const { data, error } = await supabase.rpc('admin_approve_withdrawal', {
+        p_withdrawal_id: currentSelectedWithdrawal.id,
+        p_admin_notes: notes || 'Bank transfer completed'
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || error?.message || 'Approval failed.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Mark Paid & Complete';
+        isProcessing = false;
+        return;
+      }
+
+      showToast(data.message, 'success');
+      document.getElementById('review-modal').style.display = 'none';
+      btn.disabled = false;
+      btn.textContent = 'Mark Paid & Complete';
+      isProcessing = false;
+
+      loadWithdrawals();
+    });
+
+    document.getElementById('btn-reject-wth').addEventListener('click', async () => {
+      if (!currentSelectedWithdrawal || isProcessing) return;
+      const reason = document.getElementById('admin-notes').value.trim();
+      if (!reason) {
+        showToast('Please provide a rejection reason in notes.', 'error');
+        return;
+      }
+      if (!confirm(`Reject cashout request? ${formatNaira(currentSelectedWithdrawal.amount)} will be refunded to user's wallet.`)) return;
+
+      isProcessing = true;
+      const btn = document.getElementById('btn-reject-wth');
+      btn.disabled = true;
+      btn.textContent = 'Refunding Wallet...';
+
+      const { data, error } = await supabase.rpc('admin_reject_withdrawal', {
+        p_withdrawal_id: currentSelectedWithdrawal.id,
+        p_reason: reason
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || error?.message || 'Rejection failed.', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Reject & Refund Wallet';
+        isProcessing = false;
+        return;
+      }
+
+      showToast(data.message, 'success');
+      document.getElementById('review-modal').style.display = 'none';
+      btn.disabled = false;
+      btn.textContent = 'Reject & Refund Wallet';
+      isProcessing = false;
+
+      loadWithdrawals();
+    });
+
+    document.getElementById('btn-close-modal').addEventListener('click', () => {
+      document.getElementById('review-modal').style.display = 'none';
+    });
+
+    document.getElementById('search-input').addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(renderTable, 300);
+    });
+
+    document.getElementById('status-filter').addEventListener('change', renderTable);
+    document.getElementById('btn-refresh').addEventListener('click', loadWithdrawals);
+
+    // Mobile Drawer
+    document.getElementById('btn-open-drawer').addEventListener('click', () => {
+      document.getElementById('mobile-drawer-overlay').style.display = 'block';
+    });
+    document.getElementById('btn-close-drawer').addEventListener('click', () => {
+      document.getElementById('mobile-drawer-overlay').style.display = 'none';
+    });
+
+    checkAuth().then(ok => { if (ok) loadWithdrawals(); });
+  </script>
+</body>
+</html>
