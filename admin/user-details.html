@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA Admin — Investor Profile & Management</title>
+  <style>
+    :root {
+      --bg-dark: #050814;
+      --bg-card: #0A0F24;
+      --bg-elevated: #101735;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-cyan: #38BDF8;
+      --gold: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --border-focus: #3B82F6;
+      --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .admin-app {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Desktop Sidebar */
+    .admin-sidebar {
+      display: none;
+      width: 250px;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 900;
+    }
+
+    @media (min-width: 1024px) {
+      .admin-sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+    }
+
+    .brand-text {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #FFF;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .menu-link:hover, .menu-link.active {
+      background: rgba(37, 99, 235, 0.15);
+      color: #93C5FD;
+    }
+
+    /* Main Administration Content */
+    .admin-main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-top-nav {
+      background: rgba(8, 12, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 800;
+    }
+
+    .admin-content-body {
+      padding: 20px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* User Profile Hero Card */
+    .user-profile-hero {
+      background: linear-gradient(145deg, #0e1d42 0%, #091124 100%);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .uph-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .uph-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .uph-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+
+    .status-badge.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+
+    .status-badge.suspended {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    .action-btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-action.danger {
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #FCA5A5;
+    }
+
+    /* Financial Grid */
+    .fin-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    @media (min-width: 480px) {
+      .fin-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .fin-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .fin-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .fin-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .fin-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .fin-val.cyan { color: var(--accent-cyan); }
+    .fin-val.gold { color: var(--gold); }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      margin-bottom: 22px;
+    }
+
+    .sc-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFF;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .data-table td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      background: #050814;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      color: #FFF;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-app">
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-mark">N</div>
+        <div class="brand-text">NOVEXA ADMIN</div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link active"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
+      </ul>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-top-nav">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="/admin/users.html" style="color:var(--text-secondary); text-decoration:none; font-size:13px;">&larr; Back to Users</a>
+        </div>
+      </header>
+
+      <div class="admin-content-body" id="user-details-body">
+        <!-- Hero Header -->
+        <div class="user-profile-hero">
+          <div class="uph-meta">
+            <h1 class="uph-name" id="user-name">Loading Investor...</h1>
+            <div class="uph-email" id="user-email">--</div>
+            <div style="margin-top:6px;">
+              <span id="user-status-badge" class="status-badge active">Active</span>
+              <span style="font-size:12px; color:var(--text-muted); margin-left:8px;" id="user-joined">Joined: --</span>
+            </div>
+          </div>
+
+          <div class="action-btn-row">
+            <button type="button" class="btn-action" id="btn-toggle-status">Toggle Status</button>
+            <button type="button" class="btn-action" id="btn-open-adjust">Adjust Balance</button>
+          </div>
+        </div>
+
+        <!-- Financial Summary Grid -->
+        <div class="fin-grid">
+          <div class="fin-card">
+            <div class="fin-label">Wallet Balance</div>
+            <div class="fin-val cyan" id="fin-balance">₦0.00</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-label">Total Invested</div>
+            <div class="fin-val" id="fin-invested">₦0.00</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-label">Total Earned</div>
+            <div class="fin-val" id="fin-earned">₦0.00</div>
+          </div>
+          <div class="fin-card">
+            <div class="fin-label">Total Withdrawn</div>
+            <div class="fin-val gold" id="fin-withdrawn">₦0.00</div>
+          </div>
+        </div>
+
+        <!-- Referral Info Card -->
+        <div class="section-card">
+          <div class="sc-title">Referral Network Information</div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; font-size:12px;">
+            <div>Referral Code: <strong style="color:var(--accent-cyan);" id="ref-code">--</strong></div>
+            <div>Sponsor ID: <strong id="ref-sponsor">None (Direct)</strong></div>
+            <div>Direct Referrals (L1): <strong id="ref-count">0</strong></div>
+          </div>
+        </div>
+
+        <!-- Investment Contracts -->
+        <div class="section-card">
+          <div class="sc-title">Investment Portfolios</div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Plan</th>
+                  <th>Amount</th>
+                  <th>Daily Yield</th>
+                  <th>Progress</th>
+                  <th>Status</th>
+                  <th>Dates</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-investments">
+                <tr><td colspan="6" style="text-align:center;">Loading portfolios...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="section-card">
+          <div class="sc-title">Recent Ledger Transactions</div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Reference</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Balance After</th>
+                  <th>Status</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-transactions">
+                <tr><td colspan="6" style="text-align:center;">Loading transactions...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Balance Adjustment Modal -->
+  <div class="modal-overlay" id="adjust-modal">
+    <div class="modal-card">
+      <h2 style="font-size:16px; font-weight:800; color:#FFF; margin-bottom:14px;">Manual Balance Adjustment</h2>
+      <form id="adjust-form">
+        <div class="form-group">
+          <label class="form-label" for="adj-type">Adjustment Action</label>
+          <select id="adj-type" class="form-select">
+            <option value="credit">Credit Balance (+)</option>
+            <option value="debit">Debit Balance (-)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="adj-amount">Amount (NGN)</label>
+          <input type="number" id="adj-amount" class="form-input" min="100" step="100" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="adj-reason">Audit Reason / Justification</label>
+          <input type="text" id="adj-reason" class="form-input" placeholder="e.g. Deposit reconciliation, manual correction" required>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-action" id="btn-close-adjust">Cancel</button>
+          <button type="submit" class="btn-action" style="background:var(--accent);">Commit Adjustment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, formatNaira, showToast } from '/supabase-client.js';
+
+    let targetUserId = null;
+    let targetProfile = null;
+
+    async function initUserDetails() {
+      // 1. Verify Admin
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { window.location.replace('/admin/login.html'); return; }
+      const { data: adminCheck } = await supabase.rpc('check_is_admin');
+      if (!adminCheck || !adminCheck.is_admin) {
+        await supabase.auth.signOut();
+        window.location.replace('/admin/login.html');
+        return;
+      }
+
+      // 2. Parse URL ID
+      const urlParams = new URLSearchParams(window.location.search);
+      targetUserId = urlParams.get('id');
+
+      if (!targetUserId) {
+        alert('Invalid or missing user ID.');
+        window.location.replace('/admin/users.html');
+        return;
+      }
+
+      loadUserData();
+    }
+
+    async function loadUserData() {
+      // Load Profile
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', targetUserId)
+        .single();
+
+      if (error || !profile) {
+        alert('User not found.');
+        window.location.replace('/admin/users.html');
+        return;
+      }
+
+      targetProfile = profile;
+
+      document.getElementById('user-name').textContent = profile.full_name || 'Investor';
+      document.getElementById('user-email').textContent = profile.email;
+      document.getElementById('user-status-badge').textContent = profile.is_active ? 'Active' : 'Suspended';
+      document.getElementById('user-status-badge').className = `status-badge ${profile.is_active ? 'active' : 'suspended'}`;
+      document.getElementById('btn-toggle-status').textContent = profile.is_active ? 'Suspend Account' : 'Activate Account';
+      document.getElementById('btn-toggle-status').className = `btn-action ${profile.is_active ? 'danger' : ''}`;
+
+      const joinDate = new Date(profile.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      document.getElementById('user-joined').textContent = `Joined: ${joinDate}`;
+
+      document.getElementById('fin-balance').textContent = formatNaira(profile.wallet_balance);
+      document.getElementById('fin-invested').textContent = formatNaira(profile.total_invested);
+      document.getElementById('fin-earned').textContent = formatNaira(profile.total_earned);
+      document.getElementById('fin-withdrawn').textContent = formatNaira(profile.total_withdrawn);
+
+      document.getElementById('ref-code').textContent = profile.referral_code;
+      document.getElementById('ref-sponsor').textContent = profile.referred_by ? profile.referred_by.slice(0, 8) + '...' : 'Direct';
+
+      // Load Referrals Count
+      const { count: refCount } = await supabase
+        .from('referrals')
+        .select('*', { count: 'exact', head: true })
+        .eq('sponsor_id', targetUserId)
+        .eq('level', 1);
+      document.getElementById('ref-count').textContent = `${refCount || 0} Direct Partners`;
+
+      // Load Investments
+      loadUserInvestments();
+
+      // Load Transactions
+      loadUserTransactions();
+    }
+
+    async function loadUserInvestments() {
+      const tbody = document.getElementById('tbody-investments');
+      const { data: investments } = await supabase
+        .from('investments')
+        .select('*, plans(name)')
+        .eq('user_id', targetUserId)
+        .order('created_at', { ascending: false });
+
+      if (!investments || investments.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:16px;">No investments found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      investments.forEach(inv => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${inv.plans?.name || 'Investment Plan'}</strong></td>
+          <td style="color:#FFF;">${formatNaira(inv.amount)}</td>
+          <td style="color:var(--accent-cyan);">${formatNaira(inv.daily_income)}</td>
+          <td>Day ${inv.days_accrued} of ${inv.duration_days}</td>
+          <td><span class="status-badge ${inv.status}">${inv.status}</span></td>
+          <td>${inv.start_date} &bull; ${inv.end_date}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function loadUserTransactions() {
+      const tbody = document.getElementById('tbody-transactions');
+      const { data: txs } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('user_id', targetUserId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (!txs || txs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:16px;">No transactions recorded.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      txs.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${t.reference}</strong></td>
+          <td>${t.type.replace(/_/g, ' ')}</td>
+          <td style="color:#FFF;">${formatNaira(t.amount)}</td>
+          <td>${formatNaira(t.balance_after)}</td>
+          <td><span class="status-badge ${t.status}">${t.status}</span></td>
+          <td>${new Date(t.created_at).toLocaleDateString('en-GB')}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Toggle Status
+    document.getElementById('btn-toggle-status').addEventListener('click', async () => {
+      if (!targetProfile) return;
+      const willBeActive = !targetProfile.is_active;
+      const confirmMsg = willBeActive ? 'Activate this investor account?' : 'Suspend this investor account? Access will be restricted.';
+      if (!confirm(confirmMsg)) return;
+
+      const { data, error } = await supabase.rpc('admin_toggle_user_status', {
+        p_target_user_id: targetUserId,
+        p_is_active: willBeActive,
+        p_reason: willBeActive ? 'Administrative re-activation' : 'Administrative compliance suspension'
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || 'Failed to update user status.', 'error');
+        return;
+      }
+
+      showToast('User status updated successfully.', 'success');
+      loadUserData();
+    });
+
+    // Adjustment Modal
+    const modal = document.getElementById('adjust-modal');
+    document.getElementById('btn-open-adjust').addEventListener('click', () => { modal.style.display = 'flex'; });
+    document.getElementById('btn-close-adjust').addEventListener('click', () => { modal.style.display = 'none'; });
+
+    document.getElementById('adjust-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const type = document.getElementById('adj-type').value;
+      const amount = parseFloat(document.getElementById('adj-amount').value);
+      const reason = document.getElementById('adj-reason').value.trim();
+
+      const { data, error } = await supabase.rpc('admin_adjust_user_balance', {
+        p_target_user_id: targetUserId,
+        p_amount: amount,
+        p_adjustment_type: type,
+        p_reason: reason
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || error?.message || 'Adjustment failed.', 'error');
+        return;
+      }
+
+      showToast(`Balance adjusted: ${formatNaira(amount)} ${type}ed.`, 'success');
+      modal.style.display = 'none';
+      document.getElementById('adjust-form').reset();
+      loadUserData();
+    });
+
+    initUserDetails();
+  </script>
+</body>
+</html>
