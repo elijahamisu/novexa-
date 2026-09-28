@@ -16,7 +16,7 @@ export default defineConfig({
         plans: resolve(__dirname, 'plans.html'),
         planDetails: resolve(__dirname, 'plan-details.html'),
        investments: resolve(__dirname, 'investments.html'),
-        //earnings: resolve(__dirname, 'earnings.html'),
+        earnings: resolve(__dirname, 'earnings.html'),
       wallet: resolve(__dirname, 'wallet.html'),
       deposit: resolve(__dirname, 'deposit.html'),
         withdraw: resolve(__dirname, 'withdraw.html'),
@@ -43,9 +43,9 @@ export default defineConfig({
         adminTransactions: resolve(__dirname, 'admin/transactions.html'),
         adminReferrals: resolve(__dirname, 'admin/referrals.html'),
         adminGiftCodes: resolve(__dirname, 'admin/gift-codes.html'),
-        //adminNotifications: resolve(__dirname, 'admin/notifications.html'),
-        //adminReports: resolve(__dirname, 'admin/reports.html'),
-       // adminSettings: resolve(__dirname, 'admin/settings.html')
+        adminNotifications: resolve(__dirname, 'admin/notifications.html'),
+        adminReports: resolve(__dirname, 'admin/reports.html'),
+        adminSettings: resolve(__dirname, 'admin/settings.html')
       }
     }
   },
