@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA — Support & Help Center</title>
+  <style>
+    :root {
+      --bg-dark: #070B19;
+      --bg-card: #0F172A;
+      --bg-elevated: #131E3A;
+      --bg-surface: #0B1120;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-glow: rgba(37, 99, 235, 0.35);
+      --accent-cyan: #38BDF8;
+      --gold: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --border-light: rgba(255, 255, 255, 0.08);
+      --border-focus: #3B82F6;
+      --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px));
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    @media (min-width: 768px) {
+      .app-container {
+        padding: 0 24px;
+      }
+    }
+
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(7, 11, 25, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+      margin-bottom: 16px;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #FFF 30%, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+
+    .page-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    /* Channels Grid */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .contact-card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .contact-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .contact-info {
+      font-size: 11px;
+      color: var(--text-secondary);
+      word-break: break-all;
+    }
+
+    /* Form Card */
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 22px 18px;
+      margin-bottom: 24px;
+    }
+
+    .form-heading {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: #090E1F;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #FFF;
+      outline: none;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--border-focus);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #FFF;
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 18px var(--accent-glow);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Ticket History */
+    .ticket-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .ticket-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+    }
+
+    .tc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .tc-subject {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .tc-status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+    }
+
+    .tc-status.open {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--gold);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .tc-status.resolved, .tc-status.closed {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .tc-message {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .tc-reply {
+      background: #090E1F;
+      border-left: 2px solid var(--accent);
+      padding: 8px 10px;
+      font-size: 11px;
+      color: #93C5FD;
+      margin-top: 6px;
+    }
+
+    .empty-card {
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    /* Official NOVEXA Bottom Navigation (Standard) */
+    .novexa-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: #FFFFFF;
+      border-top: 1px solid #E2E8F0;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+      padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+
+    .nav-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      height: 64px;
+      padding: 0 4px;
+    }
+
+    @media (min-width: 768px) {
+      .novexa-bottom-nav {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 20px;
+        width: 480px;
+        border-radius: 20px;
+        border: 1px solid #CBD5E1;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        padding-bottom: 0;
+      }
+      .nav-bar-inner {
+        height: 66px;
+      }
+    }
+
+    .nav-tab-item {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-decoration: none;
+      color: #64748B;
+      cursor: pointer;
+    }
+
+    .nav-tab-icon {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-tab-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-tab-label {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .nav-tab-indicator {
+      position: absolute;
+      bottom: 6px;
+      width: 22px;
+      height: 3px;
+      background: transparent;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-header">
+    <div class="app-container">
+      <div class="header-inner">
+        <a href="/dashboard.html" class="brand-group">
+          <div class="brand-icon">N</div>
+          <span class="brand-name">NOVEXA</span>
+        </a>
+        <a href="/profile.html" style="font-size:12px; color:#60A5FA; text-decoration:none; font-weight:700;">Account &rarr;</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <h1 class="page-title">Support Center</h1>
+    <p class="page-desc">Have questions regarding manual bank deposits, cashouts, or daily midnight yields? Connect directly with our compliance desk.</p>
+
+    <!-- Support Channels (Dynamic from site_settings) -->
+    <div class="contact-grid">
+      <a href="mailto:support@novexa.com" class="contact-card" id="card-email">
+        <span class="contact-title">Email Desk</span>
+        <span class="contact-info" id="chan-email">support@novexa.com</span>
+      </a>
+      <a href="#" target="_blank" rel="noopener" class="contact-card" id="card-whatsapp">
+        <span class="contact-title">WhatsApp Desk</span>
+        <span class="contact-info" id="chan-whatsapp">Monitored Line</span>
+      </a>
+      <a href="#" target="_blank" rel="noopener" class="contact-card" id="card-telegram">
+        <span class="contact-title">Telegram Help</span>
+        <span class="contact-info" id="chan-telegram">@novexa_support</span>
+      </a>
+      <div class="contact-card">
+        <span class="contact-title">Active Hours</span>
+        <span class="contact-info">24/7 Review Queue</span>
+      </div>
+    </div>
+
+    <!-- Ticket Form -->
+    <section class="form-card">
+      <h2 class="form-heading">Submit Support Ticket</h2>
+
+      <form id="support-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="category">Category</label>
+          <select id="category" class="form-select">
+            <option value="Deposit Verification">Deposit Verification</option>
+            <option value="Withdrawal Processing">Withdrawal Processing</option>
+            <option value="Plan Allocation">Plan Allocation</option>
+            <option value="Referral Tracking">Referral Tracking</option>
+            <option value="General Inquiry">General Inquiry</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="subject">Subject</label>
+          <input type="text" id="subject" class="form-input" placeholder="e.g. Deposit confirmation for Ref #..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="message">Detailed Explanation</label>
+          <textarea id="message" class="form-textarea" placeholder="Please describe your inquiry with relevant reference numbers..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit-ticket">Submit Inquiry</button>
+      </form>
+    </section>
+
+    <!-- Ticket History -->
+    <section>
+      <div style="font-size:14px; font-weight:700; color:#FFF; margin-bottom:12px; text-transform:uppercase;">
+        Your Inquiries & Responses
+      </div>
+      <div id="tickets-container" class="ticket-stack">
+        <div class="empty-card">Loading tickets...</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Official 5-Tab Navigation (Neutral Active State) -->
+  <nav class="novexa-bottom-nav" aria-label="Main Navigation">
+    <div class="nav-bar-inner">
+      <a href="/dashboard.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+        <span class="nav-tab-label">Home</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <a href="/plans.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        </div>
+        <span class="nav-tab-label">Plans</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <a href="/wallet.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line><circle cx="17" cy="15" r="1"></circle></svg>
+        </div>
+        <span class="nav-tab-label">Wallet</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <a href="/referrals.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <span class="nav-tab-label">Referrals</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <a href="/profile.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <span class="nav-tab-label">Profile</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+    </div>
+  </nav>
+
+  <script type="module">
+    import { supabase, requireAuth, getSiteSettings, showToast } from '/supabase-client.js';
+
+    let currentUserId = null;
+
+    async function initSupport() {
+      const auth = await requireAuth();
+      if (!auth) return;
+      currentUserId = auth.user.id;
+
+      // Load Configured Channels
+      const settings = await getSiteSettings();
+      const channels = settings.support_channels || {};
+      const platformRules = settings.platform_rules || {};
+
+      const email = channels.email || 'support@novexa.com';
+      const whatsapp = channels.whatsapp || platformRules.support_whatsapp || '+2345318726919';
+      const telegram = channels.telegram || 'https://t.me/novexa_platform';
+
+      document.getElementById('chan-email').textContent = email;
+      document.getElementById('card-email').href = `mailto:${email}`;
+
+      document.getElementById('chan-whatsapp').textContent = whatsapp;
+      document.getElementById('card-whatsapp').href = `https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`;
+
+      document.getElementById('chan-telegram').textContent = 'Official Telegram';
+      document.getElementById('card-telegram').href = telegram;
+
+      loadTickets();
+    }
+
+    async function loadTickets() {
+      const container = document.getElementById('tickets-container');
+      const { data: tickets, error } = await supabase
+        .from('support_tickets')
+        .select('*')
+        .eq('user_id', currentUserId)
+        .order('created_at', { ascending: false });
+
+      if (error || !tickets || tickets.length === 0) {
+        container.innerHTML = `<div class="empty-card">No support tickets submitted yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = '';
+      tickets.forEach(t => {
+        const dateStr = new Date(t.created_at).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        const card = document.createElement('div');
+        card.className = 'ticket-card';
+        card.innerHTML = `
+          <div class="tc-header">
+            <span class="tc-subject">${t.subject}</span>
+            <span class="tc-status ${t.status}">${t.status}</span>
+          </div>
+          <p class="tc-message">${t.message}</p>
+          ${t.admin_response ? `<div class="tc-reply"><strong>Admin Response:</strong> ${t.admin_response}</div>` : ''}
+          <div style="font-size:10px; color:var(--text-muted); margin-top:6px;">Submitted: ${dateStr}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById('support-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit-ticket');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      const category = document.getElementById('category').value;
+      const subject = document.getElementById('subject').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      try {
+        const { data, error } = await supabase.rpc('submit_support_ticket', {
+          p_subject: subject,
+          p_message: message,
+          p_category: category
+        });
+
+        if (error || !data || !data.success) {
+          showToast(data?.message || error?.message || 'Failed to submit ticket', 'error');
+          btn.disabled = false;
+          btn.textContent = 'Submit Inquiry';
+          return;
+        }
+
+        showToast('Ticket submitted successfully!', 'success');
+        document.getElementById('support-form').reset();
+        btn.disabled = false;
+        btn.textContent = 'Submit Inquiry';
+        loadTickets();
+      } catch (err) {
+        showToast('Network error submitting ticket', 'error');
+        btn.disabled = false;
+        btn.textContent = 'Submit Inquiry';
+      }
+    });
+
+    initSupport();
+  </script>
+</body>
+</html>
