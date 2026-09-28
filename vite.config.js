@@ -34,9 +34,9 @@ export default defineConfig({
         
         adminLogin: resolve(__dirname, 'admin/login.html'),
         adminIndex: resolve(__dirname, 'admin/index.html'),
-       // adminUsers: resolve(__dirname, 'admin/users.html'),
-        //adminUserDetails: resolve(__dirname, 'admin/user-details.html'),
-        //adminPlans: resolve(__dirname, 'admin/plans.html'),
+       adminUsers: resolve(__dirname, 'admin/users.html'),
+        adminUserDetails: resolve(__dirname, 'admin/user-details.html'),
+        adminPlans: resolve(__dirname, 'admin/plans.html'),
         //adminInvestments: resolve(__dirname, 'admin/investments.html'),
         //adminDeposits: resolve(__dirname, 'admin/deposits.html'),
         //adminWithdrawals: resolve(__dirname, 'admin/withdrawals.html'),
