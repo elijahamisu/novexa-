@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA — Partner Referral Program</title>
+  <style>
+    /* ==========================================================================
+       NOVEXA UNIFIED DESIGN SYSTEM TOKENS
+       ========================================================================== */
+    :root {
+      --bg-dark: #070B19;
+      --bg-card: #0F172A;
+      --bg-elevated: #131E3A;
+      --bg-surface: #0B1120;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-glow: rgba(37, 99, 235, 0.35);
+      --accent-cyan: #38BDF8;
+      --gold: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --border-light: rgba(255, 255, 255, 0.08);
+      --border-focus: #3B82F6;
+      --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: calc(88px + env(safe-area-inset-bottom, 16px));
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    @media (min-width: 768px) {
+      .app-container {
+        padding: 0 24px;
+      }
+    }
+
+    /* Top App Bar */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 900;
+      background: rgba(7, 11, 25, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+      margin-bottom: 16px;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #FFF 30%, #93C5FD);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Page Intro */
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+
+    .page-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    /* Total Commission Hero Banner */
+    .commissions-hero {
+      position: relative;
+      background: linear-gradient(145deg, #0e1d42 0%, #091124 100%);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      border-radius: var(--radius-xl);
+      padding: 22px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .ch-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #93C5FD;
+      margin-bottom: 4px;
+    }
+
+    .ch-amount {
+      font-size: 32px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 12px;
+    }
+
+    .ch-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 10px;
+    }
+
+    .ch-meta-row strong {
+      color: #FFF;
+    }
+
+    /* Referral Code & Link Box */
+    .share-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 20px 18px;
+      margin-bottom: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .copy-input-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #090E1F;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      gap: 8px;
+    }
+
+    .copy-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      user-select: all;
+    }
+
+    .copy-text.code-format {
+      letter-spacing: 1.5px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+
+    .btn-action-copy {
+      background: var(--accent);
+      color: #FFF;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .btn-action-copy:active {
+      transform: scale(0.96);
+    }
+
+    .btn-share-native {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FFF;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .btn-share-native:active {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    /* 3-Tier Grid */
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .tier-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .tier-box.level-1 {
+      border-color: rgba(37, 99, 235, 0.5);
+      background: linear-gradient(180deg, #101935, #0F172A);
+    }
+
+    .tier-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: #93C5FD;
+      text-transform: uppercase;
+    }
+
+    .tier-percent {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--accent-cyan);
+    }
+
+    .tier-count {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .tier-earned {
+      font-size: 12px;
+      font-weight: 800;
+      color: #FFF;
+      margin-top: 4px;
+    }
+
+    /* Section Bar */
+    .section-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .section-heading {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFF;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Filter Tabs */
+    .network-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: #090E1F;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      margin-bottom: 14px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 2px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: #FFF;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Downline Stack */
+    .network-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .net-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .net-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .net-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #090E1F;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #93C5FD;
+    }
+
+    .net-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .net-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .tier-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      background: rgba(37, 99, 235, 0.15);
+      color: #93C5FD;
+      border: 1px solid rgba(37, 99, 235, 0.3);
+    }
+
+    /* Commissions History Stack */
+    .comm-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .comm-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .comm-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .comm-date {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .comm-amount {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--success);
+      text-align: right;
+    }
+
+    /* Explanation Card */
+    .rules-card {
+      background: #090E1F;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .rules-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 6px;
+    }
+
+    /* Empty Cards */
+    .empty-card {
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    /* Official NOVEXA Bottom Navigation (Standard) */
+    .novexa-bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: #FFFFFF;
+      border-top: 1px solid #E2E8F0;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+      padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+
+    .nav-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      height: 64px;
+      padding: 0 4px;
+    }
+
+    @media (min-width: 768px) {
+      .novexa-bottom-nav {
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 20px;
+        width: 480px;
+        border-radius: 20px;
+        border: 1px solid #CBD5E1;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        padding-bottom: 0;
+      }
+      .nav-bar-inner {
+        height: 66px;
+      }
+    }
+
+    .nav-tab-item {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-decoration: none;
+      color: #64748B;
+      cursor: pointer;
+    }
+
+    .nav-tab-icon {
+      width: 22px;
+      height: 22px;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-tab-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-tab-label {
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .nav-tab-indicator {
+      position: absolute;
+      bottom: 6px;
+      width: 22px;
+      height: 3px;
+      background: transparent;
+      border-radius: 3px;
+    }
+
+    .nav-tab-item.active {
+      color: #0F172A;
+    }
+
+    .nav-tab-item.active .nav-tab-icon svg {
+      stroke: #2563EB;
+      transform: translateY(-1px);
+    }
+
+    .nav-tab-item.active .nav-tab-label {
+      color: #0F172A;
+      font-weight: 700;
+    }
+
+    .nav-tab-item.active .nav-tab-indicator {
+      background: #2563EB;
+      width: 26px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top App Bar -->
+  <header class="top-header">
+    <div class="app-container">
+      <div class="header-inner">
+        <a href="/dashboard.html" class="brand-group">
+          <div class="brand-icon">N</div>
+          <span class="brand-name">NOVEXA</span>
+        </a>
+
+        <a href="/profile.html" style="font-size:12px; color:#60A5FA; text-decoration:none; font-weight:700;">Profile &rarr;</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <h1 class="page-title">Referrals & Partner Rewards</h1>
+    <p class="page-desc">Share your referral link to earn structured multi-tier commissions when partners participate in active plans.</p>
+
+    <!-- Total Commission Earnings Hero -->
+    <section class="commissions-hero">
+      <div class="ch-label">Total Referral Commissions</div>
+      <div class="ch-amount" id="total-ref-earned">₦0.00</div>
+      <div class="ch-meta-row">
+        <span>Active Team Members:</span>
+        <strong id="total-ref-count">0 Partners</strong>
+      </div>
+    </section>
+
+    <!-- Referral Link & Code Box -->
+    <section class="share-card">
+      <div>
+        <label class="field-label">Your Referral Code</label>
+        <div class="copy-input-row">
+          <span class="copy-text code-format" id="display-ref-code">NOVEXA------</span>
+          <button type="button" class="btn-action-copy" id="btn-copy-code">Copy Code</button>
+        </div>
+      </div>
+
+      <div>
+        <label class="field-label">Your Unique Invite Link</label>
+        <div class="copy-input-row">
+          <span class="copy-text" id="display-ref-url">https://.../register.html?ref=...</span>
+          <button type="button" class="btn-action-copy" id="btn-copy-url">Copy Link</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-share-native" id="btn-share-native">
+        <svg style="width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:2;" viewBox="0 0 24 24">
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+        <span>Share Invitation Link</span>
+      </button>
+    </section>
+
+    <!-- 3-Tier Commission Breakdown -->
+    <section class="tiers-grid">
+      <div class="tier-box level-1">
+        <span class="tier-badge">Level 1 (Direct)</span>
+        <span class="tier-percent" id="rate-l1">15%</span>
+        <span class="tier-count" id="count-l1">0 partners</span>
+        <span class="tier-earned" id="earned-l1">₦0.00</span>
+      </div>
+
+      <div class="tier-box">
+        <span class="tier-badge">Level 2</span>
+        <span class="tier-percent" id="rate-l2">3%</span>
+        <span class="tier-count" id="count-l2">0 partners</span>
+        <span class="tier-earned" id="earned-l2">₦0.00</span>
+      </div>
+
+      <div class="tier-box">
+        <span class="tier-badge">Level 3</span>
+        <span class="tier-percent" id="rate-l3">1%</span>
+        <span class="tier-count" id="count-l3">0 partners</span>
+        <span class="tier-earned" id="earned-l3">₦0.00</span>
+      </div>
+    </section>
+
+    <!-- Referral Network Directory -->
+    <section>
+      <div class="section-bar">
+        <span class="section-heading">Referral Network</span>
+      </div>
+
+      <div class="network-tabs">
+        <button class="tab-btn active" data-level="all">All</button>
+        <button class="tab-btn" data-level="1">Level 1</button>
+        <button class="tab-btn" data-level="2">Level 2</button>
+        <button class="tab-btn" data-level="3">Level 3</button>
+      </div>
+
+      <div id="network-container" class="network-stack">
+        <div class="empty-card">Loading team network...</div>
+      </div>
+    </section>
+
+    <!-- Commission History -->
+    <section>
+      <div class="section-bar">
+        <span class="section-heading">Commission History</span>
+      </div>
+
+      <div id="commissions-container" class="comm-stack">
+        <div class="empty-card">Loading commission history...</div>
+      </div>
+    </section>
+
+    <!-- Program Rules Summary -->
+    <section class="rules-card">
+      <div class="rules-card-title">How Commission Allocation Operates</div>
+      <p>
+        Commissions are credited automatically to your available wallet balance whenever an invited partner in your Level 1, 2, or 3 network funds an investment plan. All commissions are governed by database integrity constraints to ensure zero duplicate allocations.
+      </p>
+    </section>
+  </main>
+
+  <!-- Official 5-Tab Navigation (Referrals Active) -->
+  <nav class="novexa-bottom-nav" aria-label="Main Navigation">
+    <div class="nav-bar-inner">
+      <a href="/dashboard.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+        <span class="nav-tab-label">Home</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <a href="/plans.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        </div>
+        <span class="nav-tab-label">Plans</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <a href="/wallet.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line><circle cx="17" cy="15" r="1"></circle></svg>
+        </div>
+        <span class="nav-tab-label">Wallet</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <a href="/referrals.html" class="nav-tab-item active">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <span class="nav-tab-label">Referrals</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+
+      <a href="/profile.html" class="nav-tab-item">
+        <div class="nav-tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </div>
+        <span class="nav-tab-label">Profile</span>
+        <div class="nav-tab-indicator"></div>
+      </a>
+    </div>
+  </nav>
+
+  <script type="module">
+    import { supabase, requireAuth, formatNaira, showToast } from '/supabase-client.js';
+
+    let userCode = 'NOVEXA';
+    let referralLink = '';
+    let networkList = [];
+    let currentFilter = 'all';
+
+    async function initReferralsPage() {
+      const auth = await requireAuth();
+      if (!auth) return;
+
+      const { user, profile } = auth;
+      userCode = profile.referral_code || 'NOVEXA';
+      referralLink = `${window.location.origin}/register.html?ref=${encodeURIComponent(userCode)}`;
+
+      document.getElementById('display-ref-code').textContent = userCode;
+      document.getElementById('display-ref-url').textContent = referralLink;
+
+      // 1. Fetch Aggregated 3-Tier Stats via RPC
+      try {
+        const { data: stats, error: statsErr } = await supabase.rpc('get_referral_stats');
+        if (!statsErr && stats && stats.success) {
+          document.getElementById('total-ref-earned').textContent = formatNaira(stats.total_earned);
+          document.getElementById('total-ref-count').textContent = `${stats.total_referrals} Partner${stats.total_referrals === 1 ? '' : 's'}`;
+
+          document.getElementById('rate-l1').textContent = `${stats.rates?.level1 || 15}%`;
+          document.getElementById('rate-l2').textContent = `${stats.rates?.level2 || 3}%`;
+          document.getElementById('rate-l3').textContent = `${stats.rates?.level3 || 1}%`;
+
+          document.getElementById('count-l1').textContent = `${stats.l1_count} partners`;
+          document.getElementById('count-l2').textContent = `${stats.l2_count} partners`;
+          document.getElementById('count-l3').textContent = `${stats.l3_count} partners`;
+
+          document.getElementById('earned-l1').textContent = formatNaira(stats.l1_earned);
+          document.getElementById('earned-l2').textContent = formatNaira(stats.l2_earned);
+          document.getElementById('earned-l3').textContent = formatNaira(stats.l3_earned);
+        }
+      } catch (e) {
+        console.warn('Referral stats error:', e.message);
+      }
+
+      // 2. Load Privacy-Safe Masked Network
+      loadNetwork();
+
+      // 3. Load Commission Logs
+      loadCommissionsHistory(user.id);
+    }
+
+    // Copy Referral Code
+    document.getElementById('btn-copy-code').addEventListener('click', () => {
+      navigator.clipboard.writeText(userCode).then(() => {
+        const btn = document.getElementById('btn-copy-code');
+        btn.textContent = '✓ Copied';
+        setTimeout(() => { btn.textContent = 'Copy Code'; }, 2000);
+      });
+    });
+
+    // Copy Referral URL
+    document.getElementById('btn-copy-url').addEventListener('click', () => {
+      navigator.clipboard.writeText(referralLink).then(() => {
+        const btn = document.getElementById('btn-copy-url');
+        btn.textContent = '✓ Copied';
+        setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000);
+      });
+    });
+
+    // Native Web Share API
+    document.getElementById('btn-share-native').addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'NOVEXA Investment Platform',
+            text: `Join NOVEXA using my invite code ${userCode} and claim your instant ₦1,000 welcome bonus!`,
+            url: referralLink
+          });
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            copyFallback();
+          }
+        }
+      } else {
+        copyFallback();
+      }
+    });
+
+    function copyFallback() {
+      navigator.clipboard.writeText(referralLink).then(() => {
+        showToast('Referral link copied to clipboard!', 'success');
+      });
+    }
+
+    async function loadNetwork() {
+      const container = document.getElementById('network-container');
+      try {
+        const { data, error } = await supabase.rpc('get_referral_network');
+        if (error || !data) {
+          container.innerHTML = `<div class="empty-card">Unable to load referral network list.</div>`;
+          return;
+        }
+
+        networkList = data || [];
+        renderNetwork();
+      } catch (err) {
+        container.innerHTML = `<div class="empty-card">Network error loading team.</div>`;
+      }
+    }
+
+    function renderNetwork() {
+      const container = document.getElementById('network-container');
+      const filtered = networkList.filter(item => {
+        if (currentFilter === 'all') return true;
+        return String(item.level) === currentFilter;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-card">
+            No ${currentFilter === 'all' ? '' : `Level ${currentFilter}`} partners registered yet.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      filtered.forEach(p => {
+        const initials = p.masked_name ? p.masked_name.slice(0, 2).toUpperCase() : 'PT';
+        const row = document.createElement('div');
+        row.className = 'net-item';
+        row.innerHTML = `
+          <div class="net-left">
+            <div class="net-avatar">${initials}</div>
+            <div>
+              <div class="net-name">${p.masked_name}</div>
+              <div class="net-date">Joined: ${p.joined_date}</div>
+            </div>
+          </div>
+          <div>
+            <span class="tier-pill">Level ${p.level}</span>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // Filter Buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-level');
+        renderNetwork();
+      });
+    });
+
+    async function loadCommissionsHistory(userId) {
+      const container = document.getElementById('commissions-container');
+      try {
+        const { data, error } = await supabase
+          .from('referral_commissions')
+          .select('*')
+          .eq('sponsor_id', userId)
+          .order('created_at', { ascending: false })
+          .limit(6);
+
+        if (error || !data || data.length === 0) {
+          container.innerHTML = `
+            <div class="empty-card">
+              No referral commissions yet. Eligible commissions will appear here when qualifying referral activity is processed.
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = '';
+        data.forEach(comm => {
+          const dateStr = new Date(comm.created_at).toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+
+          const row = document.createElement('div');
+          row.className = 'comm-item';
+          row.innerHTML = `
+            <div>
+              <div class="comm-title">Level ${comm.level} Commission (${comm.percentage}%)</div>
+              <div class="comm-date">${dateStr}</div>
+            </div>
+            <div class="comm-amount">
+              +${formatNaira(comm.amount)}
+            </div>
+          `;
+          container.appendChild(row);
+        });
+      } catch (err) {
+        container.innerHTML = `<div class="empty-card">Unable to load commissions log.</div>`;
+      }
+    }
+
+    initReferralsPage();
+  </script>
+</body>
+</html>
