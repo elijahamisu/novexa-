@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA Admin — Platform Settings & Parameters</title>
+  <style>
+    :root {
+      --bg-dark: #050814;
+      --bg-card: #0A0F24;
+      --bg-elevated: #101735;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-cyan: #38BDF8;
+      --gold: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --border-focus: #3B82F6;
+      --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .admin-app {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .admin-sidebar {
+      display: none;
+      width: 250px;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 900;
+    }
+
+    @media (min-width: 1024px) {
+      .admin-sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+    }
+
+    .brand-text {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #FFF;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .menu-link:hover, .menu-link.active {
+      background: rgba(37, 99, 235, 0.15);
+      color: #93C5FD;
+    }
+
+    .admin-main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-top-nav {
+      background: rgba(8, 12, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 800;
+    }
+
+    .btn-mobile-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @media (min-width: 1024px) {
+      .btn-mobile-toggle {
+        display: none;
+      }
+    }
+
+    .admin-content-body {
+      padding: 20px;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-heading {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .warning-banner {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .warning-banner strong {
+      color: var(--gold);
+    }
+
+    .settings-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 22px 20px;
+      margin-bottom: 22px;
+    }
+
+    .sc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .sc-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFF;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-grid-duo {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (min-width: 600px) {
+      .form-grid-duo {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #050814;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      color: #FFF;
+      outline: none;
+      font-size: 13px;
+    }
+
+    .form-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .btn-save-setting {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #FFF;
+      border: none;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .mobile-drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+    }
+
+    .mobile-drawer {
+      width: 260px;
+      height: 100%;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-app">
+    <!-- Desktop Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-mark">N</div>
+        <div class="brand-text">NOVEXA ADMIN</div>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link active"><span>Settings</span></a></li>
+      </ul>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-top-nav">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer">&#9776;</button>
+          <div style="font-size:15px; font-weight:700; color:#FFF;">Platform Settings</div>
+        </div>
+      </header>
+
+      <div class="admin-content-body">
+        <div class="page-title-row">
+          <div>
+            <h1 class="page-heading">Platform Rules & Financial Controls</h1>
+            <div style="font-size:12px; color:var(--text-secondary);">Manage official bank receiving accounts, fee thresholds, and partner rates.</div>
+          </div>
+        </div>
+
+        <div class="warning-banner">
+          <strong>Security Notice:</strong> Modifying settings directly updates live platform rules and is recorded in the administrative audit log. Historical financial records and investments are preserved.
+        </div>
+
+        <!-- 1. Deposit Bank Account Settings -->
+        <section class="settings-card">
+          <div class="sc-header">
+            <span class="sc-title">Official Deposit Bank Account</span>
+            <button type="button" class="btn-save-setting" id="btn-save-bank">Update Account</button>
+          </div>
+          <form id="form-bank">
+            <div class="form-grid-duo">
+              <div class="form-group">
+                <label class="form-label" for="bank-name">Bank Institution</label>
+                <input type="text" id="bank-name" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="bank-num">Account Number</label>
+                <input type="text" id="bank-num" class="form-input" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bank-title">Account Beneficiary Name</label>
+              <input type="text" id="bank-title" class="form-input" required>
+            </div>
+          </form>
+        </section>
+
+        <!-- 2. Operational Rules & Financial Thresholds -->
+        <section class="settings-card">
+          <div class="sc-header">
+            <span class="sc-title">Financial Rules & Thresholds</span>
+            <button type="button" class="btn-save-setting" id="btn-save-rules">Update Rules</button>
+          </div>
+          <form id="form-rules">
+            <div class="form-grid-duo">
+              <div class="form-group">
+                <label class="form-label" for="min-dep">Minimum Deposit (NGN)</label>
+                <input type="number" id="min-dep" class="form-input" min="100" step="100" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="min-wth">Minimum Withdrawal (NGN)</label>
+                <input type="number" id="min-wth" class="form-input" min="100" step="100" required>
+              </div>
+            </div>
+            <div class="form-grid-duo">
+              <div class="form-group">
+                <label class="form-label" for="wth-fee">Withdrawal Processing Charge (%)</label>
+                <input type="number" id="wth-fee" class="form-input" min="0" max="50" step="0.5" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="welcome-bonus">Welcome Bonus Credit (NGN)</label>
+                <input type="number" id="welcome-bonus" class="form-input" min="0" step="100" required>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- 3. Referral Commission Rates -->
+        <section class="settings-card">
+          <div class="sc-header">
+            <span class="sc-title">3-Tier Partner Commission Rates (%)</span>
+            <button type="button" class="btn-save-setting" id="btn-save-rates">Update Rates</button>
+          </div>
+          <form id="form-rates">
+            <div class="form-grid-duo" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="form-group">
+                <label class="form-label" for="rate-l1">Level 1 (Direct %)</label>
+                <input type="number" id="rate-l1" class="form-input" min="0" max="50" step="0.5" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rate-l2">Level 2 (Tier 2 %)</label>
+                <input type="number" id="rate-l2" class="form-input" min="0" max="50" step="0.5" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="rate-l3">Level 3 (Tier 3 %)</label>
+                <input type="number" id="rate-l3" class="form-input" min="0" max="50" step="0.5" required>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- 4. Support Contact Channels -->
+        <section class="settings-card">
+          <div class="sc-header">
+            <span class="sc-title">Official Support & Community Channels</span>
+            <button type="button" class="btn-save-setting" id="btn-save-support">Update Channels</button>
+          </div>
+          <form id="form-support">
+            <div class="form-grid-duo">
+              <div class="form-group">
+                <label class="form-label" for="sup-email">Official Support Email</label>
+                <input type="email" id="sup-email" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="sup-phone">WhatsApp Support Number</label>
+                <input type="text" id="sup-phone" class="form-input" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sup-telegram">Telegram Help URL</label>
+              <input type="url" id="sup-telegram" class="form-input" required>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <span style="font-weight:800; font-size:16px;">ADMIN MODULES</span>
+        <button type="button" id="btn-close-drawer" style="background:none; border:none; color:#FFF; font-size:18px;">&times;</button>
+      </div>
+      <ul class="sidebar-menu" style="padding:0;">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link active"><span>Settings</span></a></li>
+      </ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, showToast } from '/supabase-client.js';
+
+    let currentSettings = {};
+
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { window.location.replace('/admin/login.html'); return false; }
+      const { data: adminCheck } = await supabase.rpc('check_is_admin');
+      if (!adminCheck || !adminCheck.is_admin) {
+        await supabase.auth.signOut();
+        window.location.replace('/admin/login.html');
+        return false;
+      }
+      return true;
+    }
+
+    async function loadSettings() {
+      const { data, error } = await supabase.from('site_settings').select('*');
+      if (error || !data) return;
+
+      data.forEach(r => { currentSettings[r.key] = r.value; });
+
+      // Populate Bank
+      const bank = currentSettings.deposit_account || {};
+      document.getElementById('bank-name').value = bank.bank || 'MONIEPOINT';
+      document.getElementById('bank-num').value = bank.account_number || '5318726919';
+      document.getElementById('bank-title').value = bank.account_name || 'IBILOLA OMOROYEKE ISHOLA';
+
+      // Populate Rules
+      const rules = currentSettings.platform_rules || {};
+      const welcome = currentSettings.welcome_bonus || {};
+      document.getElementById('min-dep').value = rules.minimum_deposit || 1000;
+      document.getElementById('min-wth').value = rules.minimum_withdrawal || 2000;
+      document.getElementById('wth-fee').value = rules.withdrawal_fee_percent || 15.0;
+      document.getElementById('welcome-bonus').value = welcome.amount || 1000;
+
+      // Populate Rates
+      const rates = currentSettings.referral_commission_rates || {};
+      document.getElementById('rate-l1').value = rates.level1 || 15.0;
+      document.getElementById('rate-l2').value = rates.level2 || 3.0;
+      document.getElementById('rate-l3').value = rates.level3 || 1.0;
+
+      // Populate Support
+      const sup = currentSettings.support_channels || {};
+      document.getElementById('sup-email').value = sup.email || 'support@novexa.com';
+      document.getElementById('sup-phone').value = sup.whatsapp || '+2345318726919';
+      document.getElementById('sup-telegram').value = sup.telegram || 'https://t.me/novexa_platform';
+    }
+
+    // Save Bank Account
+    document.getElementById('btn-save-bank').addEventListener('click', async () => {
+      const payload = {
+        bank: document.getElementById('bank-name').value.trim(),
+        account_number: document.getElementById('bank-num').value.trim(),
+        account_name: document.getElementById('bank-title').value.trim()
+      };
+
+      const { data, error } = await supabase.rpc('admin_update_site_setting', {
+        p_key: 'deposit_account',
+        p_value: payload
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || 'Error saving deposit account', 'error');
+      } else {
+        showToast('Deposit account parameters updated', 'success');
+      }
+    });
+
+    // Save Rules & Welcome Bonus
+    document.getElementById('btn-save-rules').addEventListener('click', async () => {
+      const rulesPayload = {
+        minimum_deposit: parseFloat(document.getElementById('min-dep').value),
+        minimum_withdrawal: parseFloat(document.getElementById('min-wth').value),
+        withdrawal_fee_percent: parseFloat(document.getElementById('wth-fee').value),
+        support_whatsapp: document.getElementById('sup-phone').value.trim()
+      };
+
+      const bonusPayload = {
+        amount: parseFloat(document.getElementById('welcome-bonus').value),
+        enabled: true,
+        require_first_deposit: false
+      };
+
+      const res1 = await supabase.rpc('admin_update_site_setting', { p_key: 'platform_rules', p_value: rulesPayload });
+      const res2 = await supabase.rpc('admin_update_site_setting', { p_key: 'welcome_bonus', p_value: bonusPayload });
+
+      if (res1.error || res2.error) {
+        showToast('Error updating financial rules', 'error');
+      } else {
+        showToast('Financial rules & welcome bonus updated', 'success');
+      }
+    });
+
+    // Save Referral Rates
+    document.getElementById('btn-save-rates').addEventListener('click', async () => {
+      const ratesPayload = {
+        level1: parseFloat(document.getElementById('rate-l1').value),
+        level2: parseFloat(document.getElementById('rate-l2').value),
+        level3: parseFloat(document.getElementById('rate-l3').value)
+      };
+
+      const { data, error } = await supabase.rpc('admin_update_site_setting', {
+        p_key: 'referral_commission_rates',
+        p_value: ratesPayload
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || 'Error updating referral rates', 'error');
+      } else {
+        showToast('3-Tier partner commission rates updated', 'success');
+      }
+    });
+
+    // Save Support Channels
+    document.getElementById('btn-save-support').addEventListener('click', async () => {
+      const supPayload = {
+        email: document.getElementById('sup-email').value.trim(),
+        whatsapp: document.getElementById('sup-phone').value.trim(),
+        telegram: document.getElementById('sup-telegram').value.trim(),
+        hours: '24/7 Monitored Queue'
+      };
+
+      const { data, error } = await supabase.rpc('admin_update_site_setting', {
+        p_key: 'support_channels',
+        p_value: supPayload
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || 'Error updating support channels', 'error');
+      } else {
+        showToast('Support channels updated', 'success');
+      }
+    });
+
+    // Mobile Drawer
+    document.getElementById('btn-open-drawer').addEventListener('click', () => {
+      document.getElementById('mobile-drawer-overlay').style.display = 'block';
+    });
+    document.getElementById('btn-close-drawer').addEventListener('click', () => {
+      document.getElementById('mobile-drawer-overlay').style.display = 'none';
+    });
+
+    checkAuth().then(ok => { if (ok) loadSettings(); });
+  </script>
+</body>
+</html>
