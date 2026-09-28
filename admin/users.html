@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NOVEXA Admin — User Directory</title>
+  <style>
+    :root {
+      --bg-dark: #050814;
+      --bg-card: #0A0F24;
+      --bg-elevated: #101735;
+      --accent: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-cyan: #38BDF8;
+      --gold: #F59E0B;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E293B;
+      --border-focus: #3B82F6;
+      --success: #10B981;
+      --danger: #EF4444;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .admin-app {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Desktop Sidebar */
+    .admin-sidebar {
+      display: none;
+      width: 250px;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 900;
+    }
+
+    @media (min-width: 1024px) {
+      .admin-sidebar {
+        display: flex;
+      }
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      color: #FFF;
+    }
+
+    .brand-text {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #FFF;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .menu-link:hover, .menu-link.active {
+      background: rgba(37, 99, 235, 0.15);
+      color: #93C5FD;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Main Administration Content */
+    .admin-main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .admin-top-nav {
+      background: rgba(8, 12, 30, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 800;
+    }
+
+    .btn-mobile-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @media (min-width: 1024px) {
+      .btn-mobile-toggle {
+        display: none;
+      }
+    }
+
+    .admin-content-body {
+      padding: 20px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .page-heading {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    /* Filters Bar */
+    .filters-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      flex-grow: 1;
+      min-width: 220px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px 12px 38px;
+      font-size: 13px;
+      color: #FFF;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .filter-select {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #FFF;
+      outline: none;
+    }
+
+    /* Users Table Container */
+    .users-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .users-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .users-table {
+        display: table;
+      }
+      .users-cards-mobile {
+        display: none;
+      }
+    }
+
+    .users-table th {
+      background: #080C1E;
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .users-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--text-secondary);
+    }
+
+    .users-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .status-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+
+    .status-badge.active {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+
+    .status-badge.suspended {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    /* Mobile Cards View */
+    .users-cards-mobile {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 14px;
+    }
+
+    .user-card-mob {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .btn-view-user {
+      display: inline-block;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #93C5FD;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* Pagination */
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .btn-page {
+      background: #080C1E;
+      border: 1px solid var(--border);
+      color: #FFF;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-page:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Mobile Drawer */
+    .mobile-drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+    }
+
+    .mobile-drawer {
+      width: 260px;
+      height: 100%;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #FCA5A5;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-app">
+    <!-- Desktop Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-mark">N</div>
+        <div class="brand-text">NOVEXA ADMIN</div>
+      </div>
+
+      <ul class="sidebar-menu">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link active"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button type="button" class="btn-logout" id="btn-sidebar-logout">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <header class="admin-top-nav">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer">&#9776;</button>
+          <div style="font-size:15px; font-weight:700; color:#FFF;">User Directory</div>
+        </div>
+
+        <button type="button" class="btn-logout" id="btn-header-logout">Sign Out</button>
+      </header>
+
+      <div class="admin-content-body">
+        <div class="page-title-row">
+          <div>
+            <h1 class="page-heading">Investor Accounts</h1>
+            <div style="font-size:12px; color:var(--text-secondary);" id="user-count-label">Loading registered investors...</div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="filters-bar">
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="user-search" class="search-input" placeholder="Search by name, email, or referral code...">
+          </div>
+
+          <select id="status-filter" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="active">Active Only</option>
+            <option value="suspended">Suspended Only</option>
+          </select>
+
+          <button type="button" class="btn-page" id="btn-refresh">&#8635; Refresh</button>
+        </div>
+
+        <!-- Users Table & Mobile Cards -->
+        <div class="users-container">
+          <!-- Desktop Table -->
+          <table class="users-table">
+            <thead>
+              <tr>
+                <th>Investor</th>
+                <th>Referral Code</th>
+                <th>Wallet Balance</th>
+                <th>Total Earned</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-users">
+              <tr><td colspan="7" style="text-align:center; padding:30px;">Loading users...</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Mobile Cards -->
+          <div class="users-cards-mobile" id="mobile-users-container">
+            <div style="text-align:center; padding:20px; color:var(--text-muted);">Loading users...</div>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div class="pagination-bar">
+            <span id="page-info">Showing records</span>
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn-page" id="btn-prev">Previous</button>
+              <button type="button" class="btn-page" id="btn-next">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <span style="font-weight:800; font-size:16px;">ADMIN MODULES</span>
+        <button type="button" id="btn-close-drawer" style="background:none; border:none; color:#FFF; font-size:18px;">&times;</button>
+      </div>
+      <ul class="sidebar-menu" style="padding:0;">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link active"><span>Users</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
+      </ul>
+      <button type="button" class="btn-logout" id="btn-drawer-logout" style="margin-top:auto;">Sign Out</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, formatNaira } from '/supabase-client.js';
+
+    let currentPage = 1;
+    const pageSize = 15;
+    let totalCount = 0;
+    let searchDebounce = null;
+
+    async function verifyAdminAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.replace('/admin/login.html');
+        return false;
+      }
+      const { data: adminCheck } = await supabase.rpc('check_is_admin');
+      if (!adminCheck || !adminCheck.is_admin) {
+        await supabase.auth.signOut();
+        window.location.replace('/admin/login.html');
+        return false;
+      }
+      return true;
+    }
+
+    async function loadUsers() {
+      const searchVal = document.getElementById('user-search').value.trim();
+      const statusVal = document.getElementById('status-filter').value;
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      let query = supabase
+        .from('profiles')
+        .select('*', { count: 'exact' });
+
+      if (statusVal === 'active') {
+        query = query.eq('is_active', true);
+      } else if (statusVal === 'suspended') {
+        query = query.eq('is_active', false);
+      }
+
+      if (searchVal) {
+        query = query.or(`full_name.ilike.%${searchVal}%,email.ilike.%${searchVal}%,referral_code.ilike.%${searchVal}%`);
+      }
+
+      query = query.order('created_at', { ascending: false }).range(from, to);
+
+      const { data: users, count, error } = await query;
+
+      if (error) {
+        console.error('Error fetching users:', error);
+        return;
+      }
+
+      totalCount = count || 0;
+      document.getElementById('user-count-label').textContent = `${totalCount} Registered Investor${totalCount === 1 ? '' : 's'}`;
+      document.getElementById('page-info').textContent = `Showing ${Math.min(from + 1, totalCount)} to ${Math.min(to + 1, totalCount)} of ${totalCount}`;
+
+      document.getElementById('btn-prev').disabled = currentPage <= 1;
+      document.getElementById('btn-next').disabled = to + 1 >= totalCount;
+
+      renderUsers(users || []);
+    }
+
+    function renderUsers(users) {
+      const tbody = document.getElementById('tbody-users');
+      const mobileContainer = document.getElementById('mobile-users-container');
+
+      if (users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">No users found matching your search.</td></tr>`;
+        mobileContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No users found.</div>`;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      mobileContainer.innerHTML = '';
+
+      users.forEach(u => {
+        const joinDate = new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const statusBadge = u.is_active 
+          ? `<span class="status-badge active">Active</span>` 
+          : `<span class="status-badge suspended">Suspended</span>`;
+
+        // Desktop Row
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div style="font-weight:700; color:#FFF;">${u.full_name || 'Investor'}</div>
+            <div style="font-size:11px; color:var(--text-muted);">${u.email}</div>
+          </td>
+          <td><strong style="color:var(--accent-cyan);">${u.referral_code}</strong></td>
+          <td style="font-weight:700; color:#FFF;">${formatNaira(u.wallet_balance)}</td>
+          <td style="color:var(--text-secondary);">${formatNaira(u.total_earned)}</td>
+          <td>${statusBadge}</td>
+          <td>${joinDate}</td>
+          <td><a href="/admin/user-details.html?id=${u.id}" class="btn-view-user">Manage &rarr;</a></td>
+        `;
+        tbody.appendChild(tr);
+
+        // Mobile Card
+        const mobCard = document.createElement('div');
+        mobCard.className = 'user-card-mob';
+        mobCard.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <div style="font-weight:700; color:#FFF; font-size:14px;">${u.full_name || 'Investor'}</div>
+              <div style="font-size:12px; color:var(--text-muted);">${u.email}</div>
+            </div>
+            ${statusBadge}
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; border-top:1px dashed var(--border); padding-top:6px;">
+            <span>Balance: <strong style="color:#FFF;">${formatNaira(u.wallet_balance)}</strong></span>
+            <span>Ref: <strong style="color:var(--accent-cyan);">${u.referral_code}</strong></span>
+          </div>
+          <a href="/admin/user-details.html?id=${u.id}" class="btn-view-user">Manage Account & Activity &rarr;</a>
+        `;
+        mobileContainer.appendChild(mobCard);
+      });
+    }
+
+    // Search and Filters
+    document.getElementById('user-search').addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        currentPage = 1;
+        loadUsers();
+      }, 350);
+    });
+
+    document.getElementById('status-filter').addEventListener('change', () => {
+      currentPage = 1;
+      loadUsers();
+    });
+
+    document.getElementById('btn-refresh').addEventListener('click', loadUsers);
+
+    document.getElementById('btn-prev').addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        loadUsers();
+      }
+    });
+
+    document.getElementById('btn-next').addEventListener('click', () => {
+      currentPage++;
+      loadUsers();
+    });
+
+    // Mobile Drawer Controls
+    const drawer = document.getElementById('mobile-drawer-overlay');
+    document.getElementById('btn-open-drawer').addEventListener('click', () => { drawer.style.display = 'block'; });
+    document.getElementById('btn-close-drawer').addEventListener('click', () => { drawer.style.display = 'none'; });
+
+    async function handleLogout() {
+      await supabase.auth.signOut();
+      window.location.replace('/admin/login.html');
+    }
+    document.getElementById('btn-header-logout').addEventListener('click', handleLogout);
+    document.getElementById('btn-sidebar-logout').addEventListener('click', handleLogout);
+    document.getElementById('btn-drawer-logout')?.addEventListener('click', handleLogout);
+
+    verifyAdminAuth().then(ok => { if (ok) loadUsers(); });
+  </script>
+</body>
+</html>
