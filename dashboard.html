@@ -28,6 +28,8 @@
       --border-focus: #3B82F6;
       --success: #10B981;
       --danger: #EF4444;
+      --danger-dark: #B91C1C;
+      --danger-glow: rgba(239, 68, 68, 0.42);
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 16px;
@@ -65,16 +67,18 @@
       }
     }
 
-    /* Top App Header */
+    /* ==========================================================================
+       TOP APP HEADER & RED MENU BUTTON
+       ========================================================================== */
     .top-header {
       position: sticky;
       top: 0;
       z-index: 900;
-      background: rgba(7, 11, 25, 0.9);
+      background: rgba(7, 11, 25, 0.92);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 14px 0;
+      padding: 12px 0;
       margin-bottom: 16px;
     }
 
@@ -90,23 +94,44 @@
       gap: 12px;
     }
 
+    /* Premium NOVEXA Red Menu Button */
     .btn-sidebar-toggle {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      width: 38px;
-      height: 38px;
-      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--danger), var(--danger-dark));
+      border: 1px solid rgba(254, 202, 202, 0.35);
+      color: #FFFFFF;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      box-shadow: 0 4px 14px var(--danger-glow), 0 0 10px rgba(239, 68, 68, 0.25);
       transition: var(--transition);
+      flex-shrink: 0;
+      position: relative;
     }
 
     .btn-sidebar-toggle:hover {
-      border-color: var(--accent-cyan);
-      color: var(--accent-cyan);
+      background: linear-gradient(135deg, #F87171, #DC2626);
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.55), 0 0 14px rgba(239, 68, 68, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-sidebar-toggle:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-sidebar-toggle svg {
+      width: 22px;
+      height: 22px;
+      stroke: #FFFFFF;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      fill: none;
     }
 
     .brand-group {
@@ -147,8 +172,8 @@
 
     .icon-btn {
       position: relative;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -192,8 +217,8 @@
     }
 
     .avatar-btn {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background: linear-gradient(135deg, #1E293B, #0F172A);
       border: 1px solid var(--border);
@@ -356,12 +381,21 @@
       justify-content: center;
     }
 
-    /* Quick Action Icons */
+    /* ==========================================================================
+       EXPANDED QUICK ACTIONS GRID (6 ACTIONS: 3 COLS MOBILE, 6 COLS DESKTOP)
+       ========================================================================== */
     .quick-actions-bar {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       margin-bottom: 22px;
+    }
+
+    @media (min-width: 768px) {
+      .quick-actions-bar {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+      }
     }
 
     .quick-action-item {
@@ -380,6 +414,11 @@
 
     .quick-action-item:hover {
       border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .quick-action-item:active {
+      transform: scale(0.97);
     }
 
     .qa-icon-wrap {
@@ -406,6 +445,7 @@
       font-size: 11px;
       font-weight: 600;
       color: var(--text-primary);
+      white-space: nowrap;
     }
 
     /* Dual Earnings Snapshot */
@@ -693,7 +733,7 @@
     }
 
     /* ==========================================================================
-       PART 1: TELEGRAM WELCOME POPUP MODAL
+       TELEGRAM WELCOME POPUP MODAL
        ========================================================================== */
     .popup-backdrop {
       position: fixed;
@@ -855,7 +895,7 @@
     }
 
     /* ==========================================================================
-       PART 2: COMPLETE USER NAVIGATION SIDEBAR & DRAWER
+       COMPLETE USER NAVIGATION SIDEBAR & DRAWER
        ========================================================================== */
     .sidebar-overlay {
       position: fixed;
@@ -863,7 +903,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0, 0, 0, 0.78);
       backdrop-filter: blur(5px);
       -webkit-backdrop-filter: blur(5px);
       z-index: 1500;
@@ -883,7 +923,7 @@
       z-index: 1501;
       display: flex;
       flex-direction: column;
-      box-shadow: 10px 0 35px rgba(0, 0, 0, 0.6);
+      box-shadow: 10px 0 35px rgba(0, 0, 0, 0.65);
       transform: translateX(-100%);
       transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -1146,12 +1186,12 @@
 </head>
 <body>
 
-  <!-- Top App Bar -->
+  <!-- Top App Bar with Red Menu Button -->
   <header class="top-header">
     <div class="app-container">
       <div class="header-inner">
         <div class="header-left">
-          <button type="button" class="btn-sidebar-toggle" id="btn-open-sidebar" aria-label="Open Navigation Menu">
+          <button type="button" class="btn-sidebar-toggle" id="btn-open-sidebar" aria-label="Open navigation menu">
             <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
 
@@ -1211,8 +1251,9 @@
       </div>
     </section>
 
-    <!-- Quick Action Icons -->
+    <!-- 6-Action Quick Actions Grid (Deposit, Withdraw, Invest, Ledger, Gift Code, Support) -->
     <section class="quick-actions-bar">
+      <!-- 1. Deposit -->
       <a href="/deposit.html" class="quick-action-item">
         <div class="qa-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
@@ -1220,6 +1261,7 @@
         <span class="qa-label">Deposit</span>
       </a>
 
+      <!-- 2. Withdraw -->
       <a href="/withdraw.html" class="quick-action-item">
         <div class="qa-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
@@ -1227,6 +1269,7 @@
         <span class="qa-label">Withdraw</span>
       </a>
 
+      <!-- 3. Invest -->
       <a href="/plans.html" class="quick-action-item">
         <div class="qa-icon-wrap">
           <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
@@ -1234,11 +1277,28 @@
         <span class="qa-label">Invest</span>
       </a>
 
+      <!-- 4. Ledger -->
       <a href="/transactions.html" class="quick-action-item">
         <div class="qa-icon-wrap">
           <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
         </div>
         <span class="qa-label">Ledger</span>
+      </a>
+
+      <!-- 5. Gift Code -->
+      <a href="/gift-code.html" class="quick-action-item">
+        <div class="qa-icon-wrap">
+          <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+        </div>
+        <span class="qa-label">Gift Code</span>
+      </a>
+
+      <!-- 6. Support -->
+      <a href="/support.html" class="quick-action-item">
+        <div class="qa-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <span class="qa-label">Support</span>
       </a>
     </section>
 
@@ -1271,7 +1331,7 @@
       </div>
 
       <div id="investments-container" class="investments-stack">
-        <!-- Rendered via JS -->
+        <!-- Loaded via JS -->
       </div>
     </section>
 
@@ -1283,7 +1343,7 @@
       </div>
 
       <div id="transactions-container" class="tx-stack">
-        <!-- Rendered via JS -->
+        <!-- Loaded via JS -->
       </div>
     </section>
 
@@ -1307,7 +1367,7 @@
   </main>
 
   <!-- ==========================================================================
-       PART 1: TELEGRAM WELCOME POPUP MODAL
+       TELEGRAM WELCOME POPUP MODAL
        ========================================================================== -->
   <div class="popup-backdrop" id="telegram-popup-overlay">
     <div class="popup-card">
@@ -1321,7 +1381,7 @@
 
       <h2 class="popup-title">Welcome to NOVEXA</h2>
       <p class="popup-desc">
-        Welcome to NOVEXA. Stay connected with the official NOVEXA community to receive important platform announcements, updates, support information, and notifications.
+        Welcome to NOVEXA. Stay connected with the official NOVEXA community to receive important platform announcements, updates, support information, and notifications. Join our official Telegram community below.
       </p>
 
       <!-- 1. Telegram Support -->
@@ -1352,7 +1412,7 @@
       <div class="tg-item-card">
         <div class="tg-item-top">
           <span class="tg-item-name">Official Telegram Channel</span>
-          <span class="tg-item-handle">Broadcasts</span>
+          <span class="tg-item-handle">Announcements</span>
         </div>
         <a href="https://t.me/novexa_channell" target="_blank" rel="noopener noreferrer" class="btn-tg-action">
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
@@ -1365,7 +1425,7 @@
   </div>
 
   <!-- ==========================================================================
-       PART 2: COMPLETE USER NAVIGATION SIDEBAR & DRAWER
+       COMPLETE USER NAVIGATION SIDEBAR & DRAWER
        ========================================================================== -->
   <div class="sidebar-overlay" id="user-sidebar-overlay"></div>
   <aside class="user-sidebar" id="user-sidebar" aria-label="User Navigation Menu">
@@ -1452,15 +1512,15 @@
           </a>
         </li>
         <li>
-          <a href="/support.html" class="sidebar-link">
-            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            <span>Support Desk</span>
-          </a>
-        </li>
-        <li>
           <a href="/gift-code.html" class="sidebar-link">
             <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
             <span>Redeem Gift Code</span>
+          </a>
+        </li>
+        <li>
+          <a href="/support.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Support Desk</span>
           </a>
         </li>
       </ul>
@@ -1632,7 +1692,6 @@
       const popupOverlay = document.getElementById('telegram-popup-overlay');
       if (!popupOverlay) return;
 
-      // Safe initialization: display automatically after dashboard data initialization
       popupOverlay.style.display = 'flex';
 
       function closePopup() {
@@ -1650,7 +1709,7 @@
       });
     }
 
-    // 5. Complete User Sidebar Navigation Logic
+    // 5. User Sidebar Navigation with Red Menu Button
     function setupUserSidebar() {
       const sidebar = document.getElementById('user-sidebar');
       const overlay = document.getElementById('user-sidebar-overlay');
@@ -1661,6 +1720,8 @@
 
       function openSidebar() {
         overlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        if (openBtn) openBtn.setAttribute('aria-label', 'Close navigation menu');
         requestAnimationFrame(() => {
           sidebar.classList.add('open');
         });
@@ -1668,6 +1729,8 @@
 
       function closeSidebar() {
         sidebar.classList.remove('open');
+        document.body.style.overflow = '';
+        if (openBtn) openBtn.setAttribute('aria-label', 'Open navigation menu');
         setTimeout(() => {
           overlay.style.display = 'none';
         }, 280);
@@ -1677,12 +1740,10 @@
       if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
       overlay.addEventListener('click', closeSidebar);
 
-      // Close sidebar when clicking any navigation link
       document.querySelectorAll('.sidebar-link').forEach(link => {
         link.addEventListener('click', closeSidebar);
       });
 
-      // Sidebar Logout Handler
       const logoutBtn = document.getElementById('btn-sidebar-logout');
       if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
@@ -1698,12 +1759,10 @@
 
       const { user, profile } = auth;
 
-      // User Identity
       const fullName = profile.full_name || 'NOVEXA Investor';
       const email = user.email || profile.email || '';
       setGreeting(fullName);
 
-      // Initials Avatar
       const initials = fullName
         .split(' ')
         .filter(Boolean)
@@ -1713,19 +1772,16 @@
       const avatarEl = document.getElementById('header-avatar');
       if (avatarEl) avatarEl.textContent = initials;
 
-      // Sidebar Profile Info
       const sideNameEl = document.getElementById('sidebar-user-name');
       const sideEmailEl = document.getElementById('sidebar-user-email');
       if (sideNameEl) sideNameEl.textContent = fullName;
       if (sideEmailEl) sideEmailEl.textContent = email;
 
-      // Balance & Total Earned
       currentBalance = Number(profile.wallet_balance) || 0;
       updateBalanceUI();
       const totEarnEl = document.getElementById('total-earnings');
       if (totEarnEl) totEarnEl.textContent = formatNaira(profile.total_earned || 0);
 
-      // Referral Code & Link Setup
       const refCode = profile.referral_code || 'NOVEXA';
       const dispRefEl = document.getElementById('display-ref-code');
       if (dispRefEl) dispRefEl.textContent = refCode;
@@ -1777,7 +1833,7 @@
         console.warn('Today earnings note:', err);
       }
 
-      // Accumulated Referral Commissions Total
+      // Accumulated Referral Commissions
       try {
         const { data: refComms } = await supabase
           .from('referral_commissions')
@@ -1791,13 +1847,13 @@
         console.warn('Ref commission note:', err);
       }
 
-      // Active Investments List
+      // Active Investments
       loadActiveInvestments(user.id);
 
       // Recent Transactions
       loadRecentTransactions(user.id);
 
-      // Trigger Telegram Welcome Popup automatically after dashboard load
+      // Telegram Welcome Popup
       triggerTelegramPopup();
     }
 
