@@ -17,6 +17,8 @@
       --accent-hover: #1D4ED8;
       --accent-glow: rgba(37, 99, 235, 0.35);
       --accent-cyan: #38BDF8;
+      --telegram-blue: #229ED9;
+      --telegram-glow: rgba(34, 158, 217, 0.35);
       --gold: #F59E0B;
       --text-primary: #F8FAFC;
       --text-secondary: #94A3B8;
@@ -50,7 +52,6 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Container: Mobile-First Max Width 480px, scales cleanly to larger screens */
     .app-container {
       width: 100%;
       max-width: 520px;
@@ -64,9 +65,7 @@
       }
     }
 
-    /* ==========================================================================
-       TOP APP HEADER
-       ========================================================================== */
+    /* Top App Header */
     .top-header {
       position: sticky;
       top: 0;
@@ -83,6 +82,31 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-sidebar-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-sidebar-toggle:hover {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
     }
 
     .brand-group {
@@ -187,9 +211,7 @@
       border-color: var(--accent-cyan);
     }
 
-    /* ==========================================================================
-       WELCOME GREETING
-       ========================================================================== */
+    /* Welcome Area */
     .welcome-area {
       display: flex;
       justify-content: space-between;
@@ -233,9 +255,7 @@
       box-shadow: 0 0 6px var(--success);
     }
 
-    /* ==========================================================================
-       MAIN BALANCE CARD
-       ========================================================================== */
+    /* Balance Hero Card */
     .balance-card {
       position: relative;
       background: linear-gradient(145deg, #0e1d42 0%, #091124 100%);
@@ -271,9 +291,6 @@
       color: #93C5FD;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
     .btn-toggle-balance {
@@ -285,12 +302,6 @@
       align-items: center;
       justify-content: center;
       padding: 4px;
-      border-radius: 4px;
-      transition: var(--transition);
-    }
-
-    .btn-toggle-balance:hover {
-      color: #FFF;
     }
 
     .btn-toggle-balance svg {
@@ -327,13 +338,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
       box-shadow: 0 4px 15px var(--accent-glow);
-      transition: var(--transition);
-    }
-
-    .btn-fund:active {
-      transform: scale(0.98);
     }
 
     .btn-cashout {
@@ -349,18 +354,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      transition: var(--transition);
     }
 
-    .btn-cashout:active {
-      background: rgba(255, 255, 255, 0.14);
-      transform: scale(0.98);
-    }
-
-    /* ==========================================================================
-       QUICK ACTIONS GRID
-       ========================================================================== */
+    /* Quick Action Icons */
     .quick-actions-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -382,8 +378,8 @@
       transition: var(--transition);
     }
 
-    .quick-action-item:active {
-      transform: scale(0.97);
+    .quick-action-item:hover {
+      border-color: rgba(59, 130, 246, 0.4);
     }
 
     .qa-icon-wrap {
@@ -412,9 +408,7 @@
       color: var(--text-primary);
     }
 
-    /* ==========================================================================
-       EARNINGS SNAPSHOT DUAL-CARD
-       ========================================================================== */
+    /* Dual Earnings Snapshot */
     .earnings-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -448,9 +442,7 @@
       color: #38BDF8;
     }
 
-    /* ==========================================================================
-       MIDNIGHT COUNTDOWN SECTION
-       ========================================================================== */
+    /* Midnight Processing Card */
     .midnight-card {
       background: linear-gradient(145deg, #0d152a, #070B19);
       border: 1px solid var(--border);
@@ -495,9 +487,6 @@
       letter-spacing: 1px;
     }
 
-    /* ==========================================================================
-       SECTION HEADERS WITH ACTION LINK
-       ========================================================================== */
     .section-bar {
       display: flex;
       align-items: center;
@@ -520,14 +509,7 @@
       font-weight: 600;
     }
 
-    .section-link:hover {
-      text-decoration: underline;
-    }
-
-    /* ==========================================================================
-       ACTIVE INVESTMENTS LIST
-       ========================================================================== */
-    .investments-stack {
+    .investments-stack, .tx-stack {
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -539,7 +521,6 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 16px;
-      transition: var(--transition);
     }
 
     .inv-top-row {
@@ -575,9 +556,6 @@
       background: #090E1F;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
-    }
-
-    .inv-metric-col {
       text-align: center;
     }
 
@@ -607,10 +585,8 @@
       height: 100%;
       background: linear-gradient(90deg, var(--accent), var(--accent-cyan));
       border-radius: 10px;
-      transition: width 0.5s ease;
     }
 
-    /* Polished Empty States */
     .empty-card {
       background: var(--bg-card);
       border: 1px dashed var(--border);
@@ -621,38 +597,6 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
-    }
-
-    .empty-card-icon {
-      font-size: 26px;
-      color: var(--text-muted);
-    }
-
-    .empty-card-text {
-      font-size: 13px;
-      color: var(--text-secondary);
-      max-width: 260px;
-    }
-
-    .empty-card-btn {
-      margin-top: 4px;
-      padding: 8px 16px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #FFF;
-      background: var(--accent);
-      border-radius: var(--radius-sm);
-      text-decoration: none;
-    }
-
-    /* ==========================================================================
-       RECENT TRANSACTIONS LIST
-       ========================================================================== */
-    .tx-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 24px;
     }
 
     .tx-item {
@@ -680,8 +624,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
-      font-size: 14px;
       font-weight: 800;
     }
 
@@ -695,10 +637,6 @@
       background: rgba(239, 68, 68, 0.12);
       color: var(--danger);
       border: 1px solid rgba(239, 68, 68, 0.25);
-    }
-
-    .tx-meta {
-      min-width: 0;
     }
 
     .tx-name {
@@ -716,60 +654,20 @@
       margin-top: 2px;
     }
 
-    .tx-right {
-      text-align: right;
-      flex-shrink: 0;
-    }
-
     .tx-amount {
       font-size: 13px;
       font-weight: 800;
     }
 
-    .tx-amount.credit {
-      color: var(--success);
-    }
+    .tx-amount.credit { color: var(--success); }
+    .tx-amount.debit { color: var(--text-primary); }
 
-    .tx-amount.debit {
-      color: var(--text-primary);
-    }
-
-    .tx-status {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-transform: capitalize;
-      margin-top: 2px;
-    }
-
-    /* ==========================================================================
-       REFERRAL SUMMARY CARD
-       ========================================================================== */
     .referral-summary-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 18px 16px;
       margin-bottom: 24px;
-    }
-
-    .ref-sum-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .ref-sum-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #FFF;
-    }
-
-    .ref-sum-link {
-      font-size: 12px;
-      color: #60A5FA;
-      text-decoration: none;
-      font-weight: 600;
     }
 
     .ref-code-box {
@@ -780,56 +678,363 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 8px 12px;
-      margin-bottom: 12px;
-    }
-
-    .ref-code-text {
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      color: #38BDF8;
+      margin: 10px 0;
     }
 
     .btn-copy-mini {
       background: var(--accent);
       color: #FFF;
       border: none;
-      padding: 5px 10px;
+      padding: 6px 12px;
       border-radius: 6px;
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .btn-copy-mini:active {
-      transform: scale(0.95);
-    }
-
-    .ref-stats-pill {
-      font-size: 12px;
-      color: var(--text-secondary);
-      display: flex;
-      justify-content: space-between;
-      border-top: 1px solid var(--border-light);
-      padding-top: 10px;
-    }
-
-    .ref-stats-pill strong {
-      color: #FFF;
     }
 
     /* ==========================================================================
-       OFFICIAL NOVEXA BOTTOM NAVIGATION STANDARD
-       (Matches User Reference Standard Exactly)
+       PART 1: TELEGRAM WELCOME POPUP MODAL
        ========================================================================== */
+    .popup-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .popup-card {
+      background: linear-gradient(150deg, #101935 0%, #0a0f24 100%);
+      border: 1px solid rgba(34, 158, 217, 0.4);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+      max-width: 440px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+      position: relative;
+      animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .popup-close-x {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      line-height: 1;
+      transition: var(--transition);
+    }
+
+    .popup-close-x:hover {
+      color: #FFF;
+      border-color: var(--accent-cyan);
+    }
+
+    .popup-header-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      background: rgba(34, 158, 217, 0.15);
+      border: 1px solid rgba(34, 158, 217, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--telegram-blue);
+      margin-bottom: 12px;
+      box-shadow: 0 0 16px var(--telegram-glow);
+    }
+
+    .popup-header-icon svg {
+      width: 26px;
+      height: 26px;
+      fill: currentColor;
+    }
+
+    .popup-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 6px;
+    }
+
+    .popup-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .tg-item-card {
+      background: #090e1f;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tg-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .tg-item-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+    }
+
+    .tg-item-handle {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    .btn-tg-action {
+      background: linear-gradient(135deg, #0088cc, #229ED9);
+      color: #FFF;
+      text-decoration: none;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+
+    .btn-tg-action svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    .btn-popup-continue {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: var(--transition);
+    }
+
+    .btn-popup-continue:hover {
+      color: #FFF;
+      border-color: #475569;
+    }
+
+    /* ==========================================================================
+       PART 2: COMPLETE USER NAVIGATION SIDEBAR & DRAWER
+       ========================================================================== */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 1500;
+      display: none;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .user-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 82%;
+      max-width: 320px;
+      height: 100vh;
+      background: #090e1f;
+      border-right: 1px solid var(--border);
+      z-index: 1501;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 10px 0 35px rgba(0, 0, 0, 0.6);
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .user-sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar-head {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+
+    .sidebar-close-btn:hover {
+      color: #FFF;
+    }
+
+    .sidebar-scroll {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 16px 14px;
+      scrollbar-width: thin;
+    }
+
+    .nav-group-title {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 8px 10px 4px 10px;
+    }
+
+    .sidebar-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 14px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .sidebar-link:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #FFF;
+    }
+
+    .sidebar-link.active {
+      background: rgba(37, 99, 235, 0.15);
+      color: #93C5FD;
+      font-weight: 700;
+    }
+
+    .sidebar-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15%;
+      bottom: 15%;
+      width: 3px;
+      background: var(--accent-cyan);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .sidebar-link svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      flex-shrink: 0;
+    }
+
+    .sidebar-profile-card {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      background: #060914;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .spc-meta {
+      min-width: 0;
+      flex-grow: 1;
+    }
+
+    .spc-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spc-email {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-sidebar-logout {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #FCA5A5;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Official Bottom Navigation Standard */
     .novexa-bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       z-index: 1000;
-      background: #FFFFFF; /* High-contrast white foundation from reference */
+      background: #FFFFFF;
       border-top: 1px solid #E2E8F0;
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
       padding-bottom: env(safe-area-inset-bottom, 8px);
@@ -846,7 +1051,6 @@
       padding: 0 4px;
     }
 
-    /* Responsive Adaptation: Floating Dock on Desktop */
     @media (min-width: 768px) {
       .novexa-bottom-nav {
         left: 50%;
@@ -872,10 +1076,8 @@
       justify-content: center;
       height: 100%;
       text-decoration: none;
-      color: #64748B; /* Inactive slate tone */
-      transition: color 0.15s ease;
+      color: #64748B;
       cursor: pointer;
-      user-select: none;
     }
 
     .nav-tab-icon {
@@ -895,17 +1097,14 @@
       stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
-      transition: transform 0.15s ease, stroke 0.15s ease;
     }
 
     .nav-tab-label {
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.1px;
       line-height: 1;
     }
 
-    /* Active Horizontal Line Indicator (Reference Requirement) */
     .nav-tab-indicator {
       position: absolute;
       bottom: 6px;
@@ -913,16 +1112,14 @@
       height: 3px;
       background: transparent;
       border-radius: 3px;
-      transition: background-color 0.2s ease, width 0.2s ease;
     }
 
-    /* Active State Styling */
     .nav-tab-item.active {
-      color: #0F172A; /* Deep solid focus */
+      color: #0F172A;
     }
 
     .nav-tab-item.active .nav-tab-icon svg {
-      stroke: #2563EB; /* Premium Royal Blue */
+      stroke: #2563EB;
       transform: translateY(-1px);
     }
 
@@ -932,24 +1129,18 @@
     }
 
     .nav-tab-item.active .nav-tab-indicator {
-      background: #2563EB; /* Clean active underline */
+      background: #2563EB;
       width: 26px;
     }
 
-    /* ==========================================================================
-       SKELETON / LOADING SHIMMER
-       ========================================================================== */
-    .skeleton {
-      background: linear-gradient(90deg, #1E293B 25%, #334155 50%, #1E293B 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: var(--radius-sm);
-      color: transparent !important;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+    @keyframes scaleIn {
+      from { transform: scale(0.94); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
@@ -959,10 +1150,16 @@
   <header class="top-header">
     <div class="app-container">
       <div class="header-inner">
-        <a href="/dashboard.html" class="brand-group">
-          <div class="brand-icon">N</div>
-          <span class="brand-name">NOVEXA</span>
-        </a>
+        <div class="header-left">
+          <button type="button" class="btn-sidebar-toggle" id="btn-open-sidebar" aria-label="Open Navigation Menu">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <a href="/dashboard.html" class="brand-group">
+            <div class="brand-icon">N</div>
+            <span class="brand-name">NOVEXA</span>
+          </a>
+        </div>
 
         <div class="header-actions">
           <a href="/notifications.html" class="icon-btn" aria-label="Notifications">
@@ -999,7 +1196,7 @@
       <div class="balance-top">
         <span class="balance-title">Available Portfolio Balance</span>
         <button class="btn-toggle-balance" id="btn-toggle-privacy" aria-label="Toggle balance privacy">
-          <svg id="eye-icon" viewBox="0 0 24 24">
+          <svg viewBox="0 0 24 24">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
             <circle cx="12" cy="12" r="3"></circle>
           </svg>
@@ -1009,12 +1206,8 @@
       <div class="balance-amount" id="balance-display">₦0.00</div>
 
       <div class="balance-card-actions">
-        <a href="/deposit.html" class="btn-fund">
-          <span>+ Deposit</span>
-        </a>
-        <a href="/withdraw.html" class="btn-cashout">
-          <span>&uarr; Withdraw</span>
-        </a>
+        <a href="/deposit.html" class="btn-fund">+ Deposit</a>
+        <a href="/withdraw.html" class="btn-cashout">&uarr; Withdraw</a>
       </div>
     </section>
 
@@ -1078,7 +1271,7 @@
       </div>
 
       <div id="investments-container" class="investments-stack">
-        <!-- Rendered via JS from Supabase -->
+        <!-- Rendered via JS -->
       </div>
     </section>
 
@@ -1090,35 +1283,225 @@
       </div>
 
       <div id="transactions-container" class="tx-stack">
-        <!-- Rendered via JS from Supabase -->
+        <!-- Rendered via JS -->
       </div>
     </section>
 
     <!-- Referral Summary Card -->
     <section class="referral-summary-card">
-      <div class="ref-sum-top">
-        <span class="ref-sum-title">Referral Partner Program</span>
-        <a href="/referrals.html" class="ref-sum-link">View Network &rarr;</a>
+      <div class="section-bar" style="margin-bottom:6px;">
+        <span class="section-heading" style="font-size:13px;">Referral Partner Program</span>
+        <a href="/referrals.html" class="section-link">View Network &rarr;</a>
       </div>
 
       <div class="ref-code-box">
-        <span class="ref-code-text" id="display-ref-code">NOVEXA------</span>
+        <span style="font-size:14px; font-weight:800; letter-spacing:1px; color:#38BDF8;" id="display-ref-code">NOVEXA------</span>
         <button class="btn-copy-mini" id="btn-copy-code">Copy Link</button>
       </div>
 
-      <div class="ref-stats-pill">
-        <span>Accumulated Partner Commissions:</span>
-        <strong id="ref-earned-val">₦0.00</strong>
+      <div style="font-size:12px; color:var(--text-secondary); display:flex; justify-content:space-between; border-top:1px solid var(--border-light); padding-top:8px;">
+        <span>Partner Commissions:</span>
+        <strong style="color:#FFF;" id="ref-earned-val">₦0.00</strong>
       </div>
     </section>
   </main>
 
   <!-- ==========================================================================
-       OFFICIAL NOVEXA AUTHENTICATED BOTTOM NAVIGATION
+       PART 1: TELEGRAM WELCOME POPUP MODAL
        ========================================================================== -->
+  <div class="popup-backdrop" id="telegram-popup-overlay">
+    <div class="popup-card">
+      <button type="button" class="popup-close-x" id="btn-close-popup-x" aria-label="Close Popup">&times;</button>
+
+      <div class="popup-header-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+        </svg>
+      </div>
+
+      <h2 class="popup-title">Welcome to NOVEXA</h2>
+      <p class="popup-desc">
+        Welcome to NOVEXA. Stay connected with the official NOVEXA community to receive important platform announcements, updates, support information, and notifications.
+      </p>
+
+      <!-- 1. Telegram Support -->
+      <div class="tg-item-card">
+        <div class="tg-item-top">
+          <span class="tg-item-name">Official Telegram Support</span>
+          <span class="tg-item-handle">@NOVEXA_CEO</span>
+        </div>
+        <a href="https://t.me/NOVEXA_CEO" target="_blank" rel="noopener noreferrer" class="btn-tg-action">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span>Message Support</span>
+        </a>
+      </div>
+
+      <!-- 2. Telegram Group -->
+      <div class="tg-item-card">
+        <div class="tg-item-top">
+          <span class="tg-item-name">Official Telegram Group</span>
+          <span class="tg-item-handle">Community</span>
+        </div>
+        <a href="https://t.me/NOVEXA_CEO/2116" target="_blank" rel="noopener noreferrer" class="btn-tg-action">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span>Join Official Group</span>
+        </a>
+      </div>
+
+      <!-- 3. Telegram Channel -->
+      <div class="tg-item-card">
+        <div class="tg-item-top">
+          <span class="tg-item-name">Official Telegram Channel</span>
+          <span class="tg-item-handle">Broadcasts</span>
+        </div>
+        <a href="https://t.me/novexa_channell" target="_blank" rel="noopener noreferrer" class="btn-tg-action">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span>Join Official Channel</span>
+        </a>
+      </div>
+
+      <button type="button" class="btn-popup-continue" id="btn-close-popup-continue">Continue to Dashboard</button>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       PART 2: COMPLETE USER NAVIGATION SIDEBAR & DRAWER
+       ========================================================================== -->
+  <div class="sidebar-overlay" id="user-sidebar-overlay"></div>
+  <aside class="user-sidebar" id="user-sidebar" aria-label="User Navigation Menu">
+    <div class="sidebar-head">
+      <a href="/dashboard.html" class="brand-group">
+        <div class="brand-icon">N</div>
+        <span class="brand-name">NOVEXA</span>
+      </a>
+      <button type="button" class="sidebar-close-btn" id="btn-close-sidebar" aria-label="Close Menu">&times;</button>
+    </div>
+
+    <div class="sidebar-scroll">
+      <!-- Section: MAIN -->
+      <div class="nav-group-title">Main</div>
+      <ul class="sidebar-nav-list">
+        <li>
+          <a href="/dashboard.html" class="sidebar-link active">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="/plans.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <span>Plans</span>
+          </a>
+        </li>
+        <li>
+          <a href="/investments.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span>My Investments</span>
+          </a>
+        </li>
+        <li>
+          <a href="/earnings.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span>Earnings</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Section: WALLET -->
+      <div class="nav-group-title">Wallet</div>
+      <ul class="sidebar-nav-list">
+        <li>
+          <a href="/wallet.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line><circle cx="17" cy="15" r="1"></circle></svg>
+            <span>Wallet Overview</span>
+          </a>
+        </li>
+        <li>
+          <a href="/deposit.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+            <span>Deposit Funds</span>
+          </a>
+        </li>
+        <li>
+          <a href="/withdraw.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>
+            <span>Withdraw Cashout</span>
+          </a>
+        </li>
+        <li>
+          <a href="/transactions.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <span>Ledger Transactions</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Section: COMMUNITY -->
+      <div class="nav-group-title">Community</div>
+      <ul class="sidebar-nav-list">
+        <li>
+          <a href="/referrals.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span>Partner Referrals</span>
+          </a>
+        </li>
+        <li>
+          <a href="/notifications.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span>System Alerts</span>
+          </a>
+        </li>
+        <li>
+          <a href="/support.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Support Desk</span>
+          </a>
+        </li>
+        <li>
+          <a href="/gift-code.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path></svg>
+            <span>Redeem Gift Code</span>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Section: ACCOUNT -->
+      <div class="nav-group-title">Account</div>
+      <ul class="sidebar-nav-list">
+        <li>
+          <a href="/profile.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Profile & Security</span>
+          </a>
+        </li>
+        <li>
+          <a href="/terms.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <span>Terms of Service</span>
+          </a>
+        </li>
+        <li>
+          <a href="/privacy.html" class="sidebar-link">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Privacy Policy</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- User Profile Section at Bottom of Sidebar -->
+    <div class="sidebar-profile-card">
+      <div class="spc-meta">
+        <div class="spc-name" id="sidebar-user-name">Investor</div>
+        <div class="spc-email" id="sidebar-user-email">portfolio@novexa.com</div>
+      </div>
+      <button type="button" class="btn-sidebar-logout" id="btn-sidebar-logout">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Official 5-Tab Navigation Standard -->
   <nav class="novexa-bottom-nav" aria-label="Main Navigation">
     <div class="nav-bar-inner">
-      <!-- 1. Home (Active on dashboard.html) -->
       <a href="/dashboard.html" class="nav-tab-item active" aria-label="Home Dashboard">
         <div class="nav-tab-icon">
           <svg viewBox="0 0 24 24">
@@ -1130,7 +1513,6 @@
         <div class="nav-tab-indicator"></div>
       </a>
 
-      <!-- 2. Plans -->
       <a href="/plans.html" class="nav-tab-item" aria-label="Investment Plans">
         <div class="nav-tab-icon">
           <svg viewBox="0 0 24 24">
@@ -1143,7 +1525,6 @@
         <div class="nav-tab-indicator"></div>
       </a>
 
-      <!-- 3. Wallet -->
       <a href="/wallet.html" class="nav-tab-item" aria-label="Wallet & Balances">
         <div class="nav-tab-icon">
           <svg viewBox="0 0 24 24">
@@ -1156,7 +1537,6 @@
         <div class="nav-tab-indicator"></div>
       </a>
 
-      <!-- 4. Referrals -->
       <a href="/referrals.html" class="nav-tab-item" aria-label="Referrals & Team">
         <div class="nav-tab-icon">
           <svg viewBox="0 0 24 24">
@@ -1170,7 +1550,6 @@
         <div class="nav-tab-indicator"></div>
       </a>
 
-      <!-- 5. Profile -->
       <a href="/profile.html" class="nav-tab-item" aria-label="Account Profile">
         <div class="nav-tab-icon">
           <svg viewBox="0 0 24 24">
@@ -1184,11 +1563,8 @@
     </div>
   </nav>
 
-  <!-- ==========================================================================
-       DASHBOARD CONTROLLER SCRIPT
-       ========================================================================== -->
   <script type="module">
-    import { supabase, requireAuth, formatNaira, showToast } from '/supabase-client.js';
+    import { supabase, requireAuth, formatNaira, logoutUser, showToast } from '/supabase-client.js';
 
     let currentBalance = 0;
     let isBalanceHidden = sessionStorage.getItem('nvx_hide_balance') === 'true';
@@ -1200,8 +1576,10 @@
       if (hour < 12) phrase = 'Good morning,';
       else if (hour < 17) phrase = 'Good afternoon,';
       
-      document.getElementById('time-greeting').textContent = phrase;
-      document.getElementById('user-name').textContent = name || 'Investor';
+      const greetingEl = document.getElementById('time-greeting');
+      const nameEl = document.getElementById('user-name');
+      if (greetingEl) greetingEl.textContent = phrase;
+      if (nameEl) nameEl.textContent = name || 'Investor';
     }
 
     // 2. Balance Privacy Toggle
@@ -1209,22 +1587,23 @@
     const eyeBtn = document.getElementById('btn-toggle-privacy');
 
     function updateBalanceUI() {
-      if (isBalanceHidden) {
-        balanceDisplay.textContent = '₦••••••••';
-      } else {
-        balanceDisplay.textContent = formatNaira(currentBalance);
+      if (balanceDisplay) {
+        balanceDisplay.textContent = isBalanceHidden ? '₦••••••••' : formatNaira(currentBalance);
       }
     }
 
-    eyeBtn.addEventListener('click', () => {
-      isBalanceHidden = !isBalanceHidden;
-      sessionStorage.setItem('nvx_hide_balance', isBalanceHidden);
-      updateBalanceUI();
-    });
+    if (eyeBtn) {
+      eyeBtn.addEventListener('click', () => {
+        isBalanceHidden = !isBalanceHidden;
+        sessionStorage.setItem('nvx_hide_balance', isBalanceHidden);
+        updateBalanceUI();
+      });
+    }
 
     // 3. Midnight Countdown (Live in Browser)
     function startMidnightCountdown() {
       const timerEl = document.getElementById('midnight-countdown');
+      if (!timerEl) return;
       
       function updateTimer() {
         const now = new Date();
@@ -1248,44 +1627,122 @@
       setInterval(updateTimer, 1000);
     }
 
-    // 4. Load Dashboard Data from Supabase
+    // 4. Telegram Welcome Popup Logic
+    function triggerTelegramPopup() {
+      const popupOverlay = document.getElementById('telegram-popup-overlay');
+      if (!popupOverlay) return;
+
+      // Safe initialization: display automatically after dashboard data initialization
+      popupOverlay.style.display = 'flex';
+
+      function closePopup() {
+        popupOverlay.style.display = 'none';
+      }
+
+      const closeX = document.getElementById('btn-close-popup-x');
+      const closeContinue = document.getElementById('btn-close-popup-continue');
+
+      if (closeX) closeX.addEventListener('click', closePopup);
+      if (closeContinue) closeContinue.addEventListener('click', closePopup);
+
+      popupOverlay.addEventListener('click', (e) => {
+        if (e.target === popupOverlay) closePopup();
+      });
+    }
+
+    // 5. Complete User Sidebar Navigation Logic
+    function setupUserSidebar() {
+      const sidebar = document.getElementById('user-sidebar');
+      const overlay = document.getElementById('user-sidebar-overlay');
+      const openBtn = document.getElementById('btn-open-sidebar');
+      const closeBtn = document.getElementById('btn-close-sidebar');
+
+      if (!sidebar || !overlay) return;
+
+      function openSidebar() {
+        overlay.style.display = 'block';
+        requestAnimationFrame(() => {
+          sidebar.classList.add('open');
+        });
+      }
+
+      function closeSidebar() {
+        sidebar.classList.remove('open');
+        setTimeout(() => {
+          overlay.style.display = 'none';
+        }, 280);
+      }
+
+      if (openBtn) openBtn.addEventListener('click', openSidebar);
+      if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+      overlay.addEventListener('click', closeSidebar);
+
+      // Close sidebar when clicking any navigation link
+      document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+      });
+
+      // Sidebar Logout Handler
+      const logoutBtn = document.getElementById('btn-sidebar-logout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          await logoutUser();
+        });
+      }
+    }
+
+    // 6. Main Dashboard Data Loader from Supabase
     async function loadDashboard() {
       const auth = await requireAuth();
       if (!auth) return;
 
       const { user, profile } = auth;
 
-      // Header initials and greeting
+      // User Identity
       const fullName = profile.full_name || 'NOVEXA Investor';
+      const email = user.email || profile.email || '';
       setGreeting(fullName);
-      
+
+      // Initials Avatar
       const initials = fullName
         .split(' ')
         .filter(Boolean)
         .slice(0, 2)
         .map(w => w[0].toUpperCase())
         .join('') || 'NV';
-      document.getElementById('header-avatar').textContent = initials;
+      const avatarEl = document.getElementById('header-avatar');
+      if (avatarEl) avatarEl.textContent = initials;
+
+      // Sidebar Profile Info
+      const sideNameEl = document.getElementById('sidebar-user-name');
+      const sideEmailEl = document.getElementById('sidebar-user-email');
+      if (sideNameEl) sideNameEl.textContent = fullName;
+      if (sideEmailEl) sideEmailEl.textContent = email;
 
       // Balance & Total Earned
       currentBalance = Number(profile.wallet_balance) || 0;
       updateBalanceUI();
-      document.getElementById('total-earnings').textContent = formatNaira(profile.total_earned || 0);
+      const totEarnEl = document.getElementById('total-earnings');
+      if (totEarnEl) totEarnEl.textContent = formatNaira(profile.total_earned || 0);
 
       // Referral Code & Link Setup
       const refCode = profile.referral_code || 'NOVEXA';
-      document.getElementById('display-ref-code').textContent = refCode;
-      
-      document.getElementById('btn-copy-code').addEventListener('click', () => {
-        const refUrl = `${window.location.origin}/register.html?ref=${refCode}`;
-        navigator.clipboard.writeText(refUrl).then(() => {
-          showToast('Referral link copied to clipboard!', 'success');
-        }).catch(() => {
-          showToast(`Code: ${refCode}`, 'info');
-        });
-      });
+      const dispRefEl = document.getElementById('display-ref-code');
+      if (dispRefEl) dispRefEl.textContent = refCode;
 
-      // Query Unread Notifications Count
+      const copyRefBtn = document.getElementById('btn-copy-code');
+      if (copyRefBtn) {
+        copyRefBtn.addEventListener('click', () => {
+          const refUrl = `${window.location.origin}/register.html?ref=${encodeURIComponent(refCode)}`;
+          navigator.clipboard.writeText(refUrl).then(() => {
+            showToast('Referral link copied to clipboard!', 'success');
+          }).catch(() => {
+            showToast(`Code: ${refCode}`, 'info');
+          });
+        });
+      }
+
+      // Unread Notifications Count
       try {
         const { count: unreadCount } = await supabase
           .from('notifications')
@@ -1295,14 +1752,16 @@
 
         if (unreadCount && unreadCount > 0) {
           const badge = document.getElementById('notif-count');
-          badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-          badge.style.display = 'flex';
+          if (badge) {
+            badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+            badge.style.display = 'flex';
+          }
         }
       } catch (err) {
-        console.warn('Notification count check skipped:', err.message);
+        console.warn('Notification count check note:', err);
       }
 
-      // Query Today's Earnings
+      // Today's Earnings
       try {
         const todayStr = new Date().toISOString().split('T')[0];
         const { data: todayEarns } = await supabase
@@ -1312,12 +1771,13 @@
           .eq('earning_date', todayStr);
 
         const todayTotal = (todayEarns || []).reduce((acc, row) => acc + Number(row.amount), 0);
-        document.getElementById('today-earnings').textContent = formatNaira(todayTotal);
+        const todayEl = document.getElementById('today-earnings');
+        if (todayEl) todayEl.textContent = formatNaira(todayTotal);
       } catch (err) {
-        console.warn('Today earnings note:', err.message);
+        console.warn('Today earnings note:', err);
       }
 
-      // Query Referral Commissions Total
+      // Accumulated Referral Commissions Total
       try {
         const { data: refComms } = await supabase
           .from('referral_commissions')
@@ -1325,20 +1785,26 @@
           .eq('sponsor_id', user.id);
 
         const refTotal = (refComms || []).reduce((acc, row) => acc + Number(row.amount), 0);
-        document.getElementById('ref-earned-val').textContent = formatNaira(refTotal);
+        const refTotalEl = document.getElementById('ref-earned-val');
+        if (refTotalEl) refTotalEl.textContent = formatNaira(refTotal);
       } catch (err) {
-        console.warn('Ref commission note:', err.message);
+        console.warn('Ref commission note:', err);
       }
 
-      // Query Active Investments (joined with plans)
+      // Active Investments List
       loadActiveInvestments(user.id);
 
-      // Query Recent Transactions
+      // Recent Transactions
       loadRecentTransactions(user.id);
+
+      // Trigger Telegram Welcome Popup automatically after dashboard load
+      triggerTelegramPopup();
     }
 
     async function loadActiveInvestments(userId) {
       const container = document.getElementById('investments-container');
+      if (!container) return;
+
       try {
         const { data: investments, error } = await supabase
           .from('investments')
@@ -1350,9 +1816,9 @@
         if (error || !investments || investments.length === 0) {
           container.innerHTML = `
             <div class="empty-card">
-              <div class="empty-card-icon">📂</div>
-              <div class="empty-card-text">You have no active investments accumulating midnight yields.</div>
-              <a href="/plans.html" class="empty-card-btn">Explore Plans</a>
+              <div style="font-size:26px; color:var(--text-muted);">📂</div>
+              <div style="font-size:13px; color:var(--text-secondary); max-width:260px;">You have no active investments accumulating midnight yields.</div>
+              <a href="/plans.html" style="background:var(--accent); color:#FFF; padding:8px 16px; border-radius:6px; font-size:12px; font-weight:700; text-decoration:none;">Explore Plans</a>
             </div>
           `;
           return;
@@ -1375,15 +1841,15 @@
             </div>
 
             <div class="inv-metrics-grid">
-              <div class="inv-metric-col">
+              <div>
                 <div class="inv-metric-label">Invested</div>
                 <div class="inv-metric-val">${formatNaira(inv.amount)}</div>
               </div>
-              <div class="inv-metric-col">
+              <div>
                 <div class="inv-metric-label">Daily ROI</div>
                 <div class="inv-metric-val" style="color:var(--accent-cyan);">${formatNaira(inv.daily_income)}</div>
               </div>
-              <div class="inv-metric-col">
+              <div>
                 <div class="inv-metric-label">Remaining</div>
                 <div class="inv-metric-val">${remainingDays} Days</div>
               </div>
@@ -1400,12 +1866,14 @@
           container.appendChild(card);
         });
       } catch (err) {
-        container.innerHTML = `<div class="empty-card"><div class="empty-card-text">Unable to load investments.</div></div>`;
+        container.innerHTML = `<div class="empty-card"><div style="font-size:13px; color:var(--text-secondary);">Unable to load investments.</div></div>`;
       }
     }
 
     async function loadRecentTransactions(userId) {
       const container = document.getElementById('transactions-container');
+      if (!container) return;
+
       try {
         const { data: txs, error } = await supabase
           .from('transactions')
@@ -1417,8 +1885,8 @@
         if (error || !txs || txs.length === 0) {
           container.innerHTML = `
             <div class="empty-card">
-              <div class="empty-card-icon">📜</div>
-              <div class="empty-card-text">No transaction ledger entries recorded yet.</div>
+              <div style="font-size:26px; color:var(--text-muted);">📜</div>
+              <div style="font-size:13px; color:var(--text-secondary);">No transaction ledger entries recorded yet.</div>
             </div>
           `;
           return;
@@ -1449,26 +1917,27 @@
           item.innerHTML = `
             <div class="tx-left">
               <div class="tx-icon-wrap ${iconClass}">${iconSign}</div>
-              <div class="tx-meta">
+              <div style="min-width:0;">
                 <div class="tx-name">${title}</div>
                 <div class="tx-date">${formattedDate}</div>
               </div>
             </div>
-            <div class="tx-right">
+            <div style="text-align:right; flex-shrink:0;">
               <div class="tx-amount ${amtClass}">${iconSign}${formatNaira(tx.amount)}</div>
-              <div class="tx-status">${tx.status}</div>
+              <div style="font-size:10px; color:var(--text-muted); text-transform:capitalize; margin-top:2px;">${tx.status}</div>
             </div>
           `;
           container.appendChild(item);
         });
       } catch (err) {
-        container.innerHTML = `<div class="empty-card"><div class="empty-card-text">Unable to load transactions.</div></div>`;
+        container.innerHTML = `<div class="empty-card"><div style="font-size:13px; color:var(--text-secondary);">Unable to load transactions.</div></div>`;
       }
     }
 
-    // Initialize
-    loadDashboard();
+    // Initialize Components
+    setupUserSidebar();
     startMidnightCountdown();
+    loadDashboard();
   </script>
 </body>
 </html>
