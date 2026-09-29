@@ -181,7 +181,7 @@
       color: #FFF;
     }
 
-    /* Lock Management Hero Banner */
+    /* Lock Banner */
     .lock-banner {
       background: linear-gradient(145deg, #101935 0%, #090E1F 100%);
       border: 1px solid rgba(59, 130, 246, 0.35);
@@ -236,7 +236,6 @@
       color: #050814;
     }
 
-    /* Policy Strip */
     .policy-strip {
       background: rgba(245, 158, 11, 0.08);
       border: 1px solid rgba(245, 158, 11, 0.3);
@@ -454,7 +453,18 @@
       cursor: pointer;
     }
 
-    /* Modals */
+    .btn-retry-queue {
+      background: var(--accent);
+      color: #FFF;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -632,7 +642,7 @@
           <button type="button" class="btn-action-refresh" id="btn-refresh">&#8635; Refresh</button>
         </div>
 
-        <!-- Table Container -->
+        <!-- Table Container with Explicit Loading / Empty / Error States -->
         <div class="table-container">
           <table class="wth-table">
             <thead>
@@ -712,43 +722,51 @@
     let allWithdrawals = [];
     let currentSelectedWithdrawal = null;
     let isProcessing = false;
+    let isFetching = false;
     let searchDebounce = null;
     let isSystemLocked = false;
     const feePct = 18.0;
 
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.replace('/admin/login.html'); return false; }
+      if (!session) { 
+        window.location.replace('/admin/login.html'); 
+        return false; 
+      }
       const { data: adminCheck } = await supabase.rpc('check_is_admin');
       if (!adminCheck || !adminCheck.is_admin) {
         await supabase.auth.signOut();
         window.location.replace('/admin/login.html');
-        return false;
+        return false; 
       }
       return true;
     }
 
     async function loadLockStatus() {
-      const { data } = await supabase.from('site_settings').select('value').eq('key', 'platform_rules').single();
-      isSystemLocked = Boolean(data?.value?.withdrawals_locked);
+      try {
+        const { data } = await supabase.from('site_settings').select('value').eq('key', 'platform_rules').single();
+        isSystemLocked = Boolean(data?.value?.withdrawals_locked);
 
-      const banner = document.getElementById('lock-banner');
-      const dot = document.getElementById('lock-dot');
-      const text = document.getElementById('lock-status-text');
-      const btn = document.getElementById('btn-toggle-lock');
+        const banner = document.getElementById('lock-banner');
+        const dot = document.getElementById('lock-dot');
+        const text = document.getElementById('lock-status-text');
+        const btn = document.getElementById('btn-toggle-lock');
 
-      if (isSystemLocked) {
-        banner.className = 'lock-banner locked';
-        dot.className = 'status-dot-pulse locked';
-        text.textContent = 'LOCKED (Submissions Blocked)';
-        btn.textContent = 'Unlock Withdrawals';
-        btn.className = 'btn-toggle-lock unlock-btn';
-      } else {
-        banner.className = 'lock-banner';
-        dot.className = 'status-dot-pulse';
-        text.textContent = 'UNLOCKED (Normal Operations)';
-        btn.textContent = 'Lock Withdrawals';
-        btn.className = 'btn-toggle-lock';
+        if (isSystemLocked) {
+          banner.className = 'lock-banner locked';
+          dot.className = 'status-dot-pulse locked';
+          text.textContent = 'LOCKED (Submissions Blocked)';
+          btn.textContent = 'Unlock Withdrawals';
+          btn.className = 'btn-toggle-lock unlock-btn';
+        } else {
+          banner.className = 'lock-banner';
+          dot.className = 'status-dot-pulse';
+          text.textContent = 'UNLOCKED (Normal Operations)';
+          btn.textContent = 'Lock Withdrawals';
+          btn.className = 'btn-toggle-lock';
+        }
+      } catch (e) {
+        console.error('Error loading lock status:', e);
       }
     }
 
@@ -774,43 +792,113 @@
       loadLockStatus();
     });
 
-    async function loadWithdrawals() {
-      const { data: withdrawals, error } = await supabase
-        .from('withdrawals')
-        .select('*, profiles(full_name, email)')
-        .order('created_at', { ascending: false });
+    // Independent Statistics Calculator
+    function calculateMetrics(records) {
+      try {
+        let pendingCnt = 0;
+        let pendingAmt = 0;
+        let approvedAmt = 0;
+        let rejectedCnt = 0;
 
-      if (error) {
-        console.error('Error fetching withdrawals:', error);
-        return;
+        (records || []).forEach(w => {
+          if (w.status === 'pending') {
+            pendingCnt++;
+            pendingAmt += Number(w.amount || 0);
+          } else if (w.status === 'approved') {
+            approvedAmt += Number(w.amount || 0);
+          } else if (w.status === 'rejected') {
+            rejectedCnt++;
+          }
+        });
+
+        document.getElementById('metric-pending-count').textContent = pendingCnt;
+        document.getElementById('metric-pending-amount').textContent = formatNaira(pendingAmt);
+        document.getElementById('metric-approved-amount').textContent = formatNaira(approvedAmt);
+        document.getElementById('metric-rejected-count').textContent = rejectedCnt;
+      } catch (err) {
+        console.error('Error calculating metrics:', err);
       }
-
-      allWithdrawals = withdrawals || [];
-      calculateMetrics();
-      renderTable();
     }
 
-    function calculateMetrics() {
-      let pendingCnt = 0;
-      let pendingAmt = 0;
-      let approvedAmt = 0;
-      let rejectedCnt = 0;
+    function renderLoadingState() {
+      const tbody = document.getElementById('tbody-withdrawals');
+      const mobContainer = document.getElementById('mobile-withdrawals-container');
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Loading cashout queue...</td></tr>`;
+      mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Loading cashout queue...</div>`;
+    }
 
-      allWithdrawals.forEach(w => {
-        if (w.status === 'pending') {
-          pendingCnt++;
-          pendingAmt += Number(w.amount);
-        } else if (w.status === 'approved') {
-          approvedAmt += Number(w.amount);
-        } else if (w.status === 'rejected') {
-          rejectedCnt++;
-        }
+    function renderErrorState(errMsg) {
+      const tbody = document.getElementById('tbody-withdrawals');
+      const mobContainer = document.getElementById('mobile-withdrawals-container');
+      const content = `
+        <div style="padding:24px 16px; text-align:center;">
+          <div style="font-size:24px; margin-bottom:8px;">⚠️</div>
+          <div style="font-weight:700; color:#FFF; margin-bottom:4px;">Unable to load withdrawal requests</div>
+          <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">${errMsg || 'Please verify database connection and retry.'}</div>
+          <button type="button" class="btn-retry-queue" id="btn-retry-now">Retry</button>
+        </div>
+      `;
+
+      tbody.innerHTML = `<tr><td colspan="8">${content}</td></tr>`;
+      mobContainer.innerHTML = content;
+
+      document.querySelectorAll('#btn-retry-now').forEach(b => {
+        b.addEventListener('click', loadWithdrawals);
       });
+    }
 
-      document.getElementById('metric-pending-count').textContent = pendingCnt;
-      document.getElementById('metric-pending-amount').textContent = formatNaira(pendingAmt);
-      document.getElementById('metric-approved-amount').textContent = formatNaira(approvedAmt);
-      document.getElementById('metric-rejected-count').textContent = rejectedCnt;
+    // High-Reliability Dual-Path Queue Loader
+    async function loadWithdrawals() {
+      if (isFetching) return;
+      isFetching = true;
+      renderLoadingState();
+
+      try {
+        let records = [];
+
+        // Primary: Dedicated Server Procedure (bypasses any PostgREST join mismatch)
+        const { data: rpcData, error: rpcErr } = await supabase.rpc('admin_get_withdrawals_queue');
+
+        if (!rpcErr && rpcData && rpcData.success) {
+          records = rpcData.withdrawals || [];
+        } else {
+          // Fallback: Two-step query to prevent PostgREST embedding failures
+          console.warn('RPC unavailable, executing fallback query:', rpcErr?.message);
+          const { data: rawWth, error: wthErr } = await supabase
+            .from('withdrawals')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (wthErr) throw wthErr;
+
+          if (rawWth && rawWth.length > 0) {
+            const userIds = [...new Set(rawWth.map(w => w.user_id))];
+            const { data: profiles } = await supabase
+              .from('profiles')
+              .select('id, full_name, email')
+              .in('id', userIds);
+
+            const profMap = {};
+            (profiles || []).forEach(p => { profMap[p.id] = p; });
+
+            records = rawWth.map(w => ({
+              ...w,
+              profiles: profMap[w.user_id] || { full_name: 'Investor', email: '' }
+            }));
+          } else {
+            records = [];
+          }
+        }
+
+        allWithdrawals = records;
+        calculateMetrics(allWithdrawals);
+        renderTable();
+      } catch (error) {
+        console.error('Withdrawal queue load error:', error);
+        renderErrorState(error.message);
+      } finally {
+        isFetching = false;
+      }
     }
 
     function renderTable() {
@@ -825,15 +913,17 @@
           const bank = (w.bank_name || '').toLowerCase();
           const accName = (w.account_name || '').toLowerCase();
           const ref = (w.reference || '').toLowerCase();
+          const id = (w.id || '').toLowerCase();
           const user = (w.profiles?.full_name || '').toLowerCase();
-          return bank.includes(searchVal) || accName.includes(searchVal) || ref.includes(searchVal) || user.includes(searchVal);
+          const email = (w.profiles?.email || '').toLowerCase();
+          return bank.includes(searchVal) || accName.includes(searchVal) || ref.includes(searchVal) || user.includes(searchVal) || email.includes(searchVal) || id.includes(searchVal);
         }
         return true;
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No withdrawals found matching current filters.</td></tr>`;
-        mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No withdrawals found.</div>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No withdrawal requests found.</td></tr>`;
+        mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No withdrawal requests found.</div>`;
         return;
       }
 
@@ -843,15 +933,17 @@
       filtered.forEach(w => {
         const userName = w.profiles?.full_name || 'Investor';
         const userEmail = w.profiles?.email || '';
-        const amt = Number(w.amount);
+        const amt = Number(w.amount || 0);
         const fee = Math.round(amt * (feePct / 100) * 100) / 100;
         const net = amt - fee;
-        const maskedAcc = w.account_number.length >= 4 ? `***${w.account_number.slice(-4)}` : '****';
+        const maskedAcc = w.account_number && w.account_number.length >= 4 
+          ? `***${w.account_number.slice(-4)}` 
+          : '****';
 
         // Desktop Row
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${w.reference}</strong></td>
+          <td><strong>${w.reference || 'Ref N/A'}</strong></td>
           <td>
             <div style="font-weight:700; color:#FFF;">${userName}</div>
             <div style="font-size:11px; color:var(--text-muted);">${userEmail}</div>
@@ -860,8 +952,8 @@
           <td style="color:var(--gold);">${formatNaira(fee)}</td>
           <td style="color:var(--accent-cyan); font-weight:800;">${formatNaira(net)}</td>
           <td>
-            <div style="font-weight:700; color:#FFF;">${w.bank_name}</div>
-            <div style="font-size:11px; color:var(--text-muted);">${maskedAcc} &bull; ${w.account_name}</div>
+            <div style="font-weight:700; color:#FFF;">${w.bank_name || 'Bank'}</div>
+            <div style="font-size:11px; color:var(--text-muted);">${maskedAcc} &bull; ${w.account_name || 'Beneficiary'}</div>
           </td>
           <td><span class="status-badge ${w.status}">${w.status}</span></td>
           <td><button type="button" class="btn-review btn-review-item" data-id="${w.id}">Audit</button></td>
@@ -880,8 +972,8 @@
             <span class="status-badge ${w.status}">${w.status}</span>
           </div>
           <div style="font-size:12px; color:var(--text-secondary); border-top:1px dashed var(--border); padding-top:6px;">
-            <div>Bank: <strong>${w.bank_name}</strong> &bull; ${maskedAcc}</div>
-            <div>Beneficiary: <strong>${w.account_name}</strong></div>
+            <div>Bank: <strong>${w.bank_name || 'Bank'}</strong> &bull; ${maskedAcc}</div>
+            <div>Beneficiary: <strong>${w.account_name || 'Beneficiary'}</strong></div>
           </div>
           <button type="button" class="btn-review btn-review-item" data-id="${w.id}" style="width:100%; margin-top:4px;">Audit & Execute Payout</button>
         `;
@@ -898,23 +990,37 @@
           currentSelectedWithdrawal = wth;
           document.getElementById('admin-notes').value = wth.admin_notes || '';
 
-          const amt = Number(wth.amount);
+          const amt = Number(wth.amount || 0);
           const fee = Math.round(amt * (feePct / 100) * 100) / 100;
           const net = amt - fee;
 
           // Check if investor has active contracts
-          const { count: userActiveInvs } = await supabase
-            .from('investments')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', wth.user_id)
-            .eq('status', 'active');
+          let activeContractText = 'Checking contracts...';
+          let activeContractColor = 'var(--text-muted)';
+          try {
+            const { count: userActiveInvs } = await supabase
+              .from('investments')
+              .select('*', { count: 'exact', head: true })
+              .eq('user_id', wth.user_id)
+              .eq('status', 'active');
+
+            if (userActiveInvs > 0) {
+              activeContractText = `${userActiveInvs} Active Contract(s)`;
+              activeContractColor = 'var(--success)';
+            } else {
+              activeContractText = 'NO ACTIVE CONTRACT';
+              activeContractColor = 'var(--danger)';
+            }
+          } catch (e) {
+            activeContractText = 'Status unavailable';
+          }
 
           const modalBody = document.getElementById('modal-details-body');
           modalBody.innerHTML = `
-            <div class="modal-row"><span style="color:var(--text-muted);">Withdrawal ID:</span><span style="font-weight:700; color:#FFF;">${wth.id}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Withdrawal ID:</span><span style="font-weight:700; color:#FFF; font-size:11px;">${wth.id}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Reference:</span><span style="font-weight:700; color:var(--accent-cyan);">${wth.reference}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Investor:</span><span style="font-weight:700; color:#FFF;">${wth.profiles?.full_name || 'Investor'} (${wth.profiles?.email})</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Active Products:</span><span style="font-weight:700; color:${userActiveInvs > 0 ? 'var(--success)' : 'var(--danger)'};">${userActiveInvs > 0 ? `${userActiveInvs} Active Investment(s)` : 'NO ACTIVE PRODUCT'}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Investor:</span><span style="font-weight:700; color:#FFF;">${wth.profiles?.full_name || 'Investor'} (${wth.profiles?.email || ''})</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Active Products:</span><span style="font-weight:700; color:${activeContractColor};">${activeContractText}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Gross Amount Requested:</span><span style="font-weight:700; color:#FFF;">${formatNaira(amt)}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Processing Charge (18%):</span><span style="font-weight:700; color:var(--gold);">${formatNaira(fee)}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted); font-size:14px; font-weight:700;">Net Payout Due:</span><span style="font-weight:900; font-size:16px; color:var(--accent-cyan);">${formatNaira(net)}</span></div>
@@ -940,7 +1046,7 @@
     // Modal Action Listeners
     document.getElementById('btn-approve-wth').addEventListener('click', async () => {
       if (!currentSelectedWithdrawal || isProcessing) return;
-      const amt = Number(currentSelectedWithdrawal.amount);
+      const amt = Number(currentSelectedWithdrawal.amount || 0);
       const net = amt - Math.round(amt * (feePct / 100) * 100) / 100;
       if (!confirm(`Mark withdrawal as approved and paid (${formatNaira(net)} net transfer after 18% fee)?`)) return;
 
@@ -1032,6 +1138,7 @@
       document.getElementById('mobile-drawer-overlay').style.display = 'none';
     });
 
+    // Initialization Sequence
     checkAuth().then(ok => {
       if (ok) {
         loadLockStatus();
