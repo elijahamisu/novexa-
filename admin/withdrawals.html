@@ -147,10 +147,13 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: #FFF;
-      padding: 6px 10px;
+      padding: 8px 12px;
       border-radius: var(--radius-sm);
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @media (min-width: 1024px) {
@@ -181,7 +184,7 @@
       color: #FFF;
     }
 
-    /* Lock Banner */
+    /* Lock Management Hero Banner */
     .lock-banner {
       background: linear-gradient(145deg, #101935 0%, #090E1F 100%);
       border: 1px solid rgba(59, 130, 246, 0.35);
@@ -457,9 +460,9 @@
       background: var(--accent);
       color: #FFF;
       border: none;
-      padding: 8px 16px;
+      padding: 8px 18px;
       border-radius: 6px;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
       margin-top: 10px;
@@ -574,7 +577,7 @@
     <div class="admin-main">
       <header class="admin-top-nav">
         <div style="display:flex; align-items:center; gap:10px;">
-          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer">&#9776;</button>
+          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer" aria-label="Toggle navigation">&#9776;</button>
           <div style="font-size:15px; font-weight:700; color:#FFF;">Withdrawal Processing</div>
         </div>
       </header>
@@ -593,10 +596,10 @@
             <div class="status-dot-pulse" id="lock-dot"></div>
             <div>
               <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted);">Withdrawal System Status</div>
-              <div style="font-size:16px; font-weight:800; color:#FFF;" id="lock-status-text">UNLOCKED (Normal Operations)</div>
+              <div style="font-size:15px; font-weight:800; color:#FFF;" id="lock-status-text">Loading status...</div>
             </div>
           </div>
-          <button type="button" class="btn-toggle-lock" id="btn-trigger-lock">Lock Withdrawals</button>
+          <button type="button" class="btn-toggle-lock" id="btn-toggle-lock">Toggle Lock</button>
         </div>
 
         <!-- Policy Strip -->
@@ -642,7 +645,7 @@
           <button type="button" class="btn-action-refresh" id="btn-refresh">&#8635; Refresh</button>
         </div>
 
-        <!-- Table Container with Explicit Loading / Empty / Error States -->
+        <!-- Table Container with Explicit Loading, Empty & Error States -->
         <div class="table-container">
           <table class="wth-table">
             <thead>
@@ -728,18 +731,24 @@
     const feePct = 18.0;
 
     async function checkAuth() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { 
-        window.location.replace('/admin/login.html'); 
-        return false; 
-      }
-      const { data: adminCheck } = await supabase.rpc('check_is_admin');
-      if (!adminCheck || !adminCheck.is_admin) {
-        await supabase.auth.signOut();
+      try {
+        const { data: { session }, error: sessErr } = await supabase.auth.getSession();
+        if (sessErr || !session || !session.user) { 
+          window.location.replace('/admin/login.html'); 
+          return false; 
+        }
+        const { data: adminCheck, error: rpcErr } = await supabase.rpc('check_is_admin');
+        if (rpcErr || !adminCheck || !adminCheck.is_admin) {
+          await supabase.auth.signOut();
+          window.location.replace('/admin/login.html');
+          return false; 
+        }
+        return true;
+      } catch (err) {
+        console.error('Admin authentication check failed:', err);
         window.location.replace('/admin/login.html');
-        return false; 
+        return false;
       }
-      return true;
     }
 
     async function loadLockStatus() {
@@ -752,47 +761,57 @@
         const text = document.getElementById('lock-status-text');
         const btn = document.getElementById('btn-toggle-lock');
 
-        if (isSystemLocked) {
-          banner.className = 'lock-banner locked';
-          dot.className = 'status-dot-pulse locked';
-          text.textContent = 'LOCKED (Submissions Blocked)';
-          btn.textContent = 'Unlock Withdrawals';
-          btn.className = 'btn-toggle-lock unlock-btn';
-        } else {
-          banner.className = 'lock-banner';
-          dot.className = 'status-dot-pulse';
-          text.textContent = 'UNLOCKED (Normal Operations)';
-          btn.textContent = 'Lock Withdrawals';
-          btn.className = 'btn-toggle-lock';
+        if (banner && dot && text && btn) {
+          if (isSystemLocked) {
+            banner.className = 'lock-banner locked';
+            dot.className = 'status-dot-pulse locked';
+            text.textContent = 'LOCKED (Submissions Blocked)';
+            btn.textContent = 'Unlock Withdrawals';
+            btn.className = 'btn-toggle-lock unlock-btn';
+          } else {
+            banner.className = 'lock-banner';
+            dot.className = 'status-dot-pulse';
+            text.textContent = 'UNLOCKED (Normal Operations)';
+            btn.textContent = 'Lock Withdrawals';
+            btn.className = 'btn-toggle-lock';
+          }
         }
       } catch (e) {
         console.error('Error loading lock status:', e);
       }
     }
 
-    document.getElementById('btn-toggle-lock').addEventListener('click', async () => {
-      const targetState = !isSystemLocked;
-      const confirmText = targetState
-        ? 'Lock Withdrawals?\n\nUsers will not be able to submit new withdrawal requests while withdrawals are locked. Existing pending withdrawals will remain unchanged.'
-        : 'Unlock Withdrawals?\n\nUsers will be able to submit new withdrawal requests again, subject to the normal withdrawal rules.';
+    // Toggle Lock Button Click Listener
+    const toggleLockBtn = document.getElementById('btn-toggle-lock');
+    if (toggleLockBtn) {
+      toggleLockBtn.addEventListener('click', async () => {
+        const targetState = !isSystemLocked;
+        const confirmText = targetState
+          ? 'Lock Withdrawals?\n\nUsers will not be able to submit new withdrawal requests while withdrawals are locked. Existing pending withdrawals will remain unchanged.'
+          : 'Unlock Withdrawals?\n\nUsers will be able to submit new withdrawal requests again, subject to normal withdrawal rules.';
 
-      if (!confirm(confirmText)) return;
+        if (!confirm(confirmText)) return;
 
-      const { data, error } = await supabase.rpc('admin_toggle_withdrawal_lock', {
-        p_locked: targetState,
-        p_reason: targetState ? 'Administrative global lock' : 'Administrative normal unlock'
+        try {
+          const { data, error } = await supabase.rpc('admin_toggle_withdrawal_lock', {
+            p_locked: targetState,
+            p_reason: targetState ? 'Administrative global lock' : 'Administrative normal unlock'
+          });
+
+          if (error || !data || !data.success) {
+            showToast(data?.message || 'Failed to toggle lock status', 'error');
+            return;
+          }
+
+          showToast(data.message, 'success');
+          loadLockStatus();
+        } catch (err) {
+          console.error('Error toggling lock:', err);
+          showToast('Network error toggling lock.', 'error');
+        }
       });
+    }
 
-      if (error || !data || !data.success) {
-        showToast(data?.message || 'Failed to toggle lock status', 'error');
-        return;
-      }
-
-      showToast(data.message, 'success');
-      loadLockStatus();
-    });
-
-    // Independent Statistics Calculator
     function calculateMetrics(records) {
       try {
         let pendingCnt = 0;
@@ -811,10 +830,15 @@
           }
         });
 
-        document.getElementById('metric-pending-count').textContent = pendingCnt;
-        document.getElementById('metric-pending-amount').textContent = formatNaira(pendingAmt);
-        document.getElementById('metric-approved-amount').textContent = formatNaira(approvedAmt);
-        document.getElementById('metric-rejected-count').textContent = rejectedCnt;
+        const pCountEl = document.getElementById('metric-pending-count');
+        const pAmtEl = document.getElementById('metric-pending-amount');
+        const aAmtEl = document.getElementById('metric-approved-amount');
+        const rCountEl = document.getElementById('metric-rejected-count');
+
+        if (pCountEl) pCountEl.textContent = pendingCnt;
+        if (pAmtEl) pAmtEl.textContent = formatNaira(pendingAmt);
+        if (aAmtEl) aAmtEl.textContent = formatNaira(approvedAmt);
+        if (rCountEl) rCountEl.textContent = rejectedCnt;
       } catch (err) {
         console.error('Error calculating metrics:', err);
       }
@@ -823,8 +847,8 @@
     function renderLoadingState() {
       const tbody = document.getElementById('tbody-withdrawals');
       const mobContainer = document.getElementById('mobile-withdrawals-container');
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Loading cashout queue...</td></tr>`;
-      mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Loading cashout queue...</div>`;
+      if (tbody) tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Loading cashout queue...</td></tr>`;
+      if (mobContainer) mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Loading cashout queue...</div>`;
     }
 
     function renderErrorState(errMsg) {
@@ -834,13 +858,13 @@
         <div style="padding:24px 16px; text-align:center;">
           <div style="font-size:24px; margin-bottom:8px;">⚠️</div>
           <div style="font-weight:700; color:#FFF; margin-bottom:4px;">Unable to load withdrawal requests</div>
-          <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">${errMsg || 'Please verify database connection and retry.'}</div>
-          <button type="button" class="btn-retry-queue" id="btn-retry-now">Retry</button>
+          <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">${errMsg || 'Please verify database connection.'}</div>
+          <button type="button" class="btn-retry-queue" id="btn-retry-now">Retry Now</button>
         </div>
       `;
 
-      tbody.innerHTML = `<tr><td colspan="8">${content}</td></tr>`;
-      mobContainer.innerHTML = content;
+      if (tbody) tbody.innerHTML = `<tr><td colspan="8">${content}</td></tr>`;
+      if (mobContainer) mobContainer.innerHTML = content;
 
       document.querySelectorAll('#btn-retry-now').forEach(b => {
         b.addEventListener('click', loadWithdrawals);
@@ -856,14 +880,14 @@
       try {
         let records = [];
 
-        // Primary: Dedicated Server Procedure (bypasses any PostgREST join mismatch)
+        // Primary: Dedicated Postgres Procedure
         const { data: rpcData, error: rpcErr } = await supabase.rpc('admin_get_withdrawals_queue');
 
         if (!rpcErr && rpcData && rpcData.success) {
           records = rpcData.withdrawals || [];
         } else {
-          // Fallback: Two-step query to prevent PostgREST embedding failures
-          console.warn('RPC unavailable, executing fallback query:', rpcErr?.message);
+          // Fallback: Two-step query to prevent PostgREST embedding issues
+          console.warn('RPC note, executing direct query fallback:', rpcErr?.message);
           const { data: rawWth, error: wthErr } = await supabase
             .from('withdrawals')
             .select('*')
@@ -904,8 +928,11 @@
     function renderTable() {
       const tbody = document.getElementById('tbody-withdrawals');
       const mobContainer = document.getElementById('mobile-withdrawals-container');
-      const searchVal = document.getElementById('search-input').value.trim().toLowerCase();
-      const statusFilter = document.getElementById('status-filter').value;
+      const searchInput = document.getElementById('search-input');
+      const statusSelect = document.getElementById('status-filter');
+
+      const searchVal = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      const statusFilter = statusSelect ? statusSelect.value : 'pending';
 
       const filtered = allWithdrawals.filter(w => {
         if (statusFilter !== 'all' && w.status !== statusFilter) return false;
@@ -922,13 +949,13 @@
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No withdrawal requests found.</td></tr>`;
-        mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No withdrawal requests found.</div>`;
+        if (tbody) tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">No withdrawal requests found.</td></tr>`;
+        if (mobContainer) mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No withdrawal requests found.</div>`;
         return;
       }
 
-      tbody.innerHTML = '';
-      mobContainer.innerHTML = '';
+      if (tbody) tbody.innerHTML = '';
+      if (mobContainer) mobContainer.innerHTML = '';
 
       filtered.forEach(w => {
         const userName = w.profiles?.full_name || 'Investor';
@@ -941,43 +968,47 @@
           : '****';
 
         // Desktop Row
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><strong>${w.reference || 'Ref N/A'}</strong></td>
-          <td>
-            <div style="font-weight:700; color:#FFF;">${userName}</div>
-            <div style="font-size:11px; color:var(--text-muted);">${userEmail}</div>
-          </td>
-          <td style="color:#FFF; font-weight:700;">${formatNaira(amt)}</td>
-          <td style="color:var(--gold);">${formatNaira(fee)}</td>
-          <td style="color:var(--accent-cyan); font-weight:800;">${formatNaira(net)}</td>
-          <td>
-            <div style="font-weight:700; color:#FFF;">${w.bank_name || 'Bank'}</div>
-            <div style="font-size:11px; color:var(--text-muted);">${maskedAcc} &bull; ${w.account_name || 'Beneficiary'}</div>
-          </td>
-          <td><span class="status-badge ${w.status}">${w.status}</span></td>
-          <td><button type="button" class="btn-review btn-review-item" data-id="${w.id}">Audit</button></td>
-        `;
-        tbody.appendChild(tr);
+        if (tbody) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${w.reference || 'Ref N/A'}</strong></td>
+            <td>
+              <div style="font-weight:700; color:#FFF;">${userName}</div>
+              <div style="font-size:11px; color:var(--text-muted);">${userEmail}</div>
+            </td>
+            <td style="color:#FFF; font-weight:700;">${formatNaira(amt)}</td>
+            <td style="color:var(--gold);">${formatNaira(fee)}</td>
+            <td style="color:var(--accent-cyan); font-weight:800;">${formatNaira(net)}</td>
+            <td>
+              <div style="font-weight:700; color:#FFF;">${w.bank_name || 'Bank'}</div>
+              <div style="font-size:11px; color:var(--text-muted);">${maskedAcc} &bull; ${w.account_name || 'Beneficiary'}</div>
+            </td>
+            <td><span class="status-badge ${w.status}">${w.status}</span></td>
+            <td><button type="button" class="btn-review btn-review-item" data-id="${w.id}">Audit</button></td>
+          `;
+          tbody.appendChild(tr);
+        }
 
         // Mobile Card
-        const card = document.createElement('div');
-        card.className = 'wth-card-mob';
-        card.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-            <div>
-              <div style="font-weight:800; color:#FFF; font-size:15px;">Net: ${formatNaira(net)}</div>
-              <div style="font-size:11px; color:var(--text-muted);">Gross: ${formatNaira(amt)} (18% Fee: ${formatNaira(fee)})</div>
+        if (mobContainer) {
+          const card = document.createElement('div');
+          card.className = 'wth-card-mob';
+          card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div style="font-weight:800; color:#FFF; font-size:15px;">Net: ${formatNaira(net)}</div>
+                <div style="font-size:11px; color:var(--text-muted);">Gross: ${formatNaira(amt)} (18% Fee: ${formatNaira(fee)})</div>
+              </div>
+              <span class="status-badge ${w.status}">${w.status}</span>
             </div>
-            <span class="status-badge ${w.status}">${w.status}</span>
-          </div>
-          <div style="font-size:12px; color:var(--text-secondary); border-top:1px dashed var(--border); padding-top:6px;">
-            <div>Bank: <strong>${w.bank_name || 'Bank'}</strong> &bull; ${maskedAcc}</div>
-            <div>Beneficiary: <strong>${w.account_name || 'Beneficiary'}</strong></div>
-          </div>
-          <button type="button" class="btn-review btn-review-item" data-id="${w.id}" style="width:100%; margin-top:4px;">Audit & Execute Payout</button>
-        `;
-        mobContainer.appendChild(card);
+            <div style="font-size:12px; color:var(--text-secondary); border-top:1px dashed var(--border); padding-top:6px;">
+              <div>Bank: <strong>${w.bank_name || 'Bank'}</strong> &bull; ${maskedAcc}</div>
+              <div>Beneficiary: <strong>${w.account_name || 'Beneficiary'}</strong></div>
+            </div>
+            <button type="button" class="btn-review btn-review-item" data-id="${w.id}" style="width:100%; margin-top:4px;">Audit & Execute Payout</button>
+          `;
+          mobContainer.appendChild(card);
+        }
       });
 
       // Audit Triggers
@@ -988,7 +1019,8 @@
           if (!wth) return;
 
           currentSelectedWithdrawal = wth;
-          document.getElementById('admin-notes').value = wth.admin_notes || '';
+          const notesInput = document.getElementById('admin-notes');
+          if (notesInput) notesInput.value = wth.admin_notes || '';
 
           const amt = Number(wth.amount || 0);
           const fee = Math.round(amt * (feePct / 100) * 100) / 100;
@@ -1016,135 +1048,191 @@
           }
 
           const modalBody = document.getElementById('modal-details-body');
-          modalBody.innerHTML = `
-            <div class="modal-row"><span style="color:var(--text-muted);">Withdrawal ID:</span><span style="font-weight:700; color:#FFF; font-size:11px;">${wth.id}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Reference:</span><span style="font-weight:700; color:var(--accent-cyan);">${wth.reference}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Investor:</span><span style="font-weight:700; color:#FFF;">${wth.profiles?.full_name || 'Investor'} (${wth.profiles?.email || ''})</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Active Products:</span><span style="font-weight:700; color:${activeContractColor};">${activeContractText}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Gross Amount Requested:</span><span style="font-weight:700; color:#FFF;">${formatNaira(amt)}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Processing Charge (18%):</span><span style="font-weight:700; color:var(--gold);">${formatNaira(fee)}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted); font-size:14px; font-weight:700;">Net Payout Due:</span><span style="font-weight:900; font-size:16px; color:var(--accent-cyan);">${formatNaira(net)}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Destination Bank:</span><span style="font-weight:700; color:#FFF;">${wth.bank_name}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Full Account Number:</span><span style="font-weight:800; font-size:15px; letter-spacing:1px; color:#FFF;">${wth.account_number}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Beneficiary Name:</span><span style="font-weight:700; color:#FFF;">${wth.account_name}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Current Status:</span><span class="status-badge ${wth.status}">${wth.status}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Submission Date:</span><span>${new Date(wth.created_at).toLocaleString('en-GB')}</span></div>
-          `;
-
-          const actionsBox = document.getElementById('modal-actions-box');
-          if (wth.status === 'pending') {
-            actionsBox.style.display = 'flex';
-          } else {
-            actionsBox.style.display = 'none';
+          if (modalBody) {
+            modalBody.innerHTML = `
+              <div class="modal-row"><span style="color:var(--text-muted);">Withdrawal ID:</span><span style="font-weight:700; color:#FFF; font-size:11px;">${wth.id}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Reference:</span><span style="font-weight:700; color:var(--accent-cyan);">${wth.reference}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Investor:</span><span style="font-weight:700; color:#FFF;">${wth.profiles?.full_name || 'Investor'} (${wth.profiles?.email || ''})</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Active Products:</span><span style="font-weight:700; color:${activeContractColor};">${activeContractText}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Gross Amount Requested:</span><span style="font-weight:700; color:#FFF;">${formatNaira(amt)}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Processing Charge (18%):</span><span style="font-weight:700; color:var(--gold);">${formatNaira(fee)}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted); font-size:14px; font-weight:700;">Net Payout Due:</span><span style="font-weight:900; font-size:16px; color:var(--accent-cyan);">${formatNaira(net)}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Destination Bank:</span><span style="font-weight:700; color:#FFF;">${wth.bank_name}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Full Account Number:</span><span style="font-weight:800; font-size:15px; letter-spacing:1px; color:#FFF;">${wth.account_number}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Beneficiary Name:</span><span style="font-weight:700; color:#FFF;">${wth.account_name}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Current Status:</span><span class="status-badge ${wth.status}">${wth.status}</span></div>
+              <div class="modal-row"><span style="color:var(--text-muted);">Submission Date:</span><span>${new Date(wth.created_at).toLocaleString('en-GB')}</span></div>
+            `;
           }
 
-          document.getElementById('review-modal').style.display = 'flex';
+          const actionsBox = document.getElementById('modal-actions-box');
+          if (actionsBox) {
+            actionsBox.style.display = wth.status === 'pending' ? 'flex' : 'none';
+          }
+
+          const modal = document.getElementById('review-modal');
+          if (modal) modal.style.display = 'flex';
         });
       });
     }
 
-    // Modal Action Listeners
-    document.getElementById('btn-approve-wth').addEventListener('click', async () => {
-      if (!currentSelectedWithdrawal || isProcessing) return;
-      const amt = Number(currentSelectedWithdrawal.amount || 0);
-      const net = amt - Math.round(amt * (feePct / 100) * 100) / 100;
-      if (!confirm(`Mark withdrawal as approved and paid (${formatNaira(net)} net transfer after 18% fee)?`)) return;
+    // Modal Actions
+    const approveBtn = document.getElementById('btn-approve-wth');
+    if (approveBtn) {
+      approveBtn.addEventListener('click', async () => {
+        if (!currentSelectedWithdrawal || isProcessing) return;
+        const amt = Number(currentSelectedWithdrawal.amount || 0);
+        const net = amt - Math.round(amt * (feePct / 100) * 100) / 100;
+        if (!confirm(`Mark withdrawal as approved and paid (${formatNaira(net)} net transfer after 18% fee)?`)) return;
 
-      isProcessing = true;
-      const btn = document.getElementById('btn-approve-wth');
-      btn.disabled = true;
-      btn.textContent = 'Recording Approval...';
+        isProcessing = true;
+        approveBtn.disabled = true;
+        approveBtn.textContent = 'Recording Approval...';
 
-      const notes = document.getElementById('admin-notes').value.trim();
+        const notes = document.getElementById('admin-notes')?.value.trim() || '';
 
-      const { data, error } = await supabase.rpc('admin_approve_withdrawal', {
-        p_withdrawal_id: currentSelectedWithdrawal.id,
-        p_admin_notes: notes || 'Bank transfer completed'
+        try {
+          const { data, error } = await supabase.rpc('admin_approve_withdrawal', {
+            p_withdrawal_id: currentSelectedWithdrawal.id,
+            p_admin_notes: notes || 'Bank transfer completed'
+          });
+
+          if (error || !data || !data.success) {
+            showToast(data?.message || error?.message || 'Approval failed.', 'error');
+            approveBtn.disabled = false;
+            approveBtn.textContent = 'Mark Paid & Complete';
+            isProcessing = false;
+            return;
+          }
+
+          showToast(data.message, 'success');
+          const modal = document.getElementById('review-modal');
+          if (modal) modal.style.display = 'none';
+          approveBtn.disabled = false;
+          approveBtn.textContent = 'Mark Paid & Complete';
+          isProcessing = false;
+
+          loadWithdrawals();
+        } catch (err) {
+          console.error(err);
+          showToast('Network error processing approval.', 'error');
+          approveBtn.disabled = false;
+          approveBtn.textContent = 'Mark Paid & Complete';
+          isProcessing = false;
+        }
       });
+    }
 
-      if (error || !data || !data.success) {
-        showToast(data?.message || error?.message || 'Approval failed.', 'error');
-        btn.disabled = false;
-        btn.textContent = 'Mark Paid & Complete';
-        isProcessing = false;
-        return;
-      }
+    const rejectBtn = document.getElementById('btn-reject-wth');
+    if (rejectBtn) {
+      rejectBtn.addEventListener('click', async () => {
+        if (!currentSelectedWithdrawal || isProcessing) return;
+        const reason = document.getElementById('admin-notes')?.value.trim() || '';
+        if (!reason) {
+          showToast('Please provide a rejection reason in notes.', 'error');
+          return;
+        }
+        if (!confirm(`Reject cashout request? ${formatNaira(currentSelectedWithdrawal.amount)} will be refunded to user's wallet.`)) return;
 
-      showToast(data.message, 'success');
-      document.getElementById('review-modal').style.display = 'none';
-      btn.disabled = false;
-      btn.textContent = 'Mark Paid & Complete';
-      isProcessing = false;
+        isProcessing = true;
+        rejectBtn.disabled = true;
+        rejectBtn.textContent = 'Refunding Wallet...';
 
-      loadWithdrawals();
-    });
+        try {
+          const { data, error } = await supabase.rpc('admin_reject_withdrawal', {
+            p_withdrawal_id: currentSelectedWithdrawal.id,
+            p_reason: reason
+          });
 
-    document.getElementById('btn-reject-wth').addEventListener('click', async () => {
-      if (!currentSelectedWithdrawal || isProcessing) return;
-      const reason = document.getElementById('admin-notes').value.trim();
-      if (!reason) {
-        showToast('Please provide a rejection reason in notes.', 'error');
-        return;
-      }
-      if (!confirm(`Reject cashout request? ${formatNaira(currentSelectedWithdrawal.amount)} will be refunded to user's wallet.`)) return;
+          if (error || !data || !data.success) {
+            showToast(data?.message || error?.message || 'Rejection failed.', 'error');
+            rejectBtn.disabled = false;
+            rejectBtn.textContent = 'Reject & Refund Wallet';
+            isProcessing = false;
+            return;
+          }
 
-      isProcessing = true;
-      const btn = document.getElementById('btn-reject-wth');
-      btn.disabled = true;
-      btn.textContent = 'Refunding Wallet...';
+          showToast(data.message, 'success');
+          const modal = document.getElementById('review-modal');
+          if (modal) modal.style.display = 'none';
+          rejectBtn.disabled = false;
+          rejectBtn.textContent = 'Reject & Refund Wallet';
+          isProcessing = false;
 
-      const { data, error } = await supabase.rpc('admin_reject_withdrawal', {
-        p_withdrawal_id: currentSelectedWithdrawal.id,
-        p_reason: reason
+          loadWithdrawals();
+        } catch (err) {
+          console.error(err);
+          showToast('Network error processing rejection.', 'error');
+          rejectBtn.disabled = false;
+          rejectBtn.textContent = 'Reject & Refund Wallet';
+          isProcessing = false;
+        }
       });
+    }
 
-      if (error || !data || !data.success) {
-        showToast(data?.message || error?.message || 'Rejection failed.', 'error');
-        btn.disabled = false;
-        btn.textContent = 'Reject & Refund Wallet';
-        isProcessing = false;
-        return;
-      }
+    const closeModalBtn = document.getElementById('btn-close-modal');
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener('click', () => {
+        const modal = document.getElementById('review-modal');
+        if (modal) modal.style.display = 'none';
+      });
+    }
 
-      showToast(data.message, 'success');
-      document.getElementById('review-modal').style.display = 'none';
-      btn.disabled = false;
-      btn.textContent = 'Reject & Refund Wallet';
-      isProcessing = false;
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(renderTable, 300);
+      });
+    }
 
-      loadWithdrawals();
-    });
+    const statusFilter = document.getElementById('status-filter');
+    if (statusFilter) {
+      statusFilter.addEventListener('change', renderTable);
+    }
 
-    document.getElementById('btn-close-modal').addEventListener('click', () => {
-      document.getElementById('review-modal').style.display = 'none';
-    });
-
-    document.getElementById('search-input').addEventListener('input', () => {
-      clearTimeout(searchDebounce);
-      searchDebounce = setTimeout(renderTable, 300);
-    });
-
-    document.getElementById('status-filter').addEventListener('change', renderTable);
-    document.getElementById('btn-refresh').addEventListener('click', () => {
-      loadLockStatus();
-      loadWithdrawals();
-    });
-
-    // Mobile Drawer
-    document.getElementById('btn-open-drawer').addEventListener('click', () => {
-      document.getElementById('mobile-drawer-overlay').style.display = 'block';
-    });
-    document.getElementById('btn-close-drawer').addEventListener('click', () => {
-      document.getElementById('mobile-drawer-overlay').style.display = 'none';
-    });
-
-    // Initialization Sequence
-    checkAuth().then(ok => {
-      if (ok) {
+    const refreshBtn = document.getElementById('btn-refresh');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
         loadLockStatus();
         loadWithdrawals();
-      }
-    });
+      });
+    }
+
+    // Mobile Drawer Controls
+    const openDrawerBtn = document.getElementById('btn-open-drawer');
+    const closeDrawerBtn = document.getElementById('btn-close-drawer');
+    const drawerOverlay = document.getElementById('mobile-drawer-overlay');
+
+    if (openDrawerBtn && drawerOverlay) {
+      openDrawerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        drawerOverlay.style.display = 'block';
+      });
+    }
+    if (closeDrawerBtn && drawerOverlay) {
+      closeDrawerBtn.addEventListener('click', () => {
+        drawerOverlay.style.display = 'none';
+      });
+    }
+    if (drawerOverlay) {
+      drawerOverlay.addEventListener('click', (e) => {
+        if (e.target === drawerOverlay) {
+          drawerOverlay.style.display = 'none';
+        }
+      });
+    }
+
+    // Sequence Execution
+    async function initPage() {
+      const isAuth = await checkAuth();
+      if (!isAuth) return;
+
+      await loadLockStatus();
+      await loadWithdrawals();
+    }
+
+    initPage();
   </script>
 </body>
 </html>
