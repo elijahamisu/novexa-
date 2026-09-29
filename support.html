@@ -14,6 +14,8 @@
       --accent-hover: #1D4ED8;
       --accent-glow: rgba(37, 99, 235, 0.35);
       --accent-cyan: #38BDF8;
+      --telegram-blue: #229ED9;
+      --telegram-glow: rgba(34, 158, 217, 0.35);
       --gold: #F59E0B;
       --text-primary: #F8FAFC;
       --text-secondary: #94A3B8;
@@ -119,15 +121,146 @@
       font-size: 13px;
       color: var(--text-secondary);
       line-height: 1.5;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
-    /* Channels Grid */
+    /* Telegram Dedicated Section */
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFF;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .telegram-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .telegram-card {
+      background: linear-gradient(145deg, #0d1733 0%, #090e1f 100%);
+      border: 1px solid rgba(34, 158, 217, 0.35);
+      border-radius: var(--radius-xl);
+      padding: 18px 16px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      transition: var(--transition);
+    }
+
+    .telegram-card:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-2px);
+    }
+
+    .tc-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .tc-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: rgba(34, 158, 217, 0.15);
+      border: 1px solid rgba(34, 158, 217, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--telegram-blue);
+      flex-shrink: 0;
+    }
+
+    .tc-icon-wrap svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .tc-meta {
+      flex-grow: 1;
+      min-width: 0;
+    }
+
+    .tc-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 2px;
+    }
+
+    .tc-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 2px;
+    }
+
+    .tc-handle {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      word-break: break-all;
+    }
+
+    .tc-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+
+    .btn-telegram {
+      width: 100%;
+      background: linear-gradient(135deg, #0088cc, #229ED9);
+      color: #FFF;
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px var(--telegram-glow);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .btn-telegram:active {
+      transform: scale(0.98);
+    }
+
+    .btn-telegram svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* Supplementary Channels Grid */
     .contact-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
 
     .contact-card {
@@ -138,7 +271,7 @@
       text-decoration: none;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       transition: var(--transition);
     }
 
@@ -147,9 +280,11 @@
     }
 
     .contact-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: #FFF;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .contact-info {
@@ -158,7 +293,7 @@
       word-break: break-all;
     }
 
-    /* Form Card */
+    /* Support Ticket Form */
     .form-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -199,6 +334,7 @@
       font-size: 13px;
       color: #FFF;
       outline: none;
+      transition: border-color 0.2s;
     }
 
     .form-textarea {
@@ -406,29 +542,99 @@
 
   <main class="app-container">
     <h1 class="page-title">Support Center</h1>
-    <p class="page-desc">Have questions regarding manual bank deposits, cashouts, or daily midnight yields? Connect directly with our compliance desk.</p>
+    <p class="page-desc">Connect directly with the NOVEXA executive desk, join our verified community, or submit a compliance inquiry ticket below.</p>
 
-    <!-- Support Channels (Dynamic from site_settings) -->
+    <!-- Official Telegram Support Section -->
+    <div class="section-title-wrap">
+      <h2 class="section-title">
+        <span>Official Telegram Contacts</span>
+      </h2>
+    </div>
+
+    <div class="telegram-stack">
+      <!-- 1. Telegram Support -->
+      <article class="telegram-card">
+        <div class="tc-top">
+          <div class="tc-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+            </svg>
+          </div>
+          <div class="tc-meta">
+            <div class="tc-badge">Direct Executive Desk</div>
+            <h3 class="tc-title">Official Telegram Support</h3>
+            <div class="tc-handle">@NOVEXA_CEO</div>
+          </div>
+        </div>
+        <p class="tc-desc">Direct 1-on-1 assistance for account reviews, verification inquiries, and urgent operational matters.</p>
+        <a href="https://t.me/NOVEXA_CEO" target="_blank" rel="noopener noreferrer" class="btn-telegram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span>Message Support on Telegram</span>
+        </a>
+      </article>
+
+      <!-- 2. Telegram Group -->
+      <article class="telegram-card">
+        <div class="tc-top">
+          <div class="tc-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            </svg>
+          </div>
+          <div class="tc-meta">
+            <div class="tc-badge">Investor Community</div>
+            <h3 class="tc-title">Official Telegram Group</h3>
+            <div class="tc-handle">NOVEXA community discussion</div>
+          </div>
+        </div>
+        <p class="tc-desc">Interact with verified fellow investors, share platform experiences, and engage with community managers.</p>
+        <a href="https://t.me/NOVEXA_CEO/2116" target="_blank" rel="noopener noreferrer" class="btn-telegram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span>Join Official Telegram Group</span>
+        </a>
+      </article>
+
+      <!-- 3. Telegram Channel -->
+      <article class="telegram-card">
+        <div class="tc-top">
+          <div class="tc-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/>
+            </svg>
+          </div>
+          <div class="tc-meta">
+            <div class="tc-badge">Platform Broadcasts</div>
+            <h3 class="tc-title">Official Telegram Channel</h3>
+            <div class="tc-handle">NOVEXA announcements</div>
+          </div>
+        </div>
+        <p class="tc-desc">Real-time official announcements, midnight yield settlement confirmations, and platform security updates.</p>
+        <a href="https://t.me/novexa_channell" target="_blank" rel="noopener noreferrer" class="btn-telegram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span>Join Official Telegram Channel</span>
+        </a>
+      </article>
+    </div>
+
+    <!-- Supplementary Support Channels -->
+    <div class="section-title-wrap">
+      <h2 class="section-title">
+        <span>Help Desk Channels</span>
+      </h2>
+    </div>
+
     <div class="contact-grid">
       <a href="mailto:support@novexa.com" class="contact-card" id="card-email">
         <span class="contact-title">Email Desk</span>
         <span class="contact-info" id="chan-email">support@novexa.com</span>
       </a>
-      <a href="#" target="_blank" rel="noopener" class="contact-card" id="card-whatsapp">
+      <a href="#" target="_blank" rel="noopener noreferrer" class="contact-card" id="card-whatsapp">
         <span class="contact-title">WhatsApp Desk</span>
         <span class="contact-info" id="chan-whatsapp">Monitored Line</span>
       </a>
-      <a href="#" target="_blank" rel="noopener" class="contact-card" id="card-telegram">
-        <span class="contact-title">Telegram Help</span>
-        <span class="contact-info" id="chan-telegram">@novexa_support</span>
-      </a>
-      <div class="contact-card">
-        <span class="contact-title">Active Hours</span>
-        <span class="contact-info">24/7 Review Queue</span>
-      </div>
     </div>
 
-    <!-- Ticket Form -->
+    <!-- Support Ticket Submission Form -->
     <section class="form-card">
       <h2 class="form-heading">Submit Support Ticket</h2>
 
@@ -446,7 +652,7 @@
 
         <div class="form-group">
           <label class="form-label" for="subject">Subject</label>
-          <input type="text" id="subject" class="form-input" placeholder="e.g. Deposit confirmation for Ref #..." required>
+          <input type="text" id="subject" class="form-input" placeholder="e.g. Deposit confirmation inquiry..." required>
         </div>
 
         <div class="form-group">
@@ -458,7 +664,7 @@
       </form>
     </section>
 
-    <!-- Ticket History -->
+    <!-- Ticket History Section -->
     <section>
       <div style="font-size:14px; font-weight:700; color:#FFF; margin-bottom:12px; text-transform:uppercase;">
         Your Inquiries & Responses
@@ -469,7 +675,7 @@
     </section>
   </main>
 
-  <!-- Official 5-Tab Navigation (Neutral Active State) -->
+  <!-- Official 5-Tab Navigation (Neutral State) -->
   <nav class="novexa-bottom-nav" aria-label="Main Navigation">
     <div class="nav-bar-inner">
       <a href="/dashboard.html" class="nav-tab-item">
@@ -524,29 +730,35 @@
       if (!auth) return;
       currentUserId = auth.user.id;
 
-      // Load Configured Channels
+      // Load Settings
       const settings = await getSiteSettings();
       const channels = settings.support_channels || {};
       const platformRules = settings.platform_rules || {};
 
       const email = channels.email || 'support@novexa.com';
       const whatsapp = channels.whatsapp || platformRules.support_whatsapp || '+2345318726919';
-      const telegram = channels.telegram || 'https://t.me/novexa_platform';
 
-      document.getElementById('chan-email').textContent = email;
-      document.getElementById('card-email').href = `mailto:${email}`;
+      const emailEl = document.getElementById('chan-email');
+      const cardEmail = document.getElementById('card-email');
+      if (emailEl && cardEmail) {
+        emailEl.textContent = email;
+        cardEmail.href = `mailto:${email}`;
+      }
 
-      document.getElementById('chan-whatsapp').textContent = whatsapp;
-      document.getElementById('card-whatsapp').href = `https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`;
-
-      document.getElementById('chan-telegram').textContent = 'Official Telegram';
-      document.getElementById('card-telegram').href = telegram;
+      const whatsappEl = document.getElementById('chan-whatsapp');
+      const cardWhatsapp = document.getElementById('card-whatsapp');
+      if (whatsappEl && cardWhatsapp) {
+        whatsappEl.textContent = whatsapp;
+        cardWhatsapp.href = `https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`;
+      }
 
       loadTickets();
     }
 
     async function loadTickets() {
       const container = document.getElementById('tickets-container');
+      if (!container) return;
+
       const { data: tickets, error } = await supabase
         .from('support_tickets')
         .select('*')
@@ -582,41 +794,52 @@
       });
     }
 
-    document.getElementById('support-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('btn-submit-ticket');
-      btn.disabled = true;
-      btn.textContent = 'Submitting...';
-
-      const category = document.getElementById('category').value;
-      const subject = document.getElementById('subject').value.trim();
-      const message = document.getElementById('message').value.trim();
-
-      try {
-        const { data, error } = await supabase.rpc('submit_support_ticket', {
-          p_subject: subject,
-          p_message: message,
-          p_category: category
-        });
-
-        if (error || !data || !data.success) {
-          showToast(data?.message || error?.message || 'Failed to submit ticket', 'error');
-          btn.disabled = false;
-          btn.textContent = 'Submit Inquiry';
-          return;
+    const supportForm = document.getElementById('support-form');
+    if (supportForm) {
+      supportForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-submit-ticket');
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = 'Submitting...';
         }
 
-        showToast('Ticket submitted successfully!', 'success');
-        document.getElementById('support-form').reset();
-        btn.disabled = false;
-        btn.textContent = 'Submit Inquiry';
-        loadTickets();
-      } catch (err) {
-        showToast('Network error submitting ticket', 'error');
-        btn.disabled = false;
-        btn.textContent = 'Submit Inquiry';
-      }
-    });
+        const category = document.getElementById('category').value;
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
+
+        try {
+          const { data, error } = await supabase.rpc('submit_support_ticket', {
+            p_subject: subject,
+            p_message: message,
+            p_category: category
+          });
+
+          if (error || !data || !data.success) {
+            showToast(data?.message || error?.message || 'Failed to submit ticket', 'error');
+            if (btn) {
+              btn.disabled = false;
+              btn.textContent = 'Submit Inquiry';
+            }
+            return;
+          }
+
+          showToast('Ticket submitted successfully!', 'success');
+          supportForm.reset();
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Submit Inquiry';
+          }
+          loadTickets();
+        } catch (err) {
+          showToast('Network error submitting ticket', 'error');
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Submit Inquiry';
+          }
+        }
+      });
+    }
 
     initSupport();
   </script>
