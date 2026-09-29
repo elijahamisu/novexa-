@@ -15,12 +15,13 @@ export default defineConfig({
         dashboard: resolve(__dirname, 'dashboard.html'),
         plans: resolve(__dirname, 'plans.html'),
         planDetails: resolve(__dirname, 'plan-details.html'),
-       investments: resolve(__dirname, 'investments.html'),
+        investment: resolve(__dirname, 'investment.html'),
+        investments: resolve(__dirname, 'investments.html'),
         earnings: resolve(__dirname, 'earnings.html'),
-      wallet: resolve(__dirname, 'wallet.html'),
-      deposit: resolve(__dirname, 'deposit.html'),
+        wallet: resolve(__dirname, 'wallet.html'),
+        deposit: resolve(__dirname, 'deposit.html'),
         withdraw: resolve(__dirname, 'withdraw.html'),
-       transactions: resolve(__dirname, 'transactions.html'),
+        transactions: resolve(__dirname, 'transactions.html'),
         referrals: resolve(__dirname, 'referrals.html'),
         giftCode: resolve(__dirname, 'gift-code.html'),
         notifications: resolve(__dirname, 'notifications.html'),
@@ -30,12 +31,11 @@ export default defineConfig({
         privacy: resolve(__dirname, 'privacy.html'),
 
         // Admin Management Suite
-        //
-        
         adminLogin: resolve(__dirname, 'admin/login.html'),
         adminIndex: resolve(__dirname, 'admin/index.html'),
-       adminUsers: resolve(__dirname, 'admin/users.html'),
+        adminUsers: resolve(__dirname, 'admin/users.html'),
         adminUserDetails: resolve(__dirname, 'admin/user-details.html'),
+        adminStaff: resolve(__dirname, 'admin/staff.html'),
         adminPlans: resolve(__dirname, 'admin/plans.html'),
         adminInvestments: resolve(__dirname, 'admin/investments.html'),
         adminDeposits: resolve(__dirname, 'admin/deposits.html'),
