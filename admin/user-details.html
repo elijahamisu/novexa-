@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>NOVEXA Admin — Investor Profile & Management</title>
+  <title>NOVEXA Admin — Comprehensive Investor Management</title>
   <style>
     :root {
       --bg-dark: #050814;
@@ -50,7 +50,6 @@
       width: 100%;
     }
 
-    /* Desktop Sidebar */
     .admin-sidebar {
       display: none;
       width: 250px;
@@ -124,7 +123,6 @@
       color: #93C5FD;
     }
 
-    /* Main Administration Content */
     .admin-main {
       flex-grow: 1;
       display: flex;
@@ -147,12 +145,11 @@
 
     .admin-content-body {
       padding: 20px;
-      max-width: 1100px;
+      max-width: 1150px;
       width: 100%;
       margin: 0 auto;
     }
 
-    /* User Profile Hero Card */
     .user-profile-hero {
       background: linear-gradient(145deg, #0e1d42 0%, #091124 100%);
       border: 1px solid rgba(59, 130, 246, 0.35);
@@ -166,47 +163,24 @@
       gap: 16px;
     }
 
-    .uph-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .uph-name {
-      font-size: 22px;
-      font-weight: 800;
-      color: #FFF;
-    }
-
-    .uph-email {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
+    .uph-meta { display: flex; flex-direction: column; gap: 4px; }
+    .uph-name { font-size: 22px; font-weight: 800; color: #FFF; }
+    .uph-email { font-size: 13px; color: var(--text-secondary); }
 
     .status-badge {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: 12px;
       text-transform: uppercase;
       display: inline-block;
     }
 
-    .status-badge.active {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--success);
-    }
+    .status-badge.active { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .status-badge.suspended { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .status-badge.staff { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); }
 
-    .status-badge.suspended {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--danger);
-    }
-
-    .action-btn-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .action-btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .btn-action {
       background: #080C1E;
@@ -220,10 +194,8 @@
       transition: var(--transition);
     }
 
-    .btn-action.danger {
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #FCA5A5;
-    }
+    .btn-action.primary { background: var(--accent); border-color: var(--accent); }
+    .btn-action.danger { border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5; }
 
     /* Financial Grid */
     .fin-grid {
@@ -233,17 +205,8 @@
       margin-bottom: 22px;
     }
 
-    @media (min-width: 480px) {
-      .fin-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .fin-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
+    @media (min-width: 480px) { .fin-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .fin-grid { grid-template-columns: repeat(5, 1fr); } }
 
     .fin-card {
       background: var(--bg-card);
@@ -261,16 +224,10 @@
       margin-bottom: 4px;
     }
 
-    .fin-val {
-      font-size: 18px;
-      font-weight: 800;
-      color: #FFF;
-    }
-
+    .fin-val { font-size: 18px; font-weight: 800; color: #FFF; }
     .fin-val.cyan { color: var(--accent-cyan); }
     .fin-val.gold { color: var(--gold); }
 
-    /* Section Cards */
     .section-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -279,41 +236,43 @@
       margin-bottom: 22px;
     }
 
+    .sc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
     .sc-title {
       font-size: 14px;
       font-weight: 700;
       color: #FFF;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 14px;
     }
 
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
+    .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .data-table th { text-align: left; padding: 10px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 10px; text-transform: uppercase; }
+    .data-table td { padding: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); color: var(--text-secondary); }
+
+    /* Danger Zone */
+    .danger-zone-card {
+      background: rgba(239, 68, 68, 0.05);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .data-table th {
-      text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 10px;
-      text-transform: uppercase;
-    }
-
-    .data-table td {
-      padding: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: var(--text-secondary);
-    }
-
-    /* Modal */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(4px);
       z-index: 2000;
       display: none;
@@ -328,31 +287,12 @@
       border-radius: var(--radius-xl);
       padding: 24px;
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
     }
 
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    .form-input, .form-select {
-      width: 100%;
-      background: #050814;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      color: #FFF;
-      outline: none;
-    }
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .form-input, .form-select { width: 100%; background: #050814; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; color: #FFF; outline: none; }
   </style>
 </head>
 <body>
@@ -366,6 +306,7 @@
       <ul class="sidebar-menu">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link active"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -381,26 +322,26 @@
 
     <div class="admin-main">
       <header class="admin-top-nav">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <a href="/admin/users.html" style="color:var(--text-secondary); text-decoration:none; font-size:13px;">&larr; Back to Users</a>
-        </div>
+        <a href="/admin/users.html" style="color:var(--text-secondary); text-decoration:none; font-size:13px;">&larr; Back to Users</a>
       </header>
 
-      <div class="admin-content-body" id="user-details-body">
+      <div class="admin-content-body">
         <!-- Hero Header -->
         <div class="user-profile-hero">
           <div class="uph-meta">
             <h1 class="uph-name" id="user-name">Loading Investor...</h1>
             <div class="uph-email" id="user-email">--</div>
-            <div style="margin-top:6px;">
+            <div style="margin-top:6px; display:flex; align-items:center; gap:8px;">
               <span id="user-status-badge" class="status-badge active">Active</span>
-              <span style="font-size:12px; color:var(--text-muted); margin-left:8px;" id="user-joined">Joined: --</span>
+              <span id="user-staff-badge" class="status-badge staff" style="display:none;">Staff</span>
+              <span style="font-size:11px; color:var(--text-muted);" id="user-id-disp">ID: --</span>
             </div>
           </div>
 
           <div class="action-btn-row">
+            <button type="button" class="btn-action primary" id="btn-open-add-money">+ Add Money</button>
+            <button type="button" class="btn-action danger" id="btn-open-deduct-money">− Deduct Money</button>
             <button type="button" class="btn-action" id="btn-toggle-status">Toggle Status</button>
-            <button type="button" class="btn-action" id="btn-open-adjust">Adjust Balance</button>
           </div>
         </div>
 
@@ -422,91 +363,170 @@
             <div class="fin-label">Total Withdrawn</div>
             <div class="fin-val gold" id="fin-withdrawn">₦0.00</div>
           </div>
-        </div>
-
-        <!-- Referral Info Card -->
-        <div class="section-card">
-          <div class="sc-title">Referral Network Information</div>
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; font-size:12px;">
-            <div>Referral Code: <strong style="color:var(--accent-cyan);" id="ref-code">--</strong></div>
-            <div>Sponsor ID: <strong id="ref-sponsor">None (Direct)</strong></div>
-            <div>Direct Referrals (L1): <strong id="ref-count">0</strong></div>
+          <div class="fin-card">
+            <div class="fin-label">Approved Deposits</div>
+            <div class="fin-val" id="fin-deposits">₦0.00</div>
           </div>
         </div>
 
-        <!-- Investment Contracts -->
+        <!-- 2. User Products Section -->
         <div class="section-card">
-          <div class="sc-title">Investment Portfolios</div>
+          <div class="sc-header">
+            <span class="sc-title">User Products & Active Portfolios</span>
+            <button type="button" class="btn-action primary" id="btn-open-grant-product">+ Grant Product</button>
+          </div>
           <div style="overflow-x:auto;">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Plan</th>
-                  <th>Amount</th>
+                  <th>Product / Plan</th>
+                  <th>Capital Amount</th>
                   <th>Daily Yield</th>
-                  <th>Progress</th>
+                  <th>Duration</th>
                   <th>Status</th>
                   <th>Dates</th>
+                  <th>Action</th>
                 </tr>
               </thead>
-              <tbody id="tbody-investments">
-                <tr><td colspan="6" style="text-align:center;">Loading portfolios...</td></tr>
+              <tbody id="tbody-products">
+                <tr><td colspan="7" style="text-align:center;">Loading portfolios...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Recent Transactions -->
+        <!-- 5. Manual Admin Financial Adjustments Ledger -->
         <div class="section-card">
-          <div class="sc-title">Recent Ledger Transactions</div>
+          <div class="sc-header">
+            <span class="sc-title">Administrative Wallet Adjustments History</span>
+          </div>
           <div style="overflow-x:auto;">
             <table class="data-table">
               <thead>
                 <tr>
                   <th>Reference</th>
-                  <th>Type</th>
+                  <th>Adjustment Type</th>
                   <th>Amount</th>
                   <th>Balance After</th>
-                  <th>Status</th>
+                  <th>Reason / Justification</th>
                   <th>Timestamp</th>
                 </tr>
               </thead>
-              <tbody id="tbody-transactions">
-                <tr><td colspan="6" style="text-align:center;">Loading transactions...</td></tr>
+              <tbody id="tbody-adjustments">
+                <tr><td colspan="6" style="text-align:center;">Loading adjustments...</td></tr>
               </tbody>
             </table>
           </div>
+        </div>
+
+        <!-- 6. Danger Zone: Delete User -->
+        <div class="danger-zone-card">
+          <div>
+            <div style="font-weight:800; color:#FCA5A5; font-size:15px;">Danger Zone</div>
+            <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+              Decommission this account. User active contracts are cancelled and access is revoked while audit history is safely preserved.
+            </div>
+          </div>
+          <button type="button" class="btn-action danger" id="btn-open-delete-user">Delete User</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Balance Adjustment Modal -->
-  <div class="modal-overlay" id="adjust-modal">
+  <!-- Grant Product Modal -->
+  <div class="modal-overlay" id="grant-modal">
     <div class="modal-card">
-      <h2 style="font-size:16px; font-weight:800; color:#FFF; margin-bottom:14px;">Manual Balance Adjustment</h2>
-      <form id="adjust-form">
+      <h2 style="font-size:16px; font-weight:800; color:#FFF; margin-bottom:14px;">Grant Investment Product</h2>
+      <form id="grant-form">
         <div class="form-group">
-          <label class="form-label" for="adj-type">Adjustment Action</label>
-          <select id="adj-type" class="form-select">
-            <option value="credit">Credit Balance (+)</option>
-            <option value="debit">Debit Balance (-)</option>
-          </select>
+          <label class="form-label" for="grant-plan-select">Select Product / Plan</label>
+          <select id="grant-plan-select" class="form-select" required></select>
         </div>
-
         <div class="form-group">
-          <label class="form-label" for="adj-amount">Amount (NGN)</label>
-          <input type="number" id="adj-amount" class="form-input" min="100" step="100" required>
+          <label class="form-label" for="grant-amount">Investment Capital (NGN)</label>
+          <input type="number" id="grant-amount" class="form-input" min="100" step="100" required>
         </div>
-
         <div class="form-group">
-          <label class="form-label" for="adj-reason">Audit Reason / Justification</label>
-          <input type="text" id="adj-reason" class="form-input" placeholder="e.g. Deposit reconciliation, manual correction" required>
+          <label class="form-label" for="grant-duration">Duration in Days (Optional Override)</label>
+          <input type="number" id="grant-duration" class="form-input" placeholder="Leave empty for plan default">
         </div>
-
+        <div class="form-group">
+          <label class="form-label" for="grant-note">Administrative Note / Reason</label>
+          <input type="text" id="grant-note" class="form-input" placeholder="e.g. VIP promotional grant" required>
+        </div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
-          <button type="button" class="btn-action" id="btn-close-adjust">Cancel</button>
-          <button type="submit" class="btn-action" style="background:var(--accent);">Commit Adjustment</button>
+          <button type="button" class="btn-action" id="btn-close-grant">Cancel</button>
+          <button type="submit" class="btn-action primary">Grant Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Money Modal -->
+  <div class="modal-overlay" id="add-modal">
+    <div class="modal-card">
+      <h2 style="font-size:16px; font-weight:800; color:#FFF; margin-bottom:14px;">Add Money to Wallet</h2>
+      <form id="add-money-form">
+        <div class="form-group">
+          <label class="form-label" for="add-amt">Amount (NGN)</label>
+          <input type="number" id="add-amt" class="form-input" min="100" step="100" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="add-reason">Reason for Credit</label>
+          <input type="text" id="add-reason" class="form-input" placeholder="e.g. Promotional deposit bonus" required>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-action" id="btn-close-add">Cancel</button>
+          <button type="submit" class="btn-action primary">Confirm Credit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Deduct Money Modal -->
+  <div class="modal-overlay" id="deduct-modal">
+    <div class="modal-card">
+      <h2 style="font-size:16px; font-weight:800; color:#FFF; margin-bottom:14px;">Deduct Money from Wallet</h2>
+      <form id="deduct-money-form">
+        <div class="form-group">
+          <label class="form-label" for="deduct-amt">Amount (NGN)</label>
+          <input type="number" id="deduct-amt" class="form-input" min="100" step="100" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="deduct-reason">Reason for Debit</label>
+          <input type="text" id="deduct-reason" class="form-input" placeholder="e.g. Reconciliation correction" required>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-action" id="btn-close-deduct">Cancel</button>
+          <button type="submit" class="btn-action danger">Confirm Debit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete User Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal-card">
+      <h2 style="font-size:16px; font-weight:800; color:#FCA5A5; margin-bottom:8px;">Decommission & Delete User</h2>
+      <p style="font-size:12px; color:var(--text-secondary); line-height:1.4; margin-bottom:14px;">
+        This action will deactivate the user account, cancel active contracts, and revoke all staff/admin roles. Financial ledger entries are retained for solvency audit integrity.
+      </p>
+      <div style="background:#080C1E; border:1px solid var(--border); padding:10px; border-radius:8px; margin-bottom:14px; font-size:12px;">
+        <div>Target: <strong id="del-name" style="color:#FFF;">--</strong></div>
+        <div>Email: <strong id="del-email" style="color:#FFF;">--</strong></div>
+      </div>
+      <form id="delete-user-form">
+        <div class="form-group">
+          <label class="form-label" for="del-confirm-text">Type DELETE to confirm</label>
+          <input type="text" id="del-confirm-text" class="form-input" placeholder="DELETE" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="del-reason">Audit Reason</label>
+          <input type="text" id="del-reason" class="form-input" placeholder="Compliance removal reason" required>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+          <button type="button" class="btn-action" id="btn-close-delete">Cancel</button>
+          <button type="submit" class="btn-action danger">Delete User</button>
         </div>
       </form>
     </div>
@@ -517,9 +537,9 @@
 
     let targetUserId = null;
     let targetProfile = null;
+    let availablePlans = [];
 
-    async function initUserDetails() {
-      // 1. Verify Admin
+    async function init() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { window.location.replace('/admin/login.html'); return; }
       const { data: adminCheck } = await supabase.rpc('check_is_admin');
@@ -529,177 +549,193 @@
         return;
       }
 
-      // 2. Parse URL ID
       const urlParams = new URLSearchParams(window.location.search);
       targetUserId = urlParams.get('id');
+      if (!targetUserId) { window.location.replace('/admin/users.html'); return; }
 
-      if (!targetUserId) {
-        alert('Invalid or missing user ID.');
-        window.location.replace('/admin/users.html');
-        return;
-      }
-
+      loadPlans();
       loadUserData();
     }
 
+    async function loadPlans() {
+      const { data } = await supabase.from('plans').select('*').order('display_order');
+      availablePlans = data || [];
+      const sel = document.getElementById('grant-plan-select');
+      sel.innerHTML = availablePlans.map(p => `<option value="${p.id}">${p.name} (Min: ${formatNaira(p.minimum_amount)}, ${p.daily_roi_percent}%/day, ${p.duration_days}d)</option>`).join('');
+    }
+
     async function loadUserData() {
-      // Load Profile
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', targetUserId)
-        .single();
-
-      if (error || !profile) {
-        alert('User not found.');
-        window.location.replace('/admin/users.html');
-        return;
-      }
-
+      const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', targetUserId).single();
+      if (error || !profile) { showToast('User not found', 'error'); return; }
       targetProfile = profile;
 
-      document.getElementById('user-name').textContent = profile.full_name || 'Investor';
+      document.getElementById('user-name').textContent = profile.full_name;
       document.getElementById('user-email').textContent = profile.email;
-      document.getElementById('user-status-badge').textContent = profile.is_active ? 'Active' : 'Suspended';
-      document.getElementById('user-status-badge').className = `status-badge ${profile.is_active ? 'active' : 'suspended'}`;
-      document.getElementById('btn-toggle-status').textContent = profile.is_active ? 'Suspend Account' : 'Activate Account';
-      document.getElementById('btn-toggle-status').className = `btn-action ${profile.is_active ? 'danger' : ''}`;
+      document.getElementById('user-id-disp').textContent = `UUID: ${profile.id}`;
 
-      const joinDate = new Date(profile.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-      document.getElementById('user-joined').textContent = `Joined: ${joinDate}`;
+      // Badges
+      const statBadge = document.getElementById('user-status-badge');
+      statBadge.textContent = profile.is_active ? 'Active' : 'Suspended';
+      statBadge.className = `status-badge ${profile.is_active ? 'active' : 'suspended'}`;
 
+      const { data: staffRec } = await supabase.from('staff_members').select('id').eq('id', targetUserId).eq('is_active', true).maybeSingle();
+      document.getElementById('user-staff-badge').style.display = staffRec ? 'inline-block' : 'none';
+
+      // Financials
       document.getElementById('fin-balance').textContent = formatNaira(profile.wallet_balance);
       document.getElementById('fin-invested').textContent = formatNaira(profile.total_invested);
       document.getElementById('fin-earned').textContent = formatNaira(profile.total_earned);
       document.getElementById('fin-withdrawn').textContent = formatNaira(profile.total_withdrawn);
 
-      document.getElementById('ref-code').textContent = profile.referral_code;
-      document.getElementById('ref-sponsor').textContent = profile.referred_by ? profile.referred_by.slice(0, 8) + '...' : 'Direct';
+      const { data: depData } = await supabase.from('deposits').select('amount').eq('user_id', targetUserId).eq('status', 'approved');
+      const depSum = (depData || []).reduce((a, b) => a + Number(b.amount), 0);
+      document.getElementById('fin-deposits').textContent = formatNaira(depSum);
 
-      // Load Referrals Count
-      const { count: refCount } = await supabase
-        .from('referrals')
-        .select('*', { count: 'exact', head: true })
-        .eq('sponsor_id', targetUserId)
-        .eq('level', 1);
-      document.getElementById('ref-count').textContent = `${refCount || 0} Direct Partners`;
-
-      // Load Investments
-      loadUserInvestments();
-
-      // Load Transactions
-      loadUserTransactions();
+      loadProducts();
+      loadAdjustments();
     }
 
-    async function loadUserInvestments() {
-      const tbody = document.getElementById('tbody-investments');
-      const { data: investments } = await supabase
-        .from('investments')
-        .select('*, plans(name)')
-        .eq('user_id', targetUserId)
-        .order('created_at', { ascending: false });
+    async function loadProducts() {
+      const tbody = document.getElementById('tbody-products');
+      const { data: invs } = await supabase.from('investments').select('*, plans(name)').eq('user_id', targetUserId).order('created_at', { ascending: false });
 
-      if (!investments || investments.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:16px;">No investments found.</td></tr>`;
+      if (!invs || invs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:16px;">No investments or products currently granted.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = '';
-      investments.forEach(inv => {
+      invs.forEach(inv => {
         const tr = document.createElement('tr');
+        const canRemove = inv.status === 'active';
         tr.innerHTML = `
-          <td><strong>${inv.plans?.name || 'Investment Plan'}</strong></td>
+          <td><strong>${inv.plans?.name || 'Plan'}</strong></td>
           <td style="color:#FFF;">${formatNaira(inv.amount)}</td>
           <td style="color:var(--accent-cyan);">${formatNaira(inv.daily_income)}</td>
-          <td>Day ${inv.days_accrued} of ${inv.duration_days}</td>
+          <td>${inv.duration_days} Days</td>
           <td><span class="status-badge ${inv.status}">${inv.status}</span></td>
           <td>${inv.start_date} &bull; ${inv.end_date}</td>
+          <td>
+            ${canRemove ? `<button type="button" class="btn-action danger btn-remove-prod" data-id="${inv.id}">Remove</button>` : `<span style="font-size:11px; color:var(--text-muted);">&mdash;</span>`}
+          </td>
         `;
         tbody.appendChild(tr);
       });
+
+      document.querySelectorAll('.btn-remove-prod').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const invId = btn.getAttribute('data-id');
+          const reason = prompt('Remove Product:\n\nThis action will cancel the active investment contract. Please specify the reason:');
+          if (!reason) return;
+
+          const { data, error } = await supabase.rpc('admin_remove_product', { p_investment_id: invId, p_reason: reason });
+          if (error || !data || !data.success) { showToast(data?.message || 'Error cancelling product', 'error'); return; }
+          showToast('Product cancelled and preserved in audit trail', 'success');
+          loadUserData();
+        });
+      });
     }
 
-    async function loadUserTransactions() {
-      const tbody = document.getElementById('tbody-transactions');
-      const { data: txs } = await supabase
-        .from('transactions')
-        .select('*')
-        .eq('user_id', targetUserId)
-        .order('created_at', { ascending: false })
-        .limit(10);
+    async function loadAdjustments() {
+      const tbody = document.getElementById('tbody-adjustments');
+      const { data: txs } = await supabase.from('transactions').select('*').eq('user_id', targetUserId).ilike('description', 'Admin Adjustment%').order('created_at', { ascending: false });
 
       if (!txs || txs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:16px;">No transactions recorded.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:16px;">No manual administrative adjustments recorded.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = '';
       txs.forEach(t => {
+        const isCredit = t.type === 'deposit';
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${t.reference}</strong></td>
-          <td>${t.type.replace(/_/g, ' ')}</td>
-          <td style="color:#FFF;">${formatNaira(t.amount)}</td>
+          <td><code>${t.reference}</code></td>
+          <td><strong style="color:${isCredit ? 'var(--success)' : '#FCA5A5'};">${isCredit ? 'Admin Credit (+)' : 'Admin Debit (−)'}</strong></td>
+          <td style="font-weight:700; color:#FFF;">${formatNaira(t.amount)}</td>
           <td>${formatNaira(t.balance_after)}</td>
-          <td><span class="status-badge ${t.status}">${t.status}</span></td>
-          <td>${new Date(t.created_at).toLocaleDateString('en-GB')}</td>
+          <td>${t.description}</td>
+          <td>${new Date(t.created_at).toLocaleString('en-GB')}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // Toggle Status
-    document.getElementById('btn-toggle-status').addEventListener('click', async () => {
-      if (!targetProfile) return;
-      const willBeActive = !targetProfile.is_active;
-      const confirmMsg = willBeActive ? 'Activate this investor account?' : 'Suspend this investor account? Access will be restricted.';
-      if (!confirm(confirmMsg)) return;
+    // Modal Triggers
+    const grantModal = document.getElementById('grant-modal');
+    document.getElementById('btn-open-grant-product').addEventListener('click', () => { grantModal.style.display = 'flex'; });
+    document.getElementById('btn-close-grant').addEventListener('click', () => { grantModal.style.display = 'none'; });
 
-      const { data, error } = await supabase.rpc('admin_toggle_user_status', {
-        p_target_user_id: targetUserId,
-        p_is_active: willBeActive,
-        p_reason: willBeActive ? 'Administrative re-activation' : 'Administrative compliance suspension'
-      });
-
-      if (error || !data || !data.success) {
-        showToast(data?.message || 'Failed to update user status.', 'error');
-        return;
-      }
-
-      showToast('User status updated successfully.', 'success');
-      loadUserData();
-    });
-
-    // Adjustment Modal
-    const modal = document.getElementById('adjust-modal');
-    document.getElementById('btn-open-adjust').addEventListener('click', () => { modal.style.display = 'flex'; });
-    document.getElementById('btn-close-adjust').addEventListener('click', () => { modal.style.display = 'none'; });
-
-    document.getElementById('adjust-form').addEventListener('submit', async (e) => {
+    document.getElementById('grant-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const type = document.getElementById('adj-type').value;
-      const amount = parseFloat(document.getElementById('adj-amount').value);
-      const reason = document.getElementById('adj-reason').value.trim();
+      const planId = document.getElementById('grant-plan-select').value;
+      const amount = parseFloat(document.getElementById('grant-amount').value);
+      const dur = parseInt(document.getElementById('grant-duration').value, 10) || null;
+      const note = document.getElementById('grant-note').value.trim();
 
-      const { data, error } = await supabase.rpc('admin_adjust_user_balance', {
-        p_target_user_id: targetUserId,
-        p_amount: amount,
-        p_adjustment_type: type,
-        p_reason: reason
+      const { data, error } = await supabase.rpc('admin_grant_product', {
+        p_user_id: targetUserId, p_plan_id: planId, p_amount: amount, p_duration_days: dur, p_note: note
       });
-
-      if (error || !data || !data.success) {
-        showToast(data?.message || error?.message || 'Adjustment failed.', 'error');
-        return;
-      }
-
-      showToast(`Balance adjusted: ${formatNaira(amount)} ${type}ed.`, 'success');
-      modal.style.display = 'none';
-      document.getElementById('adjust-form').reset();
+      if (error || !data || !data.success) { showToast(data?.message || 'Error granting product', 'error'); return; }
+      showToast('Investment product granted successfully!', 'success');
+      grantModal.style.display = 'none';
       loadUserData();
     });
 
-    initUserDetails();
+    const addModal = document.getElementById('add-modal');
+    document.getElementById('btn-open-add-money').addEventListener('click', () => { addModal.style.display = 'flex'; });
+    document.getElementById('btn-close-add').addEventListener('click', () => { addModal.style.display = 'none'; });
+
+    document.getElementById('add-money-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amt = parseFloat(document.getElementById('add-amt').value);
+      const reason = document.getElementById('add-reason').value.trim();
+      const { data, error } = await supabase.rpc('admin_add_balance', { p_target_user_id: targetUserId, p_amount: amt, p_reason: reason });
+      if (error || !data || !data.success) { showToast(data?.message || 'Error adding money', 'error'); return; }
+      showToast('Wallet credited successfully', 'success');
+      addModal.style.display = 'none';
+      loadUserData();
+    });
+
+    const deductModal = document.getElementById('deduct-modal');
+    document.getElementById('btn-open-deduct-money').addEventListener('click', () => { deductModal.style.display = 'flex'; });
+    document.getElementById('btn-close-deduct').addEventListener('click', () => { deductModal.style.display = 'none'; });
+
+    document.getElementById('deduct-money-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const amt = parseFloat(document.getElementById('deduct-amt').value);
+      const reason = document.getElementById('deduct-reason').value.trim();
+      const { data, error } = await supabase.rpc('admin_deduct_balance', { p_target_user_id: targetUserId, p_amount: amt, p_reason: reason });
+      if (error || !data || !data.success) { showToast(data?.message || 'Error deducting money', 'error'); return; }
+      showToast('Wallet debited successfully', 'success');
+      deductModal.style.display = 'none';
+      loadUserData();
+    });
+
+    // Delete User
+    const delModal = document.getElementById('delete-modal');
+    document.getElementById('btn-open-delete-user').addEventListener('click', () => {
+      document.getElementById('del-name').textContent = targetProfile?.full_name || '';
+      document.getElementById('del-email').textContent = targetProfile?.email || '';
+      delModal.style.display = 'flex';
+    });
+    document.getElementById('btn-close-delete').addEventListener('click', () => { delModal.style.display = 'none'; });
+
+    document.getElementById('delete-user-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const confirmText = document.getElementById('del-confirm-text').value.trim();
+      const reason = document.getElementById('del-reason').value.trim();
+
+      const { data, error } = await supabase.rpc('admin_delete_user', {
+        p_target_user_id: targetUserId, p_confirm_text: confirmText, p_reason: reason
+      });
+
+      if (error || !data || !data.success) { showToast(data?.message || 'Error deleting user', 'error'); return; }
+      alert('User decommissioned successfully.');
+      window.location.replace('/admin/users.html');
+    });
+
+    init();
   </script>
 </body>
 </html>
