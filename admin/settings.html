@@ -518,38 +518,32 @@
 
       data.forEach(r => { currentSettings[r.key] = r.value; });
 
-      // Populate Withdrawal Settings
       const rules = currentSettings.platform_rules || {};
       document.getElementById('set-wth-fee').value = rules.withdrawal_fee_percent || 18.0;
       document.getElementById('set-min-wth').value = rules.minimum_withdrawal || 1000;
       document.getElementById('set-req-product').value = String(rules.withdrawal_requires_active_product !== false);
       document.getElementById('set-sys-lock').value = String(Boolean(rules.withdrawals_locked));
 
-      // Populate Bank
       const bank = currentSettings.deposit_account || {};
       document.getElementById('bank-name').value = bank.bank || 'MONIEPOINT';
       document.getElementById('bank-num').value = bank.account_number || '5318726919';
       document.getElementById('bank-title').value = bank.account_name || 'IBILOLA OMOROYEKE ISHOLA';
 
-      // Populate Deposit & Bonus
       const welcome = currentSettings.welcome_bonus || {};
       document.getElementById('min-dep').value = rules.minimum_deposit || 1000;
       document.getElementById('welcome-bonus').value = welcome.amount || 1000;
 
-      // Populate Rates
       const rates = currentSettings.referral_commission_rates || {};
       document.getElementById('rate-l1').value = rates.level1 || 15.0;
       document.getElementById('rate-l2').value = rates.level2 || 3.0;
       document.getElementById('rate-l3').value = rates.level3 || 1.0;
 
-      // Populate Support
       const sup = currentSettings.support_channels || {};
       document.getElementById('sup-email').value = sup.email || 'support@novexa.com';
       document.getElementById('sup-phone').value = sup.whatsapp || '+2345318726919';
       document.getElementById('sup-telegram').value = sup.telegram || 'https://t.me/novexa_platform';
     }
 
-    // Save Withdrawal Rules
     document.getElementById('btn-save-wth-settings').addEventListener('click', async () => {
       const fee = parseFloat(document.getElementById('set-wth-fee').value);
       const minWth = parseFloat(document.getElementById('set-min-wth').value);
@@ -587,7 +581,6 @@
       }
     });
 
-    // Save Bank Account
     document.getElementById('btn-save-bank').addEventListener('click', async () => {
       const payload = {
         bank: document.getElementById('bank-name').value.trim(),
@@ -607,7 +600,6 @@
       }
     });
 
-    // Save Deposit Rules & Welcome Bonus
     document.getElementById('btn-save-rules').addEventListener('click', async () => {
       const existingRules = currentSettings.platform_rules || {};
       const updatedRules = {
@@ -631,7 +623,6 @@
       }
     });
 
-    // Save Referral Rates
     document.getElementById('btn-save-rates').addEventListener('click', async () => {
       const ratesPayload = {
         level1: parseFloat(document.getElementById('rate-l1').value),
@@ -651,7 +642,6 @@
       }
     });
 
-    // Save Support Channels
     document.getElementById('btn-save-support').addEventListener('click', async () => {
       const supPayload = {
         email: document.getElementById('sup-email').value.trim(),
