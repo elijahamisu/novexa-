@@ -147,10 +147,13 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: #FFF;
-      padding: 6px 10px;
+      padding: 8px 12px;
       border-radius: var(--radius-sm);
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @media (min-width: 1024px) {
@@ -272,6 +275,18 @@
       gap: 8px;
     }
 
+    .btn-retry-queue {
+      background: var(--accent);
+      color: #FFF;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -292,11 +307,31 @@
       width: 100%;
       max-width: 480px;
     }
+
+    .mobile-drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+    }
+
+    .mobile-drawer {
+      width: 260px;
+      height: 100%;
+      background: #080C1E;
+      border-right: 1px solid var(--border);
+      padding: 20px 14px;
+      display: flex;
+      flex-direction: column;
+    }
   </style>
 </head>
 <body>
 
   <div class="admin-app">
+    <!-- Desktop Sidebar -->
     <aside class="admin-sidebar">
       <div class="sidebar-header">
         <div class="brand-mark">N</div>
@@ -321,7 +356,10 @@
 
     <div class="admin-main">
       <header class="admin-top-nav">
-        <div style="font-size:15px; font-weight:700; color:#FFF;">Staff Supervision</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer" aria-label="Toggle navigation">&#9776;</button>
+          <div style="font-size:15px; font-weight:700; color:#FFF;">Staff Supervision</div>
+        </div>
         <a href="/admin/users.html" style="font-size:12px; color:var(--accent-cyan); text-decoration:none; font-weight:700;">+ Add Staff from Users &rarr;</a>
       </header>
 
@@ -404,39 +442,153 @@
     </div>
   </div>
 
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay">
+    <div class="mobile-drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <span style="font-weight:800; font-size:16px;">ADMIN MODULES</span>
+        <button type="button" id="btn-close-drawer" style="background:none; border:none; color:#FFF; font-size:18px;">&times;</button>
+      </div>
+      <ul class="sidebar-menu" style="padding:0;">
+        <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
+        <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link active"><span>Staff</span></a></li>
+        <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
+        <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
+        <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
+        <li><a href="/admin/withdrawals.html" class="menu-link"><span>Withdrawals</span></a></li>
+        <li><a href="/admin/transactions.html" class="menu-link"><span>Transactions</span></a></li>
+        <li><a href="/admin/referrals.html" class="menu-link"><span>Referrals</span></a></li>
+        <li><a href="/admin/gift-codes.html" class="menu-link"><span>Gift Codes</span></a></li>
+        <li><a href="/admin/notifications.html" class="menu-link"><span>Notifications</span></a></li>
+        <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
+        <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
+      </ul>
+    </div>
+  </div>
+
   <script type="module">
     import { supabase, showToast } from '/supabase-client.js';
 
     let allStaff = [];
     let selectedStaffId = null;
+    let isFetching = false;
 
-    async function init() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { window.location.replace('/admin/login.html'); return; }
-      const { data: adminCheck } = await supabase.rpc('check_is_admin');
-      if (!adminCheck || !adminCheck.is_admin) {
-        await supabase.auth.signOut();
+    async function checkAuth() {
+      try {
+        const { data: { session }, error: sessErr } = await supabase.auth.getSession();
+        if (sessErr || !session || !session.user) { 
+          window.location.replace('/admin/login.html'); 
+          return false; 
+        }
+        const { data: adminCheck, error: rpcErr } = await supabase.rpc('check_is_admin');
+        if (rpcErr || !adminCheck || !adminCheck.is_admin) {
+          await supabase.auth.signOut();
+          window.location.replace('/admin/login.html');
+          return false; 
+        }
+        return true;
+      } catch (err) {
+        console.error('Admin authentication check failed:', err);
         window.location.replace('/admin/login.html');
-        return;
+        return false;
       }
-      loadStaff();
+    }
+
+    function renderLoading() {
+      const tbody = document.getElementById('tbody-staff');
+      const mob = document.getElementById('mobile-staff-container');
+      if (tbody) tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">Loading staff members...</td></tr>`;
+      if (mob) mob.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Loading staff members...</div>`;
+    }
+
+    function renderError(errMsg) {
+      const tbody = document.getElementById('tbody-staff');
+      const mob = document.getElementById('mobile-staff-container');
+      const content = `
+        <div style="padding:24px 16px; text-align:center;">
+          <div style="font-size:24px; margin-bottom:8px;">⚠️</div>
+          <div style="font-weight:700; color:#FFF; margin-bottom:4px;">Unable to load staff members</div>
+          <div style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">${errMsg || 'Please verify database connection.'}</div>
+          <button type="button" class="btn-retry-queue" id="btn-retry-staff">Retry Now</button>
+        </div>
+      `;
+
+      if (tbody) tbody.innerHTML = `<tr><td colspan="5">${content}</td></tr>`;
+      if (mob) mob.innerHTML = content;
+
+      document.querySelectorAll('#btn-retry-staff').forEach(b => {
+        b.addEventListener('click', loadStaff);
+      });
     }
 
     async function loadStaff() {
-      const { data, error } = await supabase.from('staff_members').select('*, profiles(full_name)').order('created_at', { ascending: false });
-      if (error) { console.error(error); return; }
-      allStaff = data || [];
+      if (isFetching) return;
+      isFetching = true;
+      renderLoading();
 
-      // Metrics
+      try {
+        let records = [];
+
+        // Primary: Dedicated Postgres Procedure
+        const { data: rpcData, error: rpcErr } = await supabase.rpc('admin_get_staff_list');
+
+        if (!rpcErr && rpcData && rpcData.success) {
+          records = rpcData.staff || [];
+        } else {
+          // Fallback: Two-step query to avoid PostgREST relationship embedding errors
+          console.warn('RPC note, executing fallback direct query:', rpcErr?.message);
+          const { data: rawStaff, error: staffErr } = await supabase
+            .from('staff_members')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (staffErr) throw staffErr;
+
+          if (rawStaff && rawStaff.length > 0) {
+            const userIds = rawStaff.map(s => s.id);
+            const { data: profiles } = await supabase
+              .from('profiles')
+              .select('id, full_name, email')
+              .in('id', userIds);
+
+            const profMap = {};
+            (profiles || []).forEach(p => { profMap[p.id] = p; });
+
+            records = rawStaff.map(s => ({
+              ...s,
+              profiles: profMap[s.id] || { full_name: 'Staff Member', email: s.email }
+            }));
+          } else {
+            records = [];
+          }
+        }
+
+        allStaff = records;
+        calculateMetrics();
+        renderStaff();
+      } catch (err) {
+        console.error('Error loading staff:', err);
+        renderError(err.message);
+      } finally {
+        isFetching = false;
+      }
+    }
+
+    function calculateMetrics() {
       const total = allStaff.length;
       const active = allStaff.filter(s => s.is_active).length;
       const inactive = total - active;
-      document.getElementById('sum-total').textContent = total;
-      document.getElementById('sum-active').textContent = active;
-      document.getElementById('sum-inactive').textContent = inactive;
-      document.getElementById('sum-recent').textContent = allStaff.slice(0, 5).length;
 
-      renderStaff();
+      const sumTotal = document.getElementById('sum-total');
+      const sumActive = document.getElementById('sum-active');
+      const sumInactive = document.getElementById('sum-inactive');
+      const sumRecent = document.getElementById('sum-recent');
+
+      if (sumTotal) sumTotal.textContent = total;
+      if (sumActive) sumActive.textContent = active;
+      if (sumInactive) sumInactive.textContent = inactive;
+      if (sumRecent) sumRecent.textContent = allStaff.slice(0, 5).length;
     }
 
     function renderStaff() {
@@ -444,13 +596,21 @@
       const mob = document.getElementById('mobile-staff-container');
 
       if (allStaff.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">No staff members added yet. Add staff from the Users page.</td></tr>`;
-        mob.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No staff members added yet.</div>`;
+        const emptyHtml = `
+          <div style="text-align:center; padding:30px 16px;">
+            <div style="font-size:24px; margin-bottom:8px;">👥</div>
+            <div style="font-weight:700; color:#FFF; margin-bottom:4px;">No staff members added yet</div>
+            <div style="font-size:12px; color:var(--text-secondary); margin-bottom:14px;">Promote registered investors from the Users directory to delegate management privileges.</div>
+            <a href="/admin/users.html" class="btn-action-small" style="padding:8px 16px;">+ Go to Users Directory</a>
+          </div>
+        `;
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5">${emptyHtml}</td></tr>`;
+        if (mob) mob.innerHTML = emptyHtml;
         return;
       }
 
-      tbody.innerHTML = '';
-      mob.innerHTML = '';
+      if (tbody) tbody.innerHTML = '';
+      if (mob) mob.innerHTML = '';
 
       allStaff.forEach(s => {
         const name = s.profiles?.full_name || 'Staff Member';
@@ -458,53 +618,60 @@
         const permChips = perms.map(p => `<span class="perm-chip">${p}</span>`).join(' ') || '<span style="color:var(--text-muted); font-size:11px;">None</span>';
         const dateStr = new Date(s.created_at).toLocaleDateString('en-GB');
 
-        // Desktop
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>
-            <div style="font-weight:700; color:#FFF;">${name}</div>
-            <div style="font-size:11px; color:var(--text-muted);">${s.email}</div>
-          </td>
-          <td><span class="status-badge ${s.is_active ? 'active' : 'suspended'}">${s.is_active ? 'Active' : 'Inactive'}</span></td>
-          <td style="max-width:300px;">${permChips}</td>
-          <td>${dateStr}</td>
-          <td>
-            <button type="button" class="btn-action-small btn-edit-perms" data-id="${s.id}" data-name="${name}">Permissions</button>
-            <button type="button" class="btn-action-small danger btn-remove-staff" data-id="${s.id}" data-name="${name}">Remove</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-
-        // Mobile
-        const card = document.createElement('div');
-        card.className = 'staff-card-mob';
-        card.innerHTML = `
-          <div style="display:flex; justify-content:space-between;">
-            <div>
+        // Desktop Row
+        if (tbody) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>
               <div style="font-weight:700; color:#FFF;">${name}</div>
               <div style="font-size:11px; color:var(--text-muted);">${s.email}</div>
+            </td>
+            <td><span class="status-badge ${s.is_active ? 'active' : 'suspended'}">${s.is_active ? 'Active' : 'Inactive'}</span></td>
+            <td style="max-width:300px;">${permChips}</td>
+            <td>${dateStr}</td>
+            <td>
+              <button type="button" class="btn-action-small btn-edit-perms" data-id="${s.id}" data-name="${name}">Permissions</button>
+              <button type="button" class="btn-action-small danger btn-remove-staff" data-id="${s.id}" data-name="${name}">Remove</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+
+        // Mobile Card
+        if (mob) {
+          const card = document.createElement('div');
+          card.className = 'staff-card-mob';
+          card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div style="font-weight:700; color:#FFF; font-size:14px;">${name}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${s.email}</div>
+              </div>
+              <span class="status-badge ${s.is_active ? 'active' : 'suspended'}">${s.is_active ? 'Active' : 'Inactive'}</span>
             </div>
-            <span class="status-badge ${s.is_active ? 'active' : 'suspended'}">${s.is_active ? 'Active' : 'Inactive'}</span>
-          </div>
-          <div>${permChips}</div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-            <button type="button" class="btn-action-small btn-edit-perms" data-id="${s.id}" data-name="${name}">Permissions</button>
-            <button type="button" class="btn-action-small danger btn-remove-staff" data-id="${s.id}" data-name="${name}">Remove Staff</button>
-          </div>
-        `;
-        mob.appendChild(card);
+            <div style="border-top:1px dashed var(--border); padding-top:6px;">${permChips}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+              <button type="button" class="btn-action-small btn-edit-perms" data-id="${s.id}" data-name="${name}">Permissions</button>
+              <button type="button" class="btn-action-small danger btn-remove-staff" data-id="${s.id}" data-name="${name}">Remove Staff</button>
+            </div>
+          `;
+          mob.appendChild(card);
+        }
       });
 
-      // Handlers
+      // Attach Action Handlers
       document.querySelectorAll('.btn-remove-staff').forEach(btn => {
         btn.addEventListener('click', async () => {
           const id = btn.getAttribute('data-id');
           const name = btn.getAttribute('data-name');
-          if (!confirm(`Remove Staff\n\nRemove ${name} from staff? Their regular investor account, wallet, and investments will be preserved.`)) return;
+          if (!confirm(`Remove Staff\n\nRemove ${name} from staff? Normal investor account and wallet balance will remain intact.`)) return;
 
           const { data, error } = await supabase.rpc('remove_staff_member', { p_user_id: id });
-          if (error || !data || !data.success) { showToast(data?.message || 'Error removing staff', 'error'); return; }
-          showToast('Staff member removed successfully', 'success');
+          if (error || !data || !data.success) { 
+            showToast(data?.message || 'Error removing staff', 'error'); 
+            return; 
+          }
+          showToast(`${name} staff privileges revoked`, 'success');
           loadStaff();
         });
       });
@@ -513,38 +680,77 @@
         btn.addEventListener('click', () => {
           selectedStaffId = btn.getAttribute('data-id');
           const staffRec = allStaff.find(s => s.id === selectedStaffId);
-          document.getElementById('perm-member-name').textContent = `Staff: ${btn.getAttribute('data-name')} (${staffRec?.email})`;
+          const memberLabel = document.getElementById('perm-member-name');
+          if (memberLabel) memberLabel.textContent = `Staff: ${btn.getAttribute('data-name')} (${staffRec?.email || ''})`;
 
           const curPerms = new Set(staffRec?.permissions || []);
           document.querySelectorAll('.perm-cb').forEach(cb => {
             cb.checked = curPerms.has(cb.value);
           });
 
-          document.getElementById('perm-modal').style.display = 'flex';
+          const modal = document.getElementById('perm-modal');
+          if (modal) modal.style.display = 'flex';
         });
       });
     }
 
-    document.getElementById('btn-close-perm').addEventListener('click', () => {
-      document.getElementById('perm-modal').style.display = 'none';
-    });
-
-    document.getElementById('perm-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const perms = Array.from(document.querySelectorAll('.perm-cb:checked')).map(cb => cb.value);
-
-      const { data, error } = await supabase.rpc('update_staff_permissions', {
-        p_user_id: selectedStaffId,
-        p_permissions: perms
+    // Modal Handlers
+    const closePermBtn = document.getElementById('btn-close-perm');
+    if (closePermBtn) {
+      closePermBtn.addEventListener('click', () => {
+        const modal = document.getElementById('perm-modal');
+        if (modal) modal.style.display = 'none';
       });
+    }
 
-      if (error || !data || !data.success) { showToast(data?.message || 'Error updating permissions', 'error'); return; }
-      showToast('Permissions updated successfully', 'success');
-      document.getElementById('perm-modal').style.display = 'none';
-      loadStaff();
+    const permForm = document.getElementById('perm-form');
+    if (permForm) {
+      permForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const perms = Array.from(document.querySelectorAll('.perm-cb:checked')).map(cb => cb.value);
+
+        const { data, error } = await supabase.rpc('update_staff_permissions', {
+          p_user_id: selectedStaffId,
+          p_permissions: perms
+        });
+
+        if (error || !data || !data.success) { 
+          showToast(data?.message || 'Error updating permissions', 'error'); 
+          return; 
+        }
+        showToast('Permissions updated successfully', 'success');
+        const modal = document.getElementById('perm-modal');
+        if (modal) modal.style.display = 'none';
+        loadStaff();
+      });
+    }
+
+    // Mobile Drawer Controls
+    const openDrawerBtn = document.getElementById('btn-open-drawer');
+    const closeDrawerBtn = document.getElementById('btn-close-drawer');
+    const drawerOverlay = document.getElementById('mobile-drawer-overlay');
+
+    if (openDrawerBtn && drawerOverlay) {
+      openDrawerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        drawerOverlay.style.display = 'block';
+      });
+    }
+    if (closeDrawerBtn && drawerOverlay) {
+      closeDrawerBtn.addEventListener('click', () => {
+        drawerOverlay.style.display = 'none';
+      });
+    }
+    if (drawerOverlay) {
+      drawerOverlay.addEventListener('click', (e) => {
+        if (e.target === drawerOverlay) drawerOverlay.style.display = 'none';
+      });
+    }
+
+    // Initialize Sequence
+    checkAuth().then(ok => { 
+      if (ok) loadStaff(); 
     });
-
-    init();
   </script>
 </body>
 </html>
