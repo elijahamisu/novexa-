@@ -247,7 +247,7 @@
       margin-bottom: 6px;
     }
 
-    .form-input {
+    .form-input, .form-select {
       width: 100%;
       background: #050814;
       border: 1px solid var(--border);
@@ -258,7 +258,7 @@
       font-size: 13px;
     }
 
-    .form-input:focus {
+    .form-input:focus, .form-select:focus {
       border-color: var(--border-focus);
     }
 
@@ -296,7 +296,6 @@
 <body>
 
   <div class="admin-app">
-    <!-- Desktop Sidebar -->
     <aside class="admin-sidebar">
       <div class="sidebar-header">
         <div class="brand-mark">N</div>
@@ -305,6 +304,7 @@
       <ul class="sidebar-menu">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -338,7 +338,44 @@
           <strong>Security Notice:</strong> Modifying settings directly updates live platform rules and is recorded in the administrative audit log. Historical financial records and investments are preserved.
         </div>
 
-        <!-- 1. Deposit Bank Account Settings -->
+        <!-- 1. Dedicated Withdrawal Settings & Controls -->
+        <section class="settings-card">
+          <div class="sc-header">
+            <span class="sc-title">Official Withdrawal Settings & Controls</span>
+            <button type="button" class="btn-save-setting" id="btn-save-wth-settings">Save Withdrawal Rules</button>
+          </div>
+          <form id="form-wth-settings">
+            <div class="form-grid-duo">
+              <div class="form-group">
+                <label class="form-label" for="set-wth-fee">Withdrawal Processing Fee (%)</label>
+                <input type="number" id="set-wth-fee" class="form-input" min="0" max="50" step="0.5" value="18.0" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="set-min-wth">Minimum Withdrawal (NGN)</label>
+                <input type="number" id="set-min-wth" class="form-input" min="100" step="100" value="1000" required>
+              </div>
+            </div>
+
+            <div class="form-grid-duo">
+              <div class="form-group">
+                <label class="form-label" for="set-req-product">Active Product Prerequisite</label>
+                <select id="set-req-product" class="form-select">
+                  <option value="true">ON — Require at least 1 Active Product</option>
+                  <option value="false">OFF — Allow Withdrawals without Active Product</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="set-sys-lock">Global Withdrawal System Status</label>
+                <select id="set-sys-lock" class="form-select">
+                  <option value="false">UNLOCKED — Normal Operations</option>
+                  <option value="true">LOCKED — Temporarily Suspend Submissions</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- 2. Deposit Bank Account Settings -->
         <section class="settings-card">
           <div class="sc-header">
             <span class="sc-title">Official Deposit Bank Account</span>
@@ -362,27 +399,17 @@
           </form>
         </section>
 
-        <!-- 2. Operational Rules & Financial Thresholds -->
+        <!-- 3. Operational Rules & Deposit Thresholds -->
         <section class="settings-card">
           <div class="sc-header">
-            <span class="sc-title">Financial Rules & Thresholds</span>
-            <button type="button" class="btn-save-setting" id="btn-save-rules">Update Rules</button>
+            <span class="sc-title">Deposit Thresholds & Welcome Bonus</span>
+            <button type="button" class="btn-save-setting" id="btn-save-rules">Update Parameters</button>
           </div>
           <form id="form-rules">
             <div class="form-grid-duo">
               <div class="form-group">
                 <label class="form-label" for="min-dep">Minimum Deposit (NGN)</label>
                 <input type="number" id="min-dep" class="form-input" min="100" step="100" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label" for="min-wth">Minimum Withdrawal (NGN)</label>
-                <input type="number" id="min-wth" class="form-input" min="100" step="100" required>
-              </div>
-            </div>
-            <div class="form-grid-duo">
-              <div class="form-group">
-                <label class="form-label" for="wth-fee">Withdrawal Processing Charge (%)</label>
-                <input type="number" id="wth-fee" class="form-input" min="0" max="50" step="0.5" required>
               </div>
               <div class="form-group">
                 <label class="form-label" for="welcome-bonus">Welcome Bonus Credit (NGN)</label>
@@ -392,7 +419,7 @@
           </form>
         </section>
 
-        <!-- 3. Referral Commission Rates -->
+        <!-- 4. Referral Commission Rates -->
         <section class="settings-card">
           <div class="sc-header">
             <span class="sc-title">3-Tier Partner Commission Rates (%)</span>
@@ -416,7 +443,7 @@
           </form>
         </section>
 
-        <!-- 4. Support Contact Channels -->
+        <!-- 5. Support Contact Channels -->
         <section class="settings-card">
           <div class="sc-header">
             <span class="sc-title">Official Support & Community Channels</span>
@@ -453,6 +480,7 @@
       <ul class="sidebar-menu" style="padding:0;">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -490,18 +518,22 @@
 
       data.forEach(r => { currentSettings[r.key] = r.value; });
 
+      // Populate Withdrawal Settings
+      const rules = currentSettings.platform_rules || {};
+      document.getElementById('set-wth-fee').value = rules.withdrawal_fee_percent || 18.0;
+      document.getElementById('set-min-wth').value = rules.minimum_withdrawal || 1000;
+      document.getElementById('set-req-product').value = String(rules.withdrawal_requires_active_product !== false);
+      document.getElementById('set-sys-lock').value = String(Boolean(rules.withdrawals_locked));
+
       // Populate Bank
       const bank = currentSettings.deposit_account || {};
       document.getElementById('bank-name').value = bank.bank || 'MONIEPOINT';
       document.getElementById('bank-num').value = bank.account_number || '5318726919';
       document.getElementById('bank-title').value = bank.account_name || 'IBILOLA OMOROYEKE ISHOLA';
 
-      // Populate Rules
-      const rules = currentSettings.platform_rules || {};
+      // Populate Deposit & Bonus
       const welcome = currentSettings.welcome_bonus || {};
       document.getElementById('min-dep').value = rules.minimum_deposit || 1000;
-      document.getElementById('min-wth').value = rules.minimum_withdrawal || 2000;
-      document.getElementById('wth-fee').value = rules.withdrawal_fee_percent || 15.0;
       document.getElementById('welcome-bonus').value = welcome.amount || 1000;
 
       // Populate Rates
@@ -516,6 +548,44 @@
       document.getElementById('sup-phone').value = sup.whatsapp || '+2345318726919';
       document.getElementById('sup-telegram').value = sup.telegram || 'https://t.me/novexa_platform';
     }
+
+    // Save Withdrawal Rules
+    document.getElementById('btn-save-wth-settings').addEventListener('click', async () => {
+      const fee = parseFloat(document.getElementById('set-wth-fee').value);
+      const minWth = parseFloat(document.getElementById('set-min-wth').value);
+      const reqProduct = document.getElementById('set-req-product').value === 'true';
+      const isLocked = document.getElementById('set-sys-lock').value === 'true';
+
+      if (fee < 0 || fee > 50) {
+        showToast('Withdrawal fee must be between 0% and 50%.', 'error');
+        return;
+      }
+      if (minWth < 100) {
+        showToast('Minimum withdrawal cannot be less than ₦100.', 'error');
+        return;
+      }
+
+      const existingRules = currentSettings.platform_rules || {};
+      const updatedRules = {
+        ...existingRules,
+        withdrawal_fee_percent: fee,
+        minimum_withdrawal: minWth,
+        withdrawal_requires_active_product: reqProduct,
+        withdrawals_locked: isLocked
+      };
+
+      const { data, error } = await supabase.rpc('admin_update_site_setting', {
+        p_key: 'platform_rules',
+        p_value: updatedRules
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || 'Failed to save withdrawal settings', 'error');
+      } else {
+        showToast('Withdrawal rules updated successfully!', 'success');
+        currentSettings.platform_rules = updatedRules;
+      }
+    });
 
     // Save Bank Account
     document.getElementById('btn-save-bank').addEventListener('click', async () => {
@@ -537,13 +607,12 @@
       }
     });
 
-    // Save Rules & Welcome Bonus
+    // Save Deposit Rules & Welcome Bonus
     document.getElementById('btn-save-rules').addEventListener('click', async () => {
-      const rulesPayload = {
-        minimum_deposit: parseFloat(document.getElementById('min-dep').value),
-        minimum_withdrawal: parseFloat(document.getElementById('min-wth').value),
-        withdrawal_fee_percent: parseFloat(document.getElementById('wth-fee').value),
-        support_whatsapp: document.getElementById('sup-phone').value.trim()
+      const existingRules = currentSettings.platform_rules || {};
+      const updatedRules = {
+        ...existingRules,
+        minimum_deposit: parseFloat(document.getElementById('min-dep').value)
       };
 
       const bonusPayload = {
@@ -552,13 +621,13 @@
         require_first_deposit: false
       };
 
-      const res1 = await supabase.rpc('admin_update_site_setting', { p_key: 'platform_rules', p_value: rulesPayload });
+      const res1 = await supabase.rpc('admin_update_site_setting', { p_key: 'platform_rules', p_value: updatedRules });
       const res2 = await supabase.rpc('admin_update_site_setting', { p_key: 'welcome_bonus', p_value: bonusPayload });
 
       if (res1.error || res2.error) {
-        showToast('Error updating financial rules', 'error');
+        showToast('Error updating deposit parameters', 'error');
       } else {
-        showToast('Financial rules & welcome bonus updated', 'success');
+        showToast('Deposit thresholds & welcome bonus updated', 'success');
       }
     });
 
