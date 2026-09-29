@@ -94,7 +94,6 @@
       color: #FFF;
     }
 
-    /* Solvency Banner */
     .balance-banner {
       background: linear-gradient(135deg, #0e1d42 0%, #091124 100%);
       border: 1px solid rgba(59, 130, 246, 0.3);
@@ -121,7 +120,6 @@
       margin-top: 2px;
     }
 
-    /* Policy Strip */
     .policy-pill {
       background: rgba(37, 99, 235, 0.08);
       border: 1px solid rgba(37, 99, 235, 0.3);
@@ -137,7 +135,6 @@
       color: #FFF;
     }
 
-    /* Status State Cards (Locked & No Product) */
     .state-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -189,7 +186,6 @@
       margin-top: 6px;
     }
 
-    /* Form Card */
     .form-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -228,7 +224,6 @@
       border-color: var(--border-focus);
     }
 
-    /* Calculation Receipt */
     .receipt-box {
       background: #090E1F;
       border: 1px solid var(--border);
@@ -280,7 +275,6 @@
       cursor: not-allowed;
     }
 
-    /* Modal Confirmation */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -355,7 +349,6 @@
       cursor: pointer;
     }
 
-    /* Withdrawal History */
     .history-stack {
       display: flex;
       flex-direction: column;
@@ -518,7 +511,6 @@
   </header>
 
   <main class="app-container">
-    <!-- Solvency Banner -->
     <div class="balance-banner">
       <div>
         <div class="bb-label">Available Balance</div>
@@ -529,7 +521,6 @@
       </div>
     </div>
 
-    <!-- Policy Strip -->
     <div class="policy-pill">
       Withdrawal Fee: <strong>18%</strong> &bull; Minimum Withdrawal: <strong>₦1,000.00</strong> &bull; Requirement: <strong>Active Product Required</strong>
     </div>
@@ -538,18 +529,18 @@
     <div class="state-card locked" id="card-locked" style="display:none;">
       <div class="state-icon">🔒</div>
       <h2 class="state-title">Withdrawals Temporarily Unavailable</h2>
-      <p class="state-desc">The withdrawal system is currently locked by administration for scheduled review. Your balance remains safe and visible. Please check back later.</p>
+      <p class="state-desc">The withdrawal system is currently locked by administration. Your balance remains safe and visible. Please try again later.</p>
     </div>
 
     <!-- State 2: No Active Product Card -->
     <div class="state-card no-product" id="card-no-product" style="display:none;">
       <div class="state-icon">⚡</div>
       <h2 class="state-title">Active Product Required</h2>
-      <p class="state-desc">You must have at least one active product/investment before you can make a withdrawal.</p>
-      <a href="/plans.html" class="btn-state-action">Explore Active Plans</a>
+      <p class="state-desc">You need at least one active product before you can withdraw.</p>
+      <a href="/plans.html" class="btn-state-action">View Plans</a>
     </div>
 
-    <!-- State 3: Normal Form -->
+    <!-- State 3: Active Form -->
     <section class="form-card" id="form-container">
       <form id="withdraw-form" novalidate>
         <div class="form-group">
@@ -702,7 +693,6 @@
       userBalance = Number(auth.profile.wallet_balance) || 0;
       document.getElementById('avail-balance').textContent = formatNaira(userBalance);
 
-      // 1. Load Rules from site_settings
       const settings = await getSiteSettings();
       if (settings.platform_rules) {
         minWithdrawal = Number(settings.platform_rules.minimum_withdrawal) || 1000;
@@ -711,7 +701,7 @@
         requiresActiveProduct = settings.platform_rules.withdrawal_requires_active_product !== false;
       }
 
-      // 2. Check User Active Products
+      // Check Active Investment
       const { count: activeCount } = await supabase
         .from('investments')
         .select('*', { count: 'exact', head: true })
@@ -721,7 +711,6 @@
       hasActiveProduct = (activeCount || 0) > 0;
       document.getElementById('user-contract-status').textContent = hasActiveProduct ? `${activeCount} Active Product(s)` : 'No Active Product';
 
-      // 3. UI State Resolution
       const cardLocked = document.getElementById('card-locked');
       const cardNoProduct = document.getElementById('card-no-product');
       const formContainer = document.getElementById('form-container');
@@ -883,7 +872,7 @@
           minute: '2-digit'
         });
 
-        const maskedAcc = wth.account_number.length >= 4 
+        const maskedAcc = wth.account_number && wth.account_number.length >= 4 
           ? `***${wth.account_number.slice(-4)}`
           : '****';
 
