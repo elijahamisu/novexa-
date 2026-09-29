@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>NOVEXA Admin — User Directory</title>
+  <title>NOVEXA Admin — User Directory & Staff Controls</title>
   <style>
     :root {
       --bg-dark: #050814;
@@ -50,7 +50,6 @@
       width: 100%;
     }
 
-    /* Desktop Sidebar */
     .admin-sidebar {
       display: none;
       width: 250px;
@@ -125,15 +124,6 @@
       color: #93C5FD;
     }
 
-    .sidebar-footer {
-      padding: 16px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    /* Main Administration Content */
     .admin-main {
       flex-grow: 1;
       display: flex;
@@ -172,7 +162,7 @@
 
     .admin-content-body {
       padding: 20px;
-      max-width: 1100px;
+      max-width: 1150px;
       width: 100%;
       margin: 0 auto;
     }
@@ -192,7 +182,6 @@
       color: #FFF;
     }
 
-    /* Filters Bar */
     .filters-bar {
       display: flex;
       gap: 10px;
@@ -215,10 +204,6 @@
       font-size: 13px;
       color: #FFF;
       outline: none;
-    }
-
-    .search-input:focus {
-      border-color: var(--border-focus);
     }
 
     .search-icon {
@@ -244,7 +229,6 @@
       outline: none;
     }
 
-    /* Users Table Container */
     .users-container {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -287,8 +271,20 @@
       color: var(--text-secondary);
     }
 
-    .users-table tr:hover td {
-      background: rgba(255, 255, 255, 0.02);
+    .user-avatar-initials {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #080C1E;
+      border: 1px solid var(--border);
+      color: var(--accent-cyan);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      margin-right: 8px;
+      vertical-align: middle;
     }
 
     .status-badge {
@@ -299,17 +295,37 @@
       text-transform: uppercase;
     }
 
-    .status-badge.active {
-      background: rgba(16, 185, 129, 0.15);
+    .status-badge.active { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .status-badge.suspended { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .status-badge.staff { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); }
+
+    .btn-action-small {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #93C5FD;
+      padding: 5px 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-action-small.staff-add {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.35);
       color: var(--success);
     }
 
-    .status-badge.suspended {
-      background: rgba(239, 68, 68, 0.15);
-      color: var(--danger);
+    .btn-action-small.staff-remove {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #FCA5A5;
     }
 
-    /* Mobile Cards View */
     .users-cards-mobile {
       display: flex;
       flex-direction: column;
@@ -327,20 +343,6 @@
       gap: 8px;
     }
 
-    .btn-view-user {
-      display: inline-block;
-      background: rgba(37, 99, 235, 0.15);
-      border: 1px solid rgba(37, 99, 235, 0.4);
-      color: #93C5FD;
-      padding: 6px 12px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    /* Pagination */
     .pagination-bar {
       display: flex;
       justify-content: space-between;
@@ -360,18 +362,11 @@
       cursor: pointer;
     }
 
-    .btn-page:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+    .btn-page:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    /* Mobile Drawer */
     .mobile-drawer-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(4px);
       z-index: 1000;
@@ -387,32 +382,21 @@
       display: flex;
       flex-direction: column;
     }
-
-    .btn-logout {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #FCA5A5;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
 
   <div class="admin-app">
-    <!-- Desktop Sidebar -->
+    <!-- Desktop Sidebar with Expanded Navigation -->
     <aside class="admin-sidebar">
       <div class="sidebar-header">
         <div class="brand-mark">N</div>
         <div class="brand-text">NOVEXA ADMIN</div>
       </div>
-
       <ul class="sidebar-menu">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link active"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -424,32 +408,24 @@
         <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
         <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
       </ul>
-
-      <div class="sidebar-footer">
-        <button type="button" class="btn-logout" id="btn-sidebar-logout">Logout</button>
-      </div>
     </aside>
 
-    <!-- Main Content -->
     <div class="admin-main">
       <header class="admin-top-nav">
         <div style="display:flex; align-items:center; gap:10px;">
           <button type="button" class="btn-mobile-toggle" id="btn-open-drawer">&#9776;</button>
           <div style="font-size:15px; font-weight:700; color:#FFF;">User Directory</div>
         </div>
-
-        <button type="button" class="btn-logout" id="btn-header-logout">Sign Out</button>
       </header>
 
       <div class="admin-content-body">
         <div class="page-title-row">
           <div>
-            <h1 class="page-heading">Investor Accounts</h1>
+            <h1 class="page-heading">Investor & Staff Directory</h1>
             <div style="font-size:12px; color:var(--text-secondary);" id="user-count-label">Loading registered investors...</div>
           </div>
         </div>
 
-        <!-- Filter & Search Controls -->
         <div class="filters-bar">
           <div class="search-input-wrap">
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -457,40 +433,39 @@
           </div>
 
           <select id="status-filter" class="filter-select">
-            <option value="all">All Statuses</option>
+            <option value="all">All Accounts</option>
             <option value="active">Active Only</option>
             <option value="suspended">Suspended Only</option>
+            <option value="staff">Staff Members Only</option>
           </select>
 
           <button type="button" class="btn-page" id="btn-refresh">&#8635; Refresh</button>
         </div>
 
-        <!-- Users Table & Mobile Cards -->
         <div class="users-container">
-          <!-- Desktop Table -->
           <table class="users-table">
             <thead>
               <tr>
                 <th>Investor</th>
-                <th>Referral Code</th>
+                <th>User ID</th>
                 <th>Wallet Balance</th>
-                <th>Total Earned</th>
+                <th>Invested</th>
+                <th>Earnings</th>
+                <th>Role / Staff</th>
                 <th>Status</th>
-                <th>Joined</th>
+                <th>Staff Toggle</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody id="tbody-users">
-              <tr><td colspan="7" style="text-align:center; padding:30px;">Loading users...</td></tr>
+              <tr><td colspan="9" style="text-align:center; padding:30px;">Loading users...</td></tr>
             </tbody>
           </table>
 
-          <!-- Mobile Cards -->
           <div class="users-cards-mobile" id="mobile-users-container">
             <div style="text-align:center; padding:20px; color:var(--text-muted);">Loading users...</div>
           </div>
 
-          <!-- Pagination Bar -->
           <div class="pagination-bar">
             <span id="page-info">Showing records</span>
             <div style="display:flex; gap:8px;">
@@ -513,6 +488,7 @@
       <ul class="sidebar-menu" style="padding:0;">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link active"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -524,24 +500,21 @@
         <li><a href="/admin/reports.html" class="menu-link"><span>Reports</span></a></li>
         <li><a href="/admin/settings.html" class="menu-link"><span>Settings</span></a></li>
       </ul>
-      <button type="button" class="btn-logout" id="btn-drawer-logout" style="margin-top:auto;">Sign Out</button>
     </div>
   </div>
 
   <script type="module">
-    import { supabase, formatNaira } from '/supabase-client.js';
+    import { supabase, formatNaira, showToast } from '/supabase-client.js';
 
     let currentPage = 1;
     const pageSize = 15;
     let totalCount = 0;
+    let staffIds = new Set();
     let searchDebounce = null;
 
     async function verifyAdminAuth() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        window.location.replace('/admin/login.html');
-        return false;
-      }
+      if (!session) { window.location.replace('/admin/login.html'); return false; }
       const { data: adminCheck } = await supabase.rpc('check_is_admin');
       if (!adminCheck || !adminCheck.is_admin) {
         await supabase.auth.signOut();
@@ -551,15 +524,20 @@
       return true;
     }
 
+    async function loadStaffIds() {
+      const { data } = await supabase.from('staff_members').select('id').eq('is_active', true);
+      staffIds = new Set((data || []).map(s => s.id));
+    }
+
     async function loadUsers() {
+      await loadStaffIds();
+
       const searchVal = document.getElementById('user-search').value.trim();
       const statusVal = document.getElementById('status-filter').value;
       const from = (currentPage - 1) * pageSize;
       const to = from + pageSize - 1;
 
-      let query = supabase
-        .from('profiles')
-        .select('*', { count: 'exact' });
+      let query = supabase.from('profiles').select('*', { count: 'exact' });
 
       if (statusVal === 'active') {
         query = query.eq('is_active', true);
@@ -574,11 +552,7 @@
       query = query.order('created_at', { ascending: false }).range(from, to);
 
       const { data: users, count, error } = await query;
-
-      if (error) {
-        console.error('Error fetching users:', error);
-        return;
-      }
+      if (error) { console.error('Error fetching users:', error); return; }
 
       totalCount = count || 0;
       document.getElementById('user-count-label').textContent = `${totalCount} Registered Investor${totalCount === 1 ? '' : 's'}`;
@@ -592,100 +566,121 @@
 
     function renderUsers(users) {
       const tbody = document.getElementById('tbody-users');
-      const mobileContainer = document.getElementById('mobile-users-container');
+      const mobContainer = document.getElementById('mobile-users-container');
 
       if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">No users found matching your search.</td></tr>`;
-        mobileContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No users found.</div>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);">No users found.</td></tr>`;
+        mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No users found.</div>`;
         return;
       }
 
       tbody.innerHTML = '';
-      mobileContainer.innerHTML = '';
+      mobContainer.innerHTML = '';
 
       users.forEach(u => {
-        const joinDate = new Date(u.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const isStaff = staffIds.has(u.id);
+        const initials = (u.full_name || 'NV').split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || 'NV';
         const statusBadge = u.is_active 
           ? `<span class="status-badge active">Active</span>` 
           : `<span class="status-badge suspended">Suspended</span>`;
+        const staffBadge = isStaff 
+          ? `<span class="status-badge staff">Staff</span>` 
+          : `<span style="font-size:11px; color:var(--text-muted);">User</span>`;
 
-        // Desktop Row
+        const staffBtn = isStaff
+          ? `<button type="button" class="btn-action-small staff-remove btn-toggle-staff" data-id="${u.id}" data-action="remove" data-name="${u.full_name}">− Staff</button>`
+          : `<button type="button" class="btn-action-small staff-add btn-toggle-staff" data-id="${u.id}" data-action="add" data-name="${u.full_name}">+ Staff</button>`;
+
+        // Desktop
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>
-            <div style="font-weight:700; color:#FFF;">${u.full_name || 'Investor'}</div>
-            <div style="font-size:11px; color:var(--text-muted);">${u.email}</div>
+            <div style="display:flex; align-items:center;">
+              <span class="user-avatar-initials">${initials}</span>
+              <div>
+                <div style="font-weight:700; color:#FFF;">${u.full_name}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${u.email}</div>
+              </div>
+            </div>
           </td>
-          <td><strong style="color:var(--accent-cyan);">${u.referral_code}</strong></td>
+          <td><code style="font-size:10px; color:var(--text-muted);">${u.id.slice(0, 8)}...</code></td>
           <td style="font-weight:700; color:#FFF;">${formatNaira(u.wallet_balance)}</td>
-          <td style="color:var(--text-secondary);">${formatNaira(u.total_earned)}</td>
+          <td>${formatNaira(u.total_invested)}</td>
+          <td style="color:var(--accent-cyan); font-weight:700;">${formatNaira(u.total_earned)}</td>
+          <td>${staffBadge}</td>
           <td>${statusBadge}</td>
-          <td>${joinDate}</td>
-          <td><a href="/admin/user-details.html?id=${u.id}" class="btn-view-user">Manage &rarr;</a></td>
+          <td>${staffBtn}</td>
+          <td><a href="/admin/user-details.html?id=${u.id}" class="btn-action-small">Manage &rarr;</a></td>
         `;
         tbody.appendChild(tr);
 
         // Mobile Card
-        const mobCard = document.createElement('div');
-        mobCard.className = 'user-card-mob';
-        mobCard.innerHTML = `
+        const card = document.createElement('div');
+        card.className = 'user-card-mob';
+        card.innerHTML = `
           <div style="display:flex; justify-content:space-between; align-items:flex-start;">
             <div>
-              <div style="font-weight:700; color:#FFF; font-size:14px;">${u.full_name || 'Investor'}</div>
-              <div style="font-size:12px; color:var(--text-muted);">${u.email}</div>
+              <div style="font-weight:700; color:#FFF; font-size:14px;">${u.full_name}</div>
+              <div style="font-size:11px; color:var(--text-muted);">${u.email}</div>
             </div>
-            ${statusBadge}
+            <div style="display:flex; gap:6px;">${staffBadge} ${statusBadge}</div>
           </div>
           <div style="display:flex; justify-content:space-between; font-size:12px; border-top:1px dashed var(--border); padding-top:6px;">
             <span>Balance: <strong style="color:#FFF;">${formatNaira(u.wallet_balance)}</strong></span>
-            <span>Ref: <strong style="color:var(--accent-cyan);">${u.referral_code}</strong></span>
+            <span>Invested: <strong>${formatNaira(u.total_invested)}</strong></span>
           </div>
-          <a href="/admin/user-details.html?id=${u.id}" class="btn-view-user">Manage Account & Activity &rarr;</a>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+            ${staffBtn}
+            <a href="/admin/user-details.html?id=${u.id}" class="btn-action-small">Manage User &rarr;</a>
+          </div>
         `;
-        mobileContainer.appendChild(mobCard);
+        mobContainer.appendChild(card);
+      });
+
+      // Staff Toggle Handlers
+      document.querySelectorAll('.btn-toggle-staff').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const userId = btn.getAttribute('data-id');
+          const action = btn.getAttribute('data-action');
+          const userName = btn.getAttribute('data-name');
+
+          if (action === 'add') {
+            if (!confirm(`Add Staff\n\nAre you sure you want to make ${userName} a staff member?`)) return;
+            const { data, error } = await supabase.rpc('add_staff_member', { p_user_id: userId });
+            if (error || !data || !data.success) {
+              showToast(data?.message || 'Error adding staff', 'error');
+              return;
+            }
+            showToast(`${userName} added as staff`, 'success');
+            loadUsers();
+          } else {
+            if (!confirm(`Remove Staff\n\nRemove ${userName} from staff? Normal user account and funds will be preserved.`)) return;
+            const { data, error } = await supabase.rpc('remove_staff_member', { p_user_id: userId });
+            if (error || !data || !data.success) {
+              showToast(data?.message || 'Error revoking staff', 'error');
+              return;
+            }
+            showToast(`${userName} staff privileges revoked`, 'success');
+            loadUsers();
+          }
+        });
       });
     }
 
-    // Search and Filters
     document.getElementById('user-search').addEventListener('input', () => {
       clearTimeout(searchDebounce);
-      searchDebounce = setTimeout(() => {
-        currentPage = 1;
-        loadUsers();
-      }, 350);
+      searchDebounce = setTimeout(() => { currentPage = 1; loadUsers(); }, 350);
     });
 
-    document.getElementById('status-filter').addEventListener('change', () => {
-      currentPage = 1;
-      loadUsers();
-    });
-
+    document.getElementById('status-filter').addEventListener('change', () => { currentPage = 1; loadUsers(); });
     document.getElementById('btn-refresh').addEventListener('click', loadUsers);
+    document.getElementById('btn-prev').addEventListener('click', () => { if (currentPage > 1) { currentPage--; loadUsers(); } });
+    document.getElementById('btn-next').addEventListener('click', () => { currentPage++; loadUsers(); });
 
-    document.getElementById('btn-prev').addEventListener('click', () => {
-      if (currentPage > 1) {
-        currentPage--;
-        loadUsers();
-      }
-    });
-
-    document.getElementById('btn-next').addEventListener('click', () => {
-      currentPage++;
-      loadUsers();
-    });
-
-    // Mobile Drawer Controls
+    // Drawer Controls
     const drawer = document.getElementById('mobile-drawer-overlay');
     document.getElementById('btn-open-drawer').addEventListener('click', () => { drawer.style.display = 'block'; });
     document.getElementById('btn-close-drawer').addEventListener('click', () => { drawer.style.display = 'none'; });
-
-    async function handleLogout() {
-      await supabase.auth.signOut();
-      window.location.replace('/admin/login.html');
-    }
-    document.getElementById('btn-header-logout').addEventListener('click', handleLogout);
-    document.getElementById('btn-sidebar-logout').addEventListener('click', handleLogout);
-    document.getElementById('btn-drawer-logout')?.addEventListener('click', handleLogout);
 
     verifyAdminAuth().then(ok => { if (ok) loadUsers(); });
   </script>
