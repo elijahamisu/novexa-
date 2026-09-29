@@ -60,7 +60,6 @@
       }
     }
 
-    /* Top Bar */
     .top-header {
       position: sticky;
       top: 0;
@@ -120,6 +119,74 @@
       font-weight: 800;
       color: #FFF;
       margin-top: 2px;
+    }
+
+    /* Policy Strip */
+    .policy-pill {
+      background: rgba(37, 99, 235, 0.08);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .policy-pill strong {
+      color: #FFF;
+    }
+
+    /* Status State Cards (Locked & No Product) */
+    .state-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 32px 20px;
+      text-align: center;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .state-card.locked {
+      border-color: rgba(245, 158, 11, 0.4);
+      background: linear-gradient(180deg, #1a1608 0%, #0F172A 100%);
+    }
+
+    .state-card.no-product {
+      border-color: rgba(59, 130, 246, 0.4);
+      background: linear-gradient(180deg, #0e1d42 0%, #0F172A 100%);
+    }
+
+    .state-icon {
+      font-size: 40px;
+    }
+
+    .state-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFF;
+    }
+
+    .state-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 320px;
+    }
+
+    .btn-state-action {
+      background: var(--accent);
+      color: #FFF;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 6px;
     }
 
     /* Form Card */
@@ -213,6 +280,81 @@
       cursor: not-allowed;
     }
 
+    /* Modal Confirmation */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(6px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 12px;
+    }
+
+    .modal-receipt {
+      background: #090E1F;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .modal-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-modal-cancel {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-modal-confirm {
+      background: var(--accent);
+      border: none;
+      color: #FFF;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     /* Withdrawal History */
     .history-stack {
       display: flex;
@@ -257,7 +399,6 @@
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
-    /* Official NOVEXA Bottom Navigation */
     .novexa-bottom-nav {
       position: fixed;
       bottom: 0;
@@ -366,7 +507,6 @@
 </head>
 <body>
 
-  <!-- Top App Bar -->
   <header class="top-header">
     <div class="app-container">
       <div class="header-inner">
@@ -378,28 +518,48 @@
   </header>
 
   <main class="app-container">
-    <!-- Available Solvency Snapshot -->
+    <!-- Solvency Banner -->
     <div class="balance-banner">
       <div>
         <div class="bb-label">Available Balance</div>
         <div class="bb-amount" id="avail-balance">₦0.00</div>
       </div>
       <div style="text-align:right;">
-        <span style="font-size:11px; color:#93C5FD; font-weight:600;">Status: Active</span>
+        <span style="font-size:11px; color:#93C5FD; font-weight:600;" id="user-contract-status">Checking eligibility...</span>
       </div>
     </div>
 
-    <!-- Withdrawal Submission Form -->
-    <section class="form-card">
+    <!-- Policy Strip -->
+    <div class="policy-pill">
+      Withdrawal Fee: <strong>18%</strong> &bull; Minimum Withdrawal: <strong>₦1,000.00</strong> &bull; Requirement: <strong>Active Product Required</strong>
+    </div>
+
+    <!-- State 1: Global Lock Active Card -->
+    <div class="state-card locked" id="card-locked" style="display:none;">
+      <div class="state-icon">🔒</div>
+      <h2 class="state-title">Withdrawals Temporarily Unavailable</h2>
+      <p class="state-desc">The withdrawal system is currently locked by administration for scheduled review. Your balance remains safe and visible. Please check back later.</p>
+    </div>
+
+    <!-- State 2: No Active Product Card -->
+    <div class="state-card no-product" id="card-no-product" style="display:none;">
+      <div class="state-icon">⚡</div>
+      <h2 class="state-title">Active Product Required</h2>
+      <p class="state-desc">You must have at least one active product/investment before you can make a withdrawal.</p>
+      <a href="/plans.html" class="btn-state-action">Explore Active Plans</a>
+    </div>
+
+    <!-- State 3: Normal Form -->
+    <section class="form-card" id="form-container">
       <form id="withdraw-form" novalidate>
         <div class="form-group">
           <label class="form-label" for="amount">Withdrawal Amount (NGN)</label>
-          <input type="number" id="amount" class="form-input" placeholder="Min. 2,000" min="2000" required>
+          <input type="number" id="amount" class="form-input" placeholder="Min. ₦1,000" min="1000" step="100" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="bank_name">Destination Bank Name</label>
-          <input type="text" id="bank_name" class="form-input" placeholder="e.g. Opay, Access Bank, Moniepoint" required>
+          <input type="text" id="bank_name" class="form-input" placeholder="e.g. Opay, Moniepoint, Access Bank" required>
         </div>
 
         <div class="form-group">
@@ -409,32 +569,31 @@
 
         <div class="form-group">
           <label class="form-label" for="account_name">Account Name (Beneficiary)</label>
-          <input type="text" id="account_name" class="form-input" placeholder="e.g. John Doe" required>
+          <input type="text" id="account_name" class="form-input" placeholder="e.g. Chukwuma Adebayo" required>
         </div>
 
         <div id="error-hint" class="error-hint"></div>
 
-        <!-- Receipt Breakdown -->
         <div class="receipt-box">
           <div class="receipt-row">
             <span>Requested Amount:</span>
             <strong id="rcpt-amount">₦0.00</strong>
           </div>
           <div class="receipt-row">
-            <span>Processing Fee:</span>
-            <strong id="rcpt-fee">₦0.00 (0%)</strong>
+            <span>Withdrawal Fee (18%):</span>
+            <strong id="rcpt-fee" style="color:var(--gold);">₦0.00</strong>
           </div>
           <div class="receipt-row total">
-            <span>Net Payout Amount:</span>
-            <strong id="rcpt-net" style="color:var(--accent-cyan);">₦0.00</strong>
+            <span>You Receive (Net):</span>
+            <strong id="rcpt-net" style="color:var(--accent-cyan); font-size:14px;">₦0.00</strong>
           </div>
         </div>
 
-        <button type="submit" class="btn-submit" id="btn-submit">Submit Cashout Request</button>
+        <button type="button" class="btn-submit" id="btn-open-confirm">Review & Request Cashout</button>
       </form>
     </section>
 
-    <!-- Withdrawal History -->
+    <!-- History -->
     <section>
       <div style="font-size:14px; font-weight:700; color:#FFF; margin-bottom:12px; text-transform:uppercase;">
         Your Withdrawal History
@@ -444,6 +603,40 @@
       </div>
     </section>
   </main>
+
+  <!-- Step 2 Confirmation Modal -->
+  <div class="modal-overlay" id="confirm-modal">
+    <div class="modal-card">
+      <h2 class="modal-title">Confirm Withdrawal Request</h2>
+      <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
+        Please confirm your destination account and payout calculation. Funds will be deducted from your wallet immediately while pending manual transfer approval.
+      </p>
+
+      <div class="modal-receipt">
+        <div class="modal-row">
+          <span>Gross Request:</span>
+          <strong id="m-gross" style="color:#FFF;">₦0.00</strong>
+        </div>
+        <div class="modal-row">
+          <span>Withdrawal Fee (18%):</span>
+          <strong id="m-fee" style="color:var(--gold);">₦0.00</strong>
+        </div>
+        <div class="modal-row" style="border-top:1px dashed var(--border); padding-top:6px;">
+          <span>You Receive (Net):</span>
+          <strong id="m-net" style="color:var(--accent-cyan); font-size:14px;">₦0.00</strong>
+        </div>
+        <div class="modal-row" style="margin-top:4px;">
+          <span>Destination:</span>
+          <strong id="m-dest" style="color:#FFF;">--</strong>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-modal-cancel" id="btn-cancel-modal">Cancel</button>
+        <button type="button" class="btn-modal-confirm" id="btn-execute-withdraw">Confirm Withdrawal</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Official 5-Tab Navigation (Wallet Active) -->
   <nav class="novexa-bottom-nav" aria-label="Main Navigation">
@@ -494,8 +687,11 @@
     import { supabase, requireAuth, getSiteSettings, formatNaira, showToast } from '/supabase-client.js';
 
     let userBalance = 0;
-    let minWithdrawal = 2000;
-    let feePercent = 0.0;
+    let minWithdrawal = 1000;
+    let feePercent = 18.0;
+    let isLocked = false;
+    let requiresActiveProduct = true;
+    let hasActiveProduct = false;
     let currentUserId = null;
     let isSubmitting = false;
 
@@ -506,16 +702,47 @@
       userBalance = Number(auth.profile.wallet_balance) || 0;
       document.getElementById('avail-balance').textContent = formatNaira(userBalance);
 
-      // Fetch minimum withdrawal & fees from site_settings
+      // 1. Load Rules from site_settings
       const settings = await getSiteSettings();
       if (settings.platform_rules) {
-        minWithdrawal = Number(settings.platform_rules.minimum_withdrawal) || 2000;
-        feePercent = Number(settings.platform_rules.withdrawal_fee_percent) || 0.0;
+        minWithdrawal = Number(settings.platform_rules.minimum_withdrawal) || 1000;
+        feePercent = Number(settings.platform_rules.withdrawal_fee_percent) || 18.0;
+        isLocked = Boolean(settings.platform_rules.withdrawals_locked);
+        requiresActiveProduct = settings.platform_rules.withdrawal_requires_active_product !== false;
       }
 
-      document.getElementById('amount').placeholder = `Min. ${formatNaira(minWithdrawal)}`;
-      recalcWithdrawal();
-      document.getElementById('amount').addEventListener('input', recalcWithdrawal);
+      // 2. Check User Active Products
+      const { count: activeCount } = await supabase
+        .from('investments')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', currentUserId)
+        .eq('status', 'active');
+
+      hasActiveProduct = (activeCount || 0) > 0;
+      document.getElementById('user-contract-status').textContent = hasActiveProduct ? `${activeCount} Active Product(s)` : 'No Active Product';
+
+      // 3. UI State Resolution
+      const cardLocked = document.getElementById('card-locked');
+      const cardNoProduct = document.getElementById('card-no-product');
+      const formContainer = document.getElementById('form-container');
+
+      if (isLocked) {
+        cardLocked.style.display = 'flex';
+        cardNoProduct.style.display = 'none';
+        formContainer.style.display = 'none';
+      } else if (requiresActiveProduct && !hasActiveProduct) {
+        cardLocked.style.display = 'none';
+        cardNoProduct.style.display = 'flex';
+        formContainer.style.display = 'none';
+      } else {
+        cardLocked.style.display = 'none';
+        cardNoProduct.style.display = 'none';
+        formContainer.style.display = 'block';
+
+        document.getElementById('amount').placeholder = `Min. ${formatNaira(minWithdrawal)}`;
+        recalcWithdrawal();
+        document.getElementById('amount').addEventListener('input', recalcWithdrawal);
+      }
 
       loadWithdrawalHistory();
     }
@@ -523,10 +750,10 @@
     function recalcWithdrawal() {
       const amtInput = document.getElementById('amount');
       const errEl = document.getElementById('error-hint');
-      const btn = document.getElementById('btn-submit');
+      const btn = document.getElementById('btn-open-confirm');
       const amount = parseFloat(amtInput.value) || 0;
 
-      const fee = (amount * feePercent) / 100;
+      const fee = Math.round((amount * (feePercent / 100)) * 100) / 100;
       const net = Math.max(0, amount - fee);
 
       document.getElementById('rcpt-amount').textContent = formatNaira(amount);
@@ -550,8 +777,41 @@
       }
     }
 
-    document.getElementById('withdraw-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
+    document.getElementById('btn-open-confirm').addEventListener('click', () => {
+      const amount = parseFloat(document.getElementById('amount').value) || 0;
+      const bankName = document.getElementById('bank_name').value.trim();
+      const accountNumber = document.getElementById('account_number').value.trim();
+      const accountName = document.getElementById('account_name').value.trim();
+
+      if (amount < minWithdrawal) {
+        showToast(`Minimum withdrawal is ${formatNaira(minWithdrawal)}.`, 'error');
+        return;
+      }
+      if (amount > userBalance) {
+        showToast('Insufficient wallet balance.', 'error');
+        return;
+      }
+      if (!bankName || accountNumber.length < 10 || !accountName) {
+        showToast('Please provide valid bank destination details.', 'error');
+        return;
+      }
+
+      const fee = Math.round((amount * (feePercent / 100)) * 100) / 100;
+      const net = amount - fee;
+
+      document.getElementById('m-gross').textContent = formatNaira(amount);
+      document.getElementById('m-fee').textContent = `${formatNaira(fee)} (${feePercent}%)`;
+      document.getElementById('m-net').textContent = formatNaira(net);
+      document.getElementById('m-dest').textContent = `${bankName} (${accountNumber}) - ${accountName}`;
+
+      document.getElementById('confirm-modal').style.display = 'flex';
+    });
+
+    document.getElementById('btn-cancel-modal').addEventListener('click', () => {
+      document.getElementById('confirm-modal').style.display = 'none';
+    });
+
+    document.getElementById('btn-execute-withdraw').addEventListener('click', async () => {
       if (isSubmitting) return;
 
       const amount = parseFloat(document.getElementById('amount').value);
@@ -559,23 +819,10 @@
       const accountNumber = document.getElementById('account_number').value.trim();
       const accountName = document.getElementById('account_name').value.trim();
 
-      if (!amount || amount < minWithdrawal) {
-        showToast(`Minimum withdrawal is ${formatNaira(minWithdrawal)}.`, 'error');
-        return;
-      }
-      if (amount > userBalance) {
-        showToast('Insufficient funds in wallet.', 'error');
-        return;
-      }
-      if (!bankName || accountNumber.length < 10 || !accountName) {
-        showToast('Please provide valid bank account details.', 'error');
-        return;
-      }
-
       isSubmitting = true;
-      const btn = document.getElementById('btn-submit');
+      const btn = document.getElementById('btn-execute-withdraw');
       btn.disabled = true;
-      btn.textContent = 'Reserving Balance & Submitting...';
+      btn.textContent = 'Submitting...';
 
       try {
         const { data, error } = await supabase.rpc('submit_withdrawal_request', {
@@ -588,26 +835,27 @@
         if (error || !data || !data.success) {
           showToast(data?.message || error?.message || 'Withdrawal submission failed.', 'error');
           btn.disabled = false;
-          btn.textContent = 'Submit Cashout Request';
+          btn.textContent = 'Confirm Withdrawal';
           isSubmitting = false;
           return;
         }
 
-        showToast('Cashout request submitted! Funds reserved pending manual transfer.', 'success');
+        showToast('Cashout submitted! Funds reserved pending manual transfer.', 'success');
         userBalance = Number(data.new_balance);
         document.getElementById('avail-balance').textContent = formatNaira(userBalance);
         document.getElementById('withdraw-form').reset();
+        document.getElementById('confirm-modal').style.display = 'none';
         recalcWithdrawal();
 
         btn.disabled = false;
-        btn.textContent = 'Submit Cashout Request';
+        btn.textContent = 'Confirm Withdrawal';
         isSubmitting = false;
 
         loadWithdrawalHistory();
       } catch (err) {
         showToast('Network error during withdrawal.', 'error');
         btn.disabled = false;
-        btn.textContent = 'Submit Cashout Request';
+        btn.textContent = 'Confirm Withdrawal';
         isSubmitting = false;
       }
     });
@@ -619,7 +867,7 @@
         .select('*')
         .eq('user_id', currentUserId)
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(6);
 
       if (error || !data || data.length === 0) {
         container.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:12px;">No withdrawal requests recorded yet.</div>`;
@@ -636,8 +884,8 @@
         });
 
         const maskedAcc = wth.account_number.length >= 4 
-          ? `******${wth.account_number.slice(-4)}`
-          : '******';
+          ? `***${wth.account_number.slice(-4)}`
+          : '****';
 
         const row = document.createElement('div');
         row.className = 'hist-item';
