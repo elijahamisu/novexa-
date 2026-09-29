@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>NOVEXA Admin — Cashout & Withdrawal Processing</title>
+  <title>NOVEXA Admin — Cashout Processing & Lock Management</title>
   <style>
     :root {
       --bg-dark: #050814;
@@ -161,7 +161,7 @@
 
     .admin-content-body {
       padding: 20px;
-      max-width: 1100px;
+      max-width: 1150px;
       width: 100%;
       margin: 0 auto;
     }
@@ -170,7 +170,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
       flex-wrap: wrap;
       gap: 12px;
     }
@@ -181,6 +181,62 @@
       color: #FFF;
     }
 
+    /* Lock Management Hero Banner */
+    .lock-banner {
+      background: linear-gradient(145deg, #101935 0%, #090E1F 100%);
+      border: 1px solid rgba(59, 130, 246, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .lock-banner.locked {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: linear-gradient(145deg, #2a0b12 0%, #090E1F 100%);
+    }
+
+    .lock-status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-dot-pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+    }
+
+    .status-dot-pulse.locked {
+      background: var(--danger);
+      box-shadow: 0 0 10px var(--danger);
+    }
+
+    .btn-toggle-lock {
+      background: var(--danger);
+      color: #FFF;
+      border: none;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-toggle-lock.unlock-btn {
+      background: var(--success);
+      color: #050814;
+    }
+
+    /* Policy Strip */
     .policy-strip {
       background: rgba(245, 158, 11, 0.08);
       border: 1px solid rgba(245, 158, 11, 0.3);
@@ -266,6 +322,10 @@
       font-size: 13px;
       color: #FFF;
       outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
     }
 
     .search-icon {
@@ -394,6 +454,7 @@
       cursor: pointer;
     }
 
+    /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -486,6 +547,7 @@
       <ul class="sidebar-menu">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -511,13 +573,25 @@
         <div class="page-title-row">
           <div>
             <h1 class="page-heading">Manual Cashout Execution Queue</h1>
-            <div style="font-size:12px; color:var(--text-secondary);">Verify destination accounts, review fee calculations, and authorize bank payout.</div>
+            <div style="font-size:12px; color:var(--text-secondary);">Verify destination accounts, review 18% fee deductions, and authorize payouts.</div>
           </div>
+        </div>
+
+        <!-- Global Withdrawal Lock Control Banner -->
+        <div class="lock-banner" id="lock-banner">
+          <div class="lock-status-indicator">
+            <div class="status-dot-pulse" id="lock-dot"></div>
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-muted);">Withdrawal System Status</div>
+              <div style="font-size:16px; font-weight:800; color:#FFF;" id="lock-status-text">UNLOCKED (Normal Operations)</div>
+            </div>
+          </div>
+          <button type="button" class="btn-toggle-lock" id="btn-trigger-lock">Lock Withdrawals</button>
         </div>
 
         <!-- Policy Strip -->
         <div class="policy-strip">
-          <div>Platform Policy: <strong>15% Standard Withdrawal Processing Fee &bull; Min. ₦2,000.00</strong></div>
+          <div>Official Platform Policy: <strong>Withdrawal Fee: 18% &bull; Min: ₦1,000.00 &bull; Active Product Required: YES</strong></div>
           <span style="font-size:11px; color:var(--gold);">Authoritative Calculation</span>
         </div>
 
@@ -545,7 +619,7 @@
         <div class="filters-bar">
           <div class="search-input-wrap">
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="search-input" class="search-input" placeholder="Search reference, bank, account name, or withdrawal ID...">
+            <input type="text" id="search-input" class="search-input" placeholder="Search reference, bank, account name, or user...">
           </div>
 
           <select id="status-filter" class="filter-select">
@@ -566,7 +640,7 @@
                 <th>Reference</th>
                 <th>Investor</th>
                 <th>Requested</th>
-                <th>Fee (15%)</th>
+                <th>Fee (18%)</th>
                 <th>Net Payout</th>
                 <th>Bank Destination</th>
                 <th>Status</th>
@@ -617,6 +691,7 @@
       <ul class="sidebar-menu" style="padding:0;">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -638,7 +713,8 @@
     let currentSelectedWithdrawal = null;
     let isProcessing = false;
     let searchDebounce = null;
-    const feePct = 15.0;
+    let isSystemLocked = false;
+    const feePct = 18.0;
 
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -651,6 +727,52 @@
       }
       return true;
     }
+
+    async function loadLockStatus() {
+      const { data } = await supabase.from('site_settings').select('value').eq('key', 'platform_rules').single();
+      isSystemLocked = Boolean(data?.value?.withdrawals_locked);
+
+      const banner = document.getElementById('lock-banner');
+      const dot = document.getElementById('lock-dot');
+      const text = document.getElementById('lock-status-text');
+      const btn = document.getElementById('btn-toggle-lock');
+
+      if (isSystemLocked) {
+        banner.className = 'lock-banner locked';
+        dot.className = 'status-dot-pulse locked';
+        text.textContent = 'LOCKED (Submissions Blocked)';
+        btn.textContent = 'Unlock Withdrawals';
+        btn.className = 'btn-toggle-lock unlock-btn';
+      } else {
+        banner.className = 'lock-banner';
+        dot.className = 'status-dot-pulse';
+        text.textContent = 'UNLOCKED (Normal Operations)';
+        btn.textContent = 'Lock Withdrawals';
+        btn.className = 'btn-toggle-lock';
+      }
+    }
+
+    document.getElementById('btn-toggle-lock').addEventListener('click', async () => {
+      const targetState = !isSystemLocked;
+      const confirmText = targetState
+        ? 'Lock Withdrawals?\n\nUsers will not be able to submit new withdrawal requests while withdrawals are locked. Existing pending withdrawals will remain unchanged.'
+        : 'Unlock Withdrawals?\n\nUsers will be able to submit new withdrawal requests again, subject to the normal withdrawal rules.';
+
+      if (!confirm(confirmText)) return;
+
+      const { data, error } = await supabase.rpc('admin_toggle_withdrawal_lock', {
+        p_locked: targetState,
+        p_reason: targetState ? 'Administrative global lock' : 'Administrative normal unlock'
+      });
+
+      if (error || !data || !data.success) {
+        showToast(data?.message || 'Failed to toggle lock status', 'error');
+        return;
+      }
+
+      showToast(data.message, 'success');
+      loadLockStatus();
+    });
 
     async function loadWithdrawals() {
       const { data: withdrawals, error } = await supabase
@@ -753,7 +875,7 @@
           <div style="display:flex; justify-content:space-between; align-items:flex-start;">
             <div>
               <div style="font-weight:800; color:#FFF; font-size:15px;">Net: ${formatNaira(net)}</div>
-              <div style="font-size:11px; color:var(--text-muted);">Gross: ${formatNaira(amt)} (15% Fee: ${formatNaira(fee)})</div>
+              <div style="font-size:11px; color:var(--text-muted);">Gross: ${formatNaira(amt)} (18% Fee: ${formatNaira(fee)})</div>
             </div>
             <span class="status-badge ${w.status}">${w.status}</span>
           </div>
@@ -768,7 +890,7 @@
 
       // Audit Triggers
       document.querySelectorAll('.btn-review-item').forEach(b => {
-        b.addEventListener('click', () => {
+        b.addEventListener('click', async () => {
           const wthId = b.getAttribute('data-id');
           const wth = allWithdrawals.find(w => w.id === wthId);
           if (!wth) return;
@@ -780,13 +902,21 @@
           const fee = Math.round(amt * (feePct / 100) * 100) / 100;
           const net = amt - fee;
 
+          // Check if investor has active contracts
+          const { count: userActiveInvs } = await supabase
+            .from('investments')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', wth.user_id)
+            .eq('status', 'active');
+
           const modalBody = document.getElementById('modal-details-body');
           modalBody.innerHTML = `
             <div class="modal-row"><span style="color:var(--text-muted);">Withdrawal ID:</span><span style="font-weight:700; color:#FFF;">${wth.id}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Reference:</span><span style="font-weight:700; color:var(--accent-cyan);">${wth.reference}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Investor:</span><span style="font-weight:700; color:#FFF;">${wth.profiles?.full_name || 'Investor'} (${wth.profiles?.email})</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Active Products:</span><span style="font-weight:700; color:${userActiveInvs > 0 ? 'var(--success)' : 'var(--danger)'};">${userActiveInvs > 0 ? `${userActiveInvs} Active Investment(s)` : 'NO ACTIVE PRODUCT'}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Gross Amount Requested:</span><span style="font-weight:700; color:#FFF;">${formatNaira(amt)}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Processing Charge (15%):</span><span style="font-weight:700; color:var(--gold);">${formatNaira(fee)}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Processing Charge (18%):</span><span style="font-weight:700; color:var(--gold);">${formatNaira(fee)}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted); font-size:14px; font-weight:700;">Net Payout Due:</span><span style="font-weight:900; font-size:16px; color:var(--accent-cyan);">${formatNaira(net)}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Destination Bank:</span><span style="font-weight:700; color:#FFF;">${wth.bank_name}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Full Account Number:</span><span style="font-weight:800; font-size:15px; letter-spacing:1px; color:#FFF;">${wth.account_number}</span></div>
@@ -812,7 +942,7 @@
       if (!currentSelectedWithdrawal || isProcessing) return;
       const amt = Number(currentSelectedWithdrawal.amount);
       const net = amt - Math.round(amt * (feePct / 100) * 100) / 100;
-      if (!confirm(`Mark withdrawal as approved and paid (${formatNaira(net)} net transfer)?`)) return;
+      if (!confirm(`Mark withdrawal as approved and paid (${formatNaira(net)} net transfer after 18% fee)?`)) return;
 
       isProcessing = true;
       const btn = document.getElementById('btn-approve-wth');
@@ -889,7 +1019,10 @@
     });
 
     document.getElementById('status-filter').addEventListener('change', renderTable);
-    document.getElementById('btn-refresh').addEventListener('click', loadWithdrawals);
+    document.getElementById('btn-refresh').addEventListener('click', () => {
+      loadLockStatus();
+      loadWithdrawals();
+    });
 
     // Mobile Drawer
     document.getElementById('btn-open-drawer').addEventListener('click', () => {
@@ -899,7 +1032,12 @@
       document.getElementById('mobile-drawer-overlay').style.display = 'none';
     });
 
-    checkAuth().then(ok => { if (ok) loadWithdrawals(); });
+    checkAuth().then(ok => {
+      if (ok) {
+        loadLockStatus();
+        loadWithdrawals();
+      }
+    });
   </script>
 </body>
 </html>
