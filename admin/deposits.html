@@ -268,6 +268,10 @@
       outline: none;
     }
 
+    .search-input:focus {
+      border-color: var(--border-focus);
+    }
+
     .search-icon {
       position: absolute;
       left: 12px;
@@ -515,13 +519,11 @@
           </div>
         </div>
 
-        <!-- Corporate Account Strip -->
         <div class="bank-info-strip">
           <div>Active Receiving Account: <strong>MONIEPOINT &bull; 5318726919 &bull; IBILOLA OMOROYEKE ISHOLA</strong></div>
           <span style="font-size:11px; color:#93C5FD;">Official Bank Details</span>
         </div>
 
-        <!-- Metric Summary Cards -->
         <div class="summary-grid">
           <div class="summary-card">
             <div class="sum-label">Pending Inflow Requests</div>
@@ -541,7 +543,6 @@
           </div>
         </div>
 
-        <!-- Filter Bar -->
         <div class="filters-bar">
           <div class="search-input-wrap">
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -558,7 +559,6 @@
           <button type="button" class="btn-action-refresh" id="btn-refresh">&#8635; Refresh</button>
         </div>
 
-        <!-- Table Container -->
         <div class="table-container">
           <table class="dep-table">
             <thead>
@@ -719,12 +719,13 @@
         const userName = d.profiles?.full_name || 'Investor';
         const userEmail = d.profiles?.email || '';
         const dateStr = new Date(d.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-        const hasProof = d.payment_proof_url ? `<a href="${d.payment_proof_url}" target="_blank" rel="noopener" style="color:var(--accent-cyan); text-decoration:none; font-weight:700;">View File</a>` : 'None';
+        const hasProof = d.payment_proof_url ? `<a href="${d.payment_proof_url}" target="_blank" rel="noopener" style="color:var(--accent-cyan); text-decoration:none; font-weight:700;">View File</a>` : 'Not provided';
+        const refDisplay = d.reference ? `<strong>${d.reference}</strong>` : `<span style="color:var(--text-muted); font-style:italic;">Not provided</span>`;
 
         // Desktop Row
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${d.reference}</strong></td>
+          <td>${refDisplay}</td>
           <td>
             <div style="font-weight:700; color:#FFF;">${userName}</div>
             <div style="font-size:11px; color:var(--text-muted);">Sender: ${d.sender_name} (${userEmail})</div>
@@ -744,7 +745,7 @@
           <div style="display:flex; justify-content:space-between; align-items:flex-start;">
             <div>
               <div style="font-weight:700; color:#FFF; font-size:14px;">${formatNaira(d.amount)}</div>
-              <div style="font-size:11px; color:var(--text-muted);">Ref: ${d.reference}</div>
+              <div style="font-size:11px; color:var(--text-muted);">Ref: ${d.reference || 'Not provided'}</div>
             </div>
             <span class="status-badge ${d.status}">${d.status}</span>
           </div>
@@ -767,12 +768,13 @@
           currentSelectedDeposit = dep;
           document.getElementById('admin-notes').value = dep.admin_notes || '';
 
-          const hasProof = dep.payment_proof_url ? `<a href="${dep.payment_proof_url}" target="_blank" rel="noopener" style="color:var(--accent-cyan); font-weight:700;">Open Proof Screenshot &rarr;</a>` : 'No screenshot uploaded';
+          const hasProof = dep.payment_proof_url ? `<a href="${dep.payment_proof_url}" target="_blank" rel="noopener" style="color:var(--accent-cyan); font-weight:700;">Open Proof Screenshot &rarr;</a>` : 'Not provided';
+          const refDisplay = dep.reference ? `<span style="font-weight:700; color:var(--accent-cyan);">${dep.reference}</span>` : `<span style="color:var(--text-muted); font-style:italic;">Not provided</span>`;
 
           const modalBody = document.getElementById('modal-details-body');
           modalBody.innerHTML = `
             <div class="modal-row"><span style="color:var(--text-muted);">Deposit ID:</span><span style="font-weight:700; color:#FFF;">${dep.id}</span></div>
-            <div class="modal-row"><span style="color:var(--text-muted);">Payment Reference:</span><span style="font-weight:700; color:var(--accent-cyan);">${dep.reference}</span></div>
+            <div class="modal-row"><span style="color:var(--text-muted);">Payment Reference:</span>${refDisplay}</div>
             <div class="modal-row"><span style="color:var(--text-muted);">Investor:</span><span style="font-weight:700; color:#FFF;">${dep.profiles?.full_name || 'Investor'} (${dep.profiles?.email})</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Sender Account Name:</span><span style="font-weight:700; color:#FFF;">${dep.sender_name}</span></div>
             <div class="modal-row"><span style="color:var(--text-muted);">Submitted Amount:</span><span style="font-weight:800; font-size:15px; color:#FFF;">${formatNaira(dep.amount)}</span></div>
