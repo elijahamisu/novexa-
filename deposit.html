@@ -60,6 +60,7 @@
       }
     }
 
+    /* Top Bar */
     .top-header {
       position: sticky;
       top: 0;
@@ -94,6 +95,7 @@
       color: #FFF;
     }
 
+    /* Bank Account Card */
     .bank-card {
       background: linear-gradient(145deg, #101935 0%, #090E1F 100%);
       border: 1px solid rgba(59, 130, 246, 0.35);
@@ -159,6 +161,7 @@
       transform: scale(0.98);
     }
 
+    /* Notice Pill */
     .notice-pill {
       background: rgba(245, 158, 11, 0.08);
       border-left: 3px solid var(--gold);
@@ -170,6 +173,7 @@
       margin-bottom: 22px;
     }
 
+    /* Form Card */
     .form-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -228,6 +232,7 @@
       cursor: not-allowed;
     }
 
+    /* History Stack */
     .history-stack {
       display: flex;
       flex-direction: column;
@@ -271,6 +276,7 @@
       border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
+    /* Official NOVEXA Bottom Navigation */
     .novexa-bottom-nav {
       position: fixed;
       bottom: 0;
@@ -305,7 +311,6 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
         padding-bottom: 0;
       }
-
       .nav-bar-inner {
         height: 66px;
       }
@@ -378,7 +383,6 @@
     }
   </style>
 </head>
-
 <body>
 
   <!-- Top App Bar -->
@@ -386,15 +390,14 @@
     <div class="app-container">
       <div class="header-inner">
         <a href="/wallet.html" class="back-link">&larr; Back to Wallet</a>
-        <div class="header-title">Bank Deposit</div>
+        <div class="header-title">Manual Bank Deposit</div>
         <div style="width:36px;"></div>
       </div>
     </div>
   </header>
 
   <main class="app-container">
-
-    <!-- Official Deposit Bank Account -->
+    <!-- Verified Deposit Account Card (Loaded from site_settings) -->
     <section class="bank-card">
       <div class="bank-card-title">Official Deposit Bank Account</div>
 
@@ -418,81 +421,45 @@
       </button>
     </section>
 
-    <!-- Notice -->
+    <!-- Clear Policy Notice -->
     <div class="notice-pill">
-      <strong>Important Protocol:</strong>
-      Transfer funds directly to the verified account above. After completing your transfer, enter the amount below and submit your deposit request. Your balance will be credited after admin approval.
+      <strong>Important Protocol:</strong> Transfer funds directly to the verified account above. After making the transfer, enter your deposit amount and sending account name below. Your balance will be credited upon compliance verification.
     </div>
 
-    <!-- Deposit Form -->
+    <!-- Deposit Request Form (Requires ONLY Amount and Sender Name) -->
     <section class="form-card">
       <form id="deposit-form" novalidate>
-
         <div class="form-group">
-          <label class="form-label" for="amount">
-            Deposit Amount (NGN)
-          </label>
-
-          <input
-            type="number"
-            id="amount"
-            class="form-input"
-            placeholder="e.g. 50000"
-            min="1000"
-            required
-          >
+          <label class="form-label" for="amount">Deposit Amount (NGN)</label>
+          <input type="number" id="amount" class="form-input" placeholder="e.g. 50000" min="1000" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="sender_name">
-            Depositor / Sender Full Name
-          </label>
-
-          <input
-            type="text"
-            id="sender_name"
-            class="form-input"
-            placeholder="Name on sending account"
-            required
-          >
+          <label class="form-label" for="sender_name">Depositor / Sender Full Name</label>
+          <input type="text" id="sender_name" class="form-input" placeholder="Name on the bank account you sent from" required>
         </div>
 
-        <button
-          type="submit"
-          class="btn-submit"
-          id="btn-submit"
-        >
-          Submit Deposit Request
-        </button>
-
+        <button type="submit" class="btn-submit" id="btn-submit">Submit Deposit Request</button>
       </form>
     </section>
 
-    <!-- Deposit History -->
+    <!-- Recent Deposit Requests History -->
     <section>
       <div style="font-size:14px; font-weight:700; color:#FFF; margin-bottom:12px; text-transform:uppercase;">
         Your Deposit Requests
       </div>
-
       <div id="deposit-history" class="history-stack">
-        <div style="font-size:12px; color:var(--text-muted); text-align:center; padding:16px;">
-          Loading deposits...
-        </div>
+        <div style="font-size:12px; color:var(--text-muted); text-align:center; padding:16px;">Loading deposits...</div>
       </div>
     </section>
-
   </main>
 
-  <!-- Bottom Navigation -->
+  <!-- Official 5-Tab Navigation (Wallet Active) -->
   <nav class="novexa-bottom-nav" aria-label="Main Navigation">
     <div class="nav-bar-inner">
-
       <a href="/dashboard.html" class="nav-tab-item">
         <div class="nav-tab-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         </div>
         <span class="nav-tab-label">Home</span>
         <div class="nav-tab-indicator"></div>
@@ -500,11 +467,7 @@
 
       <a href="/plans.html" class="nav-tab-item">
         <div class="nav-tab-icon">
-          <svg viewBox="0 0 24 24">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-            <polyline points="2 17 12 22 22 17"></polyline>
-            <polyline points="2 12 12 17 22 12"></polyline>
-          </svg>
+          <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
         </div>
         <span class="nav-tab-label">Plans</span>
         <div class="nav-tab-indicator"></div>
@@ -512,11 +475,7 @@
 
       <a href="/wallet.html" class="nav-tab-item active">
         <div class="nav-tab-icon">
-          <svg viewBox="0 0 24 24">
-            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-            <line x1="2" y1="10" x2="22" y2="10"></line>
-            <circle cx="17" cy="15" r="1"></circle>
-          </svg>
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line><circle cx="17" cy="15" r="1"></circle></svg>
         </div>
         <span class="nav-tab-label">Wallet</span>
         <div class="nav-tab-indicator"></div>
@@ -524,12 +483,7 @@
 
       <a href="/referrals.html" class="nav-tab-item">
         <div class="nav-tab-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-            <circle cx="9" cy="7" r="4"></circle>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-          </svg>
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
         </div>
         <span class="nav-tab-label">Referrals</span>
         <div class="nav-tab-indicator"></div>
@@ -537,258 +491,146 @@
 
       <a href="/profile.html" class="nav-tab-item">
         <div class="nav-tab-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         </div>
         <span class="nav-tab-label">Profile</span>
         <div class="nav-tab-indicator"></div>
       </a>
-
     </div>
   </nav>
 
   <script type="module">
-    import {
-      supabase,
-      requireAuth,
-      getSiteSettings,
-      formatNaira,
-      showToast
-    } from '/supabase-client.js';
+    import { supabase, requireAuth, getSiteSettings, formatNaira, showToast } from '/supabase-client.js';
 
-    let currentAccount = {
-      bank: 'MONIEPOINT',
-      account_number: '5318726919',
-      account_name: 'IBILOLA OMOROYEKE ISHOLA'
-    };
-
+    let currentAccount = { bank: 'MONIEPOINT', account_number: '5318726919', account_name: 'IBILOLA OMOROYEKE ISHOLA' };
     let currentUserId = null;
     let isSubmitting = false;
 
     async function initDepositPage() {
       const auth = await requireAuth();
-
       if (!auth) return;
-
       currentUserId = auth.user.id;
 
-      // Load dynamic deposit account details
+      // 1. Retrieve dynamic deposit account details from site_settings
       const settings = await getSiteSettings();
-
-      if (settings?.deposit_account) {
+      if (settings.deposit_account) {
         currentAccount = settings.deposit_account;
       }
 
-      document.getElementById('disp-bank').textContent =
-        currentAccount.bank || 'Unavailable';
+      document.getElementById('disp-bank').textContent = currentAccount.bank;
+      document.getElementById('disp-acc-num').textContent = currentAccount.account_number;
+      document.getElementById('disp-acc-name').textContent = currentAccount.account_name;
 
-      document.getElementById('disp-acc-num').textContent =
-        currentAccount.account_number || 'Unavailable';
-
-      document.getElementById('disp-acc-name').textContent =
-        currentAccount.account_name || 'Unavailable';
-
-      // Load previous deposit requests
+      // 2. Load user's previous deposit requests
       loadDepositHistory();
     }
 
-    // Copy Account Number
-    document.getElementById('btn-copy-acc').addEventListener('click', async () => {
-      const btn = document.getElementById('btn-copy-acc');
-
-      try {
-        await navigator.clipboard.writeText(
-          currentAccount.account_number
-        );
-
+    // Copy Account Button
+    document.getElementById('btn-copy-acc').addEventListener('click', () => {
+      navigator.clipboard.writeText(currentAccount.account_number).then(() => {
+        const btn = document.getElementById('btn-copy-acc');
         btn.innerHTML = '<span>✓ Account Number Copied!</span>';
-
         setTimeout(() => {
           btn.innerHTML = '<span>Copy Account Number</span>';
         }, 2200);
-
-      } catch (error) {
-        showToast('Unable to copy account number.', 'error');
-      }
+      });
     });
 
-    // Deposit Form Submission
+    // Form Submission: Strictly calls RPC with amount & sender name (reference and proof are null)
     document.getElementById('deposit-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-
       if (isSubmitting) return;
 
-      const amount = parseFloat(
-        document.getElementById('amount').value
-      );
-
-      const senderName = document
-        .getElementById('sender_name')
-        .value
-        .trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const senderName = document.getElementById('sender_name').value.trim();
 
       if (!amount || amount <= 0) {
         showToast('Please enter a valid deposit amount.', 'error');
         return;
       }
-
       if (!senderName) {
         showToast('Please specify the sender name.', 'error');
         return;
       }
 
       isSubmitting = true;
-
       const btn = document.getElementById('btn-submit');
-
       btn.disabled = true;
       btn.textContent = 'Submitting Deposit Request...';
 
       try {
-        /*
-          Only amount and sender name are submitted.
-          Payment reference and proof of payment
-          are no longer required or uploaded.
-        */
-
-        const { data, error } = await supabase.rpc(
-          'submit_deposit_request',
-          {
-            p_amount: amount,
-            p_sender_name: senderName,
-            p_reference: null,
-            p_proof_url: null,
-            p_notes: null
-          }
-        );
+        const { data, error } = await supabase.rpc('submit_deposit_request', {
+          p_amount: amount,
+          p_sender_name: senderName,
+          p_reference: null,
+          p_proof_url: null,
+          p_notes: null
+        });
 
         if (error || !data || !data.success) {
-          showToast(
-            data?.message ||
-            error?.message ||
-            'Deposit submission failed.',
-            'error'
-          );
-
+          showToast(data?.message || error?.message || 'Deposit submission failed.', 'error');
           btn.disabled = false;
           btn.textContent = 'Submit Deposit Request';
           isSubmitting = false;
           return;
         }
 
-        showToast(
-          'Deposit request submitted! Status is pending admin review.',
-          'success'
-        );
-
+        showToast('Deposit request submitted! Status is pending admin review.', 'success');
         document.getElementById('deposit-form').reset();
-
         btn.disabled = false;
         btn.textContent = 'Submit Deposit Request';
         isSubmitting = false;
 
         loadDepositHistory();
-
       } catch (err) {
-        console.error('Deposit submission error:', err);
-
-        showToast(
-          'Network error during deposit submission.',
-          'error'
-        );
-
+        showToast('Network error during deposit submission.', 'error');
         btn.disabled = false;
         btn.textContent = 'Submit Deposit Request';
         isSubmitting = false;
       }
     });
 
-    // Load Deposit History
     async function loadDepositHistory() {
-      const container =
-        document.getElementById('deposit-history');
-
+      const container = document.getElementById('deposit-history');
       const { data, error } = await supabase
         .from('deposits')
         .select('*')
         .eq('user_id', currentUserId)
-        .order('created_at', {
-          ascending: false
-        })
+        .order('created_at', { ascending: false })
         .limit(5);
 
-      if (
-        error ||
-        !data ||
-        data.length === 0
-      ) {
-        container.innerHTML = `
-          <div style="
-            font-size:12px;
-            color:var(--text-muted);
-            text-align:center;
-            padding:12px;
-          ">
-            No deposit requests recorded yet.
-          </div>
-        `;
-
+      if (error || !data || data.length === 0) {
+        container.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:12px;">No deposit requests recorded yet.</div>`;
         return;
       }
 
       container.innerHTML = '';
-
       data.forEach(dep => {
+        const dateStr = new Date(dep.created_at).toLocaleDateString('en-GB', {
+          day: 'numeric',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
 
-        const dateStr =
-          new Date(dep.created_at).toLocaleDateString(
-            'en-GB',
-            {
-              day: 'numeric',
-              month: 'short',
-              hour: '2-digit',
-              minute: '2-digit'
-            }
-          );
+        const refSub = dep.reference ? `Ref: ${dep.reference} &bull; ` : '';
 
-        const row =
-          document.createElement('div');
-
+        const row = document.createElement('div');
         row.className = 'hist-item';
-
         row.innerHTML = `
           <div>
-            <div style="
-              font-size:14px;
-              font-weight:700;
-              color:#FFF;
-            ">
-              ${formatNaira(dep.amount)}
-            </div>
-
-            <div style="
-              font-size:11px;
-              color:var(--text-muted);
-            ">
-              ${dateStr}
-            </div>
+            <div style="font-size:14px; font-weight:700; color:#FFF;">${formatNaira(dep.amount)}</div>
+            <div style="font-size:11px; color:var(--text-muted);">${refSub}Sender: ${dep.sender_name || 'You'} &bull; ${dateStr}</div>
           </div>
-
           <div>
-            <span class="badge-status ${dep.status}">
-              ${dep.status}
-            </span>
+            <span class="badge-status ${dep.status}">${dep.status}</span>
           </div>
         `;
-
         container.appendChild(row);
       });
     }
 
     initDepositPage();
   </script>
-
 </body>
 </html>
