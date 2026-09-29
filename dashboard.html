@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>NOVEXA — Investor Dashboard</title>
   <style>
-    /* ==========================================================================
-       NOVEXA FINTECH DESIGN SYSTEM TOKENS
-       ========================================================================== */
     :root {
       --bg-dark: #070B19;
       --bg-card: #0F172A;
@@ -67,9 +64,6 @@
       }
     }
 
-    /* ==========================================================================
-       TOP APP HEADER & RED MENU BUTTON
-       ========================================================================== */
     .top-header {
       position: sticky;
       top: 0;
@@ -94,7 +88,6 @@
       gap: 12px;
     }
 
-    /* Premium NOVEXA Red Menu Button */
     .btn-sidebar-toggle {
       background: linear-gradient(135deg, var(--danger), var(--danger-dark));
       border: 1px solid rgba(254, 202, 202, 0.35);
@@ -236,7 +229,6 @@
       border-color: var(--accent-cyan);
     }
 
-    /* Welcome Area */
     .welcome-area {
       display: flex;
       justify-content: space-between;
@@ -280,7 +272,6 @@
       box-shadow: 0 0 6px var(--success);
     }
 
-    /* Balance Hero Card */
     .balance-card {
       position: relative;
       background: linear-gradient(145deg, #0e1d42 0%, #091124 100%);
@@ -381,9 +372,6 @@
       justify-content: center;
     }
 
-    /* ==========================================================================
-       EXPANDED QUICK ACTIONS GRID (6 ACTIONS: 3 COLS MOBILE, 6 COLS DESKTOP)
-       ========================================================================== */
     .quick-actions-bar {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -448,7 +436,6 @@
       white-space: nowrap;
     }
 
-    /* Dual Earnings Snapshot */
     .earnings-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -482,7 +469,6 @@
       color: #38BDF8;
     }
 
-    /* Midnight Processing Card */
     .midnight-card {
       background: linear-gradient(145deg, #0d152a, #070B19);
       border: 1px solid var(--border);
@@ -732,9 +718,7 @@
       cursor: pointer;
     }
 
-    /* ==========================================================================
-       TELEGRAM WELCOME POPUP MODAL
-       ========================================================================== */
+    /* Telegram Welcome Popup Modal */
     .popup-backdrop {
       position: fixed;
       top: 0;
@@ -894,9 +878,7 @@
       border-color: #475569;
     }
 
-    /* ==========================================================================
-       COMPLETE USER NAVIGATION SIDEBAR & DRAWER
-       ========================================================================== */
+    /* Complete User Navigation Sidebar */
     .sidebar-overlay {
       position: fixed;
       top: 0;
@@ -1251,7 +1233,7 @@
       </div>
     </section>
 
-    <!-- 6-Action Quick Actions Grid (Deposit, Withdraw, Invest, Ledger, Gift Code, Support) -->
+    <!-- 6-Action Quick Actions Grid -->
     <section class="quick-actions-bar">
       <!-- 1. Deposit -->
       <a href="/deposit.html" class="quick-action-item">
@@ -1367,7 +1349,7 @@
   </main>
 
   <!-- ==========================================================================
-       TELEGRAM WELCOME POPUP MODAL
+       TELEGRAM WELCOME POPUP MODAL (UPDATED GROUP LINK)
        ========================================================================== -->
   <div class="popup-backdrop" id="telegram-popup-overlay">
     <div class="popup-card">
@@ -1396,13 +1378,13 @@
         </a>
       </div>
 
-      <!-- 2. Telegram Group -->
+      <!-- 2. Telegram Group (Updated Link) -->
       <div class="tg-item-card">
         <div class="tg-item-top">
           <span class="tg-item-name">Official Telegram Group</span>
           <span class="tg-item-handle">Community</span>
         </div>
-        <a href="https://t.me/NOVEXA_CEO/2116" target="_blank" rel="noopener noreferrer" class="btn-tg-action">
+        <a href="https://t.me/+2H27lpn9ejBmYmE0" target="_blank" rel="noopener noreferrer" class="btn-tg-action">
           <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
           <span>Join Official Group</span>
         </a>
