@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>NOVEXA Admin — Referral Network & Commissions</title>
+  <title>NOVEXA Admin — Referral Network & Downline Tree</title>
   <style>
     :root {
       --bg-dark: #050814;
@@ -161,7 +161,7 @@
 
     .admin-content-body {
       padding: 20px;
-      max-width: 1100px;
+      max-width: 1180px;
       width: 100%;
       margin: 0 auto;
     }
@@ -215,7 +215,7 @@
 
     @media (min-width: 1024px) {
       .summary-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
       }
     }
 
@@ -253,6 +253,7 @@
       padding: 4px;
       margin-bottom: 16px;
       width: fit-content;
+      flex-wrap: wrap;
     }
 
     .view-tab-btn {
@@ -383,20 +384,9 @@
       text-transform: uppercase;
     }
 
-    .tier-badge.l1 {
-      background: rgba(37, 99, 235, 0.15);
-      color: var(--accent-cyan);
-    }
-
-    .tier-badge.l2 {
-      background: rgba(245, 158, 11, 0.15);
-      color: var(--gold);
-    }
-
-    .tier-badge.l3 {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--success);
-    }
+    .tier-badge.l1 { background: rgba(37, 99, 235, 0.15); color: var(--accent-cyan); }
+    .tier-badge.l2 { background: rgba(245, 158, 11, 0.15); color: var(--gold); }
+    .tier-badge.l3 { background: rgba(16, 185, 129, 0.15); color: var(--success); }
 
     .ref-cards-mobile {
       display: flex;
@@ -413,6 +403,21 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+    }
+
+    .tree-box-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .tree-node {
+      border-left: 2px solid var(--border);
+      margin-left: 12px;
+      padding-left: 16px;
+      margin-top: 10px;
     }
 
     .mobile-drawer-overlay {
@@ -438,7 +443,6 @@
 <body>
 
   <div class="admin-app">
-    <!-- Desktop Sidebar -->
     <aside class="admin-sidebar">
       <div class="sidebar-header">
         <div class="brand-mark">N</div>
@@ -447,6 +451,7 @@
       <ul class="sidebar-menu">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -463,48 +468,67 @@
     <div class="admin-main">
       <header class="admin-top-nav">
         <div style="display:flex; align-items:center; gap:10px;">
-          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer">&#9776;</button>
-          <div style="font-size:15px; font-weight:700; color:#FFF;">Referrals & Partner Rewards</div>
+          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer" aria-label="Toggle navigation">&#9776;</button>
+          <div style="font-size:15px; font-weight:700; color:#FFF;">Referrals & Downline Tree</div>
         </div>
       </header>
 
       <div class="admin-content-body">
         <div class="page-title-row">
           <div>
-            <h1 class="page-heading">Partner Commission Supervision</h1>
-            <div style="font-size:12px; color:var(--text-secondary);">Audit the multi-tier referral tree and track commission payments.</div>
+            <h1 class="page-heading">3-Tier Downline & Commissions Supervision</h1>
+            <div style="font-size:12px; color:var(--text-secondary);">Audit the complete hierarchical network and inspect investor downlines.</div>
           </div>
         </div>
 
-        <!-- Rule Policy Strip -->
         <div class="rule-pill-strip">
-          <div>Authoritative Hierarchy: <strong>Level 1 (15%)</strong> &bull; <strong>Level 2 (3%)</strong> &bull; <strong>Level 3 (1%)</strong></div>
-          <span style="font-size:11px; color:var(--gold);">Calculated Strictly Server-Side</span>
+          <div>Official Platform Hierarchy: <strong>Level 1 (15%)</strong> &bull; <strong>Level 2 (3%)</strong> &bull; <strong>Level 3 (1%)</strong></div>
+          <span style="font-size:11px; color:var(--gold);">Strictly Database Calculated</span>
         </div>
 
         <!-- Metric Summary Cards -->
         <div class="summary-grid">
           <div class="summary-card">
-            <div class="sum-label">Total Downline Links</div>
+            <div class="sum-label">Total Referrals</div>
             <div class="sum-val" id="metric-total-links">0</div>
           </div>
           <div class="summary-card">
-            <div class="sum-label">Direct Referrals (L1)</div>
+            <div class="sum-label">Level 1 (15%)</div>
             <div class="sum-val cyan" id="metric-l1-links">0</div>
           </div>
           <div class="summary-card">
-            <div class="sum-label">Tier 2 & 3 Downlines</div>
-            <div class="sum-val" id="metric-deep-links">0</div>
+            <div class="sum-label">Level 2 (3%)</div>
+            <div class="sum-val gold" id="metric-l2-links">0</div>
           </div>
           <div class="summary-card">
-            <div class="sum-label">Commissions Distributed</div>
-            <div class="sum-val green" id="metric-total-commissions">₦0.00</div>
+            <div class="sum-label">Level 3 (1%)</div>
+            <div class="sum-val green" id="metric-l3-links">0</div>
+          </div>
+          <div class="summary-card">
+            <div class="sum-label">Total Commissions</div>
+            <div class="sum-val" style="color:var(--accent-cyan);" id="metric-total-commissions">₦0.00</div>
+          </div>
+        </div>
+
+        <!-- Interactive Tree Inspector Selector -->
+        <div class="tree-box-card">
+          <div style="font-size:14px; font-weight:700; color:#FFF; margin-bottom:6px; text-transform:uppercase;">
+            Inspect Specific Investor Downline Tree
+          </div>
+          <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
+            Select any registered investor to view their Level 1, 2, and 3 downline tree hierarchy.
+          </p>
+          <div style="display:flex; gap:10px; max-width:500px;">
+            <select id="investor-tree-select" class="filter-select" style="flex-grow:1;">
+              <option value="">Select an investor...</option>
+            </select>
+            <button type="button" class="btn-action-refresh" id="btn-inspect-selected-tree" style="background:var(--accent); color:#FFF; border:none; font-weight:700;">Inspect Tree &rarr;</button>
           </div>
         </div>
 
         <!-- View Tabs -->
         <div class="view-tabs">
-          <button type="button" class="view-tab-btn active" id="tab-network">Network Tree Links</button>
+          <button type="button" class="view-tab-btn active" id="tab-network">All Network Links</button>
           <button type="button" class="view-tab-btn" id="tab-commissions">Commissions Payouts Log</button>
         </div>
 
@@ -512,11 +536,11 @@
         <div class="filters-bar">
           <div class="search-input-wrap">
             <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="search-input" class="search-input" placeholder="Search sponsor, referral code, or partner name...">
+            <input type="text" id="search-input" class="search-input" placeholder="Search investor, sponsor, code, or email...">
           </div>
 
           <select id="level-filter" class="filter-select">
-            <option value="all">All Tiers</option>
+            <option value="all">All Levels</option>
             <option value="1">Level 1 (15%)</option>
             <option value="2">Level 2 (3%)</option>
             <option value="3">Level 3 (1%)</option>
@@ -530,14 +554,16 @@
           <table class="ref-table" id="table-display">
             <thead id="thead-display">
               <tr>
-                <th>Sponsor Investor</th>
-                <th>Referred Partner</th>
-                <th>Relationship Tier</th>
-                <th>Linked Timestamp</th>
+                <th>User (Referred)</th>
+                <th>Referrer (Sponsor)</th>
+                <th>Level</th>
+                <th>Status</th>
+                <th>Linked Date</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody id="tbody-display">
-              <tr><td colspan="4" style="text-align:center; padding:30px;">Loading network records...</td></tr>
+              <tr><td colspan="6" style="text-align:center; padding:30px;">Loading network records...</td></tr>
             </tbody>
           </table>
 
@@ -549,7 +575,6 @@
     </div>
   </div>
 
-  <!-- Mobile Drawer -->
   <div class="mobile-drawer-overlay" id="mobile-drawer-overlay">
     <div class="mobile-drawer">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -559,6 +584,7 @@
       <ul class="sidebar-menu" style="padding:0;">
         <li><a href="/admin/index.html" class="menu-link"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -574,9 +600,9 @@
   </div>
 
   <script type="module">
-    import { supabase, formatNaira } from '/supabase-client.js';
+    import { supabase, formatNaira, showToast } from '/supabase-client.js';
 
-    let currentView = 'network'; // 'network' or 'commissions'
+    let currentView = 'network';
     let rawReferrals = [];
     let rawCommissions = [];
     let searchDebounce = null;
@@ -594,18 +620,30 @@
     }
 
     async function loadData() {
-      // 1. Fetch Referral Links
+      // 1. Fetch Investor List for Selector
+      const { data: investors } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, referral_code')
+        .order('full_name');
+
+      const sel = document.getElementById('investor-tree-select');
+      if (investors) {
+        sel.innerHTML = '<option value="">Select an investor...</option>' + 
+          investors.map(i => `<option value="${i.id}">${i.full_name} (${i.email}) &bull; ${i.referral_code}</option>`).join('');
+      }
+
+      // 2. Fetch All Referral Links
       const { data: refs, error: refErr } = await supabase
         .from('referrals')
-        .select('*, sponsor:sponsor_id(full_name, email, referral_code), referred:referred_id(full_name, email)')
+        .select('*, sponsor:sponsor_id(id, full_name, email, referral_code), referred:referred_id(id, full_name, email, is_active)')
         .order('created_at', { ascending: false });
 
       if (!refErr && refs) rawReferrals = refs;
 
-      // 2. Fetch Commissions
+      // 3. Fetch All Commissions
       const { data: comms, error: commErr } = await supabase
         .from('referral_commissions')
-        .select('*, sponsor:sponsor_id(full_name, email), source:source_user_id(full_name, email)')
+        .select('*, sponsor:sponsor_id(id, full_name, email), source:source_user_id(id, full_name, email)')
         .order('created_at', { ascending: false });
 
       if (!commErr && comms) rawCommissions = comms;
@@ -617,21 +655,24 @@
     function calculateMetrics() {
       const totalLinks = rawReferrals.length;
       let l1 = 0;
-      let deep = 0;
+      let l2 = 0;
+      let l3 = 0;
 
       rawReferrals.forEach(r => {
         if (r.level === 1) l1++;
-        else deep++;
+        else if (r.level === 2) l2++;
+        else if (r.level === 3) l3++;
       });
 
       let totalComm = 0;
       rawCommissions.forEach(c => {
-        totalComm += Number(c.amount);
+        totalComm += Number(c.amount || 0);
       });
 
       document.getElementById('metric-total-links').textContent = totalLinks;
       document.getElementById('metric-l1-links').textContent = l1;
-      document.getElementById('metric-deep-links').textContent = deep;
+      document.getElementById('metric-l2-links').textContent = l2;
+      document.getElementById('metric-l3-links').textContent = l3;
       document.getElementById('metric-total-commissions').textContent = formatNaira(totalComm);
     }
 
@@ -645,10 +686,12 @@
       if (currentView === 'network') {
         thead.innerHTML = `
           <tr>
-            <th>Sponsor (Inviter)</th>
-            <th>Referred Investor</th>
-            <th>Network Level</th>
-            <th>Registered Date</th>
+            <th>User (Referred)</th>
+            <th>Referrer (Sponsor)</th>
+            <th>Level</th>
+            <th>Status</th>
+            <th>Linked Date</th>
+            <th>Action</th>
           </tr>
         `;
 
@@ -666,7 +709,7 @@
         });
 
         if (filtered.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:30px; color:var(--text-muted);">No referral relationships found.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No referral relationships found.</td></tr>`;
           mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No referral relationships found.</div>`;
           return;
         }
@@ -682,20 +725,27 @@
           const refEmail = r.referred?.email || '';
           const dateStr = new Date(r.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
           const tierRate = r.level === 1 ? '15%' : r.level === 2 ? '3%' : '1%';
+          const statusBadge = r.referred?.is_active 
+            ? `<span class="tier-badge l3" style="background:rgba(16,185,129,0.15); color:var(--success);">Active</span>` 
+            : `<span class="tier-badge" style="background:rgba(239,68,68,0.15); color:var(--danger);">Suspended</span>`;
 
           // Desktop Row
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>
-              <div style="font-weight:700; color:#FFF;">${spName}</div>
-              <div style="font-size:11px; color:var(--text-muted);">${spEmail} &bull; Code: <strong>${spCode}</strong></div>
-            </td>
-            <td>
               <div style="font-weight:700; color:#FFF;">${refName}</div>
               <div style="font-size:11px; color:var(--text-muted);">${refEmail}</div>
             </td>
+            <td>
+              <div style="font-weight:700; color:#FFF;">${spName}</div>
+              <div style="font-size:11px; color:var(--text-muted);">${spEmail} &bull; Code: <strong>${spCode}</strong></div>
+            </td>
             <td><span class="tier-badge l${r.level}">Level ${r.level} (${tierRate})</span></td>
+            <td>${statusBadge}</td>
             <td>${dateStr}</td>
+            <td>
+              <a href="/admin/user-details.html?id=${r.referred?.id}" class="btn-action-refresh" style="padding:4px 8px; font-size:11px; text-decoration:none;">View User</a>
+            </td>
           `;
           tbody.appendChild(tr);
 
@@ -705,21 +755,23 @@
           card.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
               <div>
-                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Sponsor:</div>
-                <div style="font-weight:700; color:#FFF; font-size:13px;">${spName} (${spCode})</div>
+                <div style="font-weight:700; color:#FFF; font-size:13px;">${refName}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${refEmail}</div>
               </div>
               <span class="tier-badge l${r.level}">Level ${r.level}</span>
             </div>
             <div style="border-top:1px dashed var(--border); padding-top:6px; font-size:12px;">
-              <span style="color:var(--text-muted);">Invited:</span> <strong style="color:#FFF;">${refName}</strong> (${refEmail})
+              <span style="color:var(--text-muted);">Sponsor:</span> <strong style="color:#FFF;">${spName}</strong> (${spCode})
             </div>
-            <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:11px; color:var(--text-muted);">${dateStr}</span>
+              <a href="/admin/user-details.html?id=${r.referred?.id}" style="color:var(--accent-cyan); font-size:11px; text-decoration:none; font-weight:700;">View User &rarr;</a>
+            </div>
           `;
           mobContainer.appendChild(card);
         });
 
       } else {
-        // Commissions Log View
         thead.innerHTML = `
           <tr>
             <th>Recipient Sponsor</th>
@@ -727,6 +779,7 @@
             <th>Tier & Percent</th>
             <th>Commission Amount</th>
             <th>Settled Date</th>
+            <th>Action</th>
           </tr>
         `;
 
@@ -742,7 +795,7 @@
         });
 
         if (filtered.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--text-muted);">No commission records found.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">No commission records found.</td></tr>`;
           mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No commission records found.</div>`;
           return;
         }
@@ -756,7 +809,6 @@
           const srcName = c.source?.full_name || 'Partner';
           const dateStr = new Date(c.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
-          // Desktop
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>
@@ -767,10 +819,12 @@
             <td><span class="tier-badge l${c.level}">Level ${c.level} (${c.percentage}%)</span></td>
             <td style="font-weight:800; color:var(--success);">+${formatNaira(c.amount)}</td>
             <td style="font-size:11px;">${dateStr}</td>
+            <td>
+              <a href="/admin/user-details.html?id=${c.sponsor?.id}#downline-section" class="btn-action-refresh" style="padding:4px 8px; font-size:11px; text-decoration:none;">View Tree</a>
+            </td>
           `;
           tbody.appendChild(tr);
 
-          // Mobile
           const card = document.createElement('div');
           card.className = 'ref-card-mob';
           card.innerHTML = `
@@ -785,12 +839,24 @@
               <div>Recipient: <strong style="color:#FFF;">${spName}</strong></div>
               <div>Source: <span style="color:var(--text-secondary);">${srcName}</span></div>
             </div>
-            <div style="font-size:11px; color:var(--text-muted);">${dateStr}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:11px; color:var(--text-muted);">${dateStr}</span>
+              <a href="/admin/user-details.html?id=${c.sponsor?.id}#downline-section" style="color:var(--accent-cyan); font-size:11px; text-decoration:none; font-weight:700;">View Tree &rarr;</a>
+            </div>
           `;
           mobContainer.appendChild(card);
         });
       }
     }
+
+    document.getElementById('btn-inspect-selected-tree').addEventListener('click', () => {
+      const selectedId = document.getElementById('investor-tree-select').value;
+      if (!selectedId) {
+        showToast('Please select an investor to inspect.', 'info');
+        return;
+      }
+      window.location.href = `/admin/user-details.html?id=${selectedId}#downline-section`;
+    });
 
     document.getElementById('tab-network').addEventListener('click', () => {
       currentView = 'network';
@@ -814,13 +880,9 @@
     document.getElementById('level-filter').addEventListener('change', renderCurrentView);
     document.getElementById('btn-refresh').addEventListener('click', loadData);
 
-    // Mobile Drawer Controls
-    document.getElementById('btn-open-drawer').addEventListener('click', () => {
-      document.getElementById('mobile-drawer-overlay').style.display = 'block';
-    });
-    document.getElementById('btn-close-drawer').addEventListener('click', () => {
-      document.getElementById('mobile-drawer-overlay').style.display = 'none';
-    });
+    const drawer = document.getElementById('mobile-drawer-overlay');
+    document.getElementById('btn-open-drawer').addEventListener('click', () => { drawer.style.display = 'block'; });
+    document.getElementById('btn-close-drawer').addEventListener('click', () => { drawer.style.display = 'none'; });
 
     checkAuth().then(ok => { if (ok) loadData(); });
   </script>
