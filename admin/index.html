@@ -44,14 +44,12 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Admin Dual Layout */
     .admin-app {
       display: flex;
       min-height: 100vh;
       width: 100%;
     }
 
-    /* Desktop Sidebar */
     .admin-sidebar {
       display: none;
       width: 250px;
@@ -148,7 +146,6 @@
       color: var(--text-secondary);
     }
 
-    /* Main Administration Content */
     .admin-main {
       flex-grow: 1;
       display: flex;
@@ -156,7 +153,6 @@
       min-width: 0;
     }
 
-    /* Mobile Header */
     .admin-top-nav {
       background: rgba(8, 12, 30, 0.95);
       backdrop-filter: blur(10px);
@@ -208,7 +204,38 @@
       color: #FFF;
     }
 
-    /* Action Banner */
+    /* Settlement Execution Card */
+    .settlement-card {
+      background: linear-gradient(145deg, #101935 0%, #090e1f 100%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .btn-trigger-yields {
+      background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+      color: #FFF;
+      border: none;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35);
+      transition: var(--transition);
+    }
+
+    .btn-trigger-yields:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
     .action-alert-box {
       background: rgba(245, 158, 11, 0.1);
       border: 1px solid rgba(245, 158, 11, 0.3);
@@ -243,7 +270,6 @@
       font-weight: 700;
     }
 
-    /* Metrics Grid */
     .metrics-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -287,13 +313,8 @@
       color: #FFF;
     }
 
-    .metric-val.cyan {
-      color: var(--accent-cyan);
-    }
-
-    .metric-val.gold {
-      color: var(--gold);
-    }
+    .metric-val.cyan { color: var(--accent-cyan); }
+    .metric-val.gold { color: var(--gold); }
 
     .metric-sub {
       font-size: 11px;
@@ -301,7 +322,6 @@
       margin-top: 4px;
     }
 
-    /* Activity Feed Section */
     .activity-section {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -363,7 +383,6 @@
       color: var(--success);
     }
 
-    /* Mobile Drawer */
     .mobile-drawer-overlay {
       position: fixed;
       top: 0;
@@ -401,7 +420,6 @@
 <body>
 
   <div class="admin-app">
-    <!-- Desktop Sidebar -->
     <aside class="admin-sidebar">
       <div class="sidebar-header">
         <div class="brand-mark">N</div>
@@ -411,6 +429,7 @@
       <ul class="sidebar-menu">
         <li><a href="/admin/index.html" class="menu-link active"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li>
@@ -439,7 +458,6 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
     <div class="admin-main">
       <header class="admin-top-nav">
         <div style="display:flex; align-items:center; gap:10px;">
@@ -461,7 +479,17 @@
           </div>
         </div>
 
-        <!-- Pending Review Banner -->
+        <!-- Automated Settlement & Manual Yield Trigger Card -->
+        <div class="settlement-card">
+          <div>
+            <div style="font-size:11px; font-weight:700; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:0.8px;">Automated Settlement Engine</div>
+            <div style="font-size:15px; font-weight:800; color:#FFF; margin-top:2px;">Midnight Yield Distribution (00:00)</div>
+            <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;" id="settlement-status-text">Ready for automated cron or on-demand execution.</div>
+          </div>
+          <button type="button" class="btn-trigger-yields" id="btn-process-yields">⚡ Drop Daily Yields Now</button>
+        </div>
+
+        <!-- Pending Review Alert Box -->
         <div class="action-alert-box" id="pending-alert-box" style="display:none;">
           <div class="alert-text" id="pending-alert-text">Pending manual items require audit review.</div>
           <div class="alert-btn-stack">
@@ -470,7 +498,7 @@
           </div>
         </div>
 
-        <!-- Core Financial Metrics Grid -->
+        <!-- Financial Metrics -->
         <div class="metrics-grid">
           <div class="metric-card">
             <span class="metric-label">Approved Deposits</span>
@@ -521,7 +549,7 @@
           </div>
         </div>
 
-        <!-- Recent Inflow Feed -->
+        <!-- Inflows -->
         <section class="activity-section">
           <div class="section-title">Latest Manual Deposit Inflows</div>
           <div style="overflow-x:auto;">
@@ -542,7 +570,7 @@
           </div>
         </section>
 
-        <!-- Recent Outflow Feed -->
+        <!-- Outflows -->
         <section class="activity-section">
           <div class="section-title">Latest Cashout Requests</div>
           <div style="overflow-x:auto;">
@@ -576,6 +604,7 @@
       <ul class="sidebar-menu" style="padding:0;">
         <li><a href="/admin/index.html" class="menu-link active"><span>Dashboard</span></a></li>
         <li><a href="/admin/users.html" class="menu-link"><span>Users</span></a></li>
+        <li><a href="/admin/staff.html" class="menu-link"><span>Staff</span></a></li>
         <li><a href="/admin/plans.html" class="menu-link"><span>Plans</span></a></li>
         <li><a href="/admin/investments.html" class="menu-link"><span>Investments</span></a></li>
         <li><a href="/admin/deposits.html" class="menu-link"><span>Deposits</span></a></li>
@@ -592,9 +621,8 @@
   </div>
 
   <script type="module">
-    import { supabase, formatNaira, logoutUser } from '/supabase-client.js';
+    import { supabase, formatNaira, showToast } from '/supabase-client.js';
 
-    // Strict Admin Authorization Verification
     async function enforceAdminAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || !session.user) {
@@ -616,36 +644,29 @@
     }
 
     async function loadDashboardData() {
-      // 1. Fetch Aggregated Metrics
       try {
         const { data: metrics, error } = await supabase.rpc('get_admin_dashboard_metrics');
         if (!error && metrics && metrics.success) {
-          // Users
           document.getElementById('metric-total-users').textContent = metrics.users.total;
           document.getElementById('metric-active-users').textContent = `${metrics.users.active} Active`;
 
-          // Deposits
           document.getElementById('metric-approved-deposits').textContent = formatNaira(metrics.deposits.total_approved_amount);
           document.getElementById('metric-approved-dep-count').textContent = `${metrics.deposits.approved_count} Completed`;
           document.getElementById('metric-pending-deposits').textContent = metrics.deposits.pending_count;
           document.getElementById('metric-pending-dep-amount').textContent = `${formatNaira(metrics.deposits.pending_amount)} Awaiting`;
 
-          // Withdrawals
           document.getElementById('metric-processed-withdrawals').textContent = formatNaira(metrics.withdrawals.total_approved_amount);
           document.getElementById('metric-processed-wth-count').textContent = `${metrics.withdrawals.approved_count} Processed`;
           document.getElementById('metric-pending-withdrawals').textContent = metrics.withdrawals.pending_count;
           document.getElementById('metric-pending-wth-amount').textContent = `${formatNaira(metrics.withdrawals.pending_amount)} Reserved`;
 
-          // Investments & Plans
           document.getElementById('metric-active-investments').textContent = metrics.investments.active_count;
           document.getElementById('metric-active-inv-volume').textContent = `${formatNaira(metrics.investments.active_amount)} Active`;
           document.getElementById('metric-active-plans').textContent = metrics.plans.active_count;
 
-          // Referrals
           document.getElementById('metric-total-commissions').textContent = formatNaira(metrics.referrals.commissions_distributed);
           document.getElementById('metric-total-referrals').textContent = `${metrics.referrals.total_count} Network Links`;
 
-          // Pending Alert Banner & Badges
           const totalPending = metrics.deposits.pending_count + metrics.withdrawals.pending_count;
           if (totalPending > 0) {
             document.getElementById('pending-alert-box').style.display = 'flex';
@@ -668,10 +689,7 @@
         console.warn('Admin metrics error:', err.message);
       }
 
-      // 2. Fetch Recent Deposits Feed
       loadRecentDeposits();
-
-      // 3. Fetch Recent Withdrawals Feed
       loadRecentWithdrawals();
     }
 
@@ -699,7 +717,7 @@
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${d.reference}</strong></td>
+          <td><strong>${d.reference || 'Not provided'}</strong></td>
           <td>${d.sender_name}</td>
           <td style="color:#FFF; font-weight:700;">${formatNaira(d.amount)}</td>
           <td><span class="status-badge ${d.status}">${d.status}</span></td>
@@ -747,7 +765,41 @@
       });
     }
 
-    // Logout Handlers
+    // Manual Yield Drop Trigger
+    const btnYields = document.getElementById('btn-process-yields');
+    btnYields.addEventListener('click', async () => {
+      if (!confirm('Execute Daily Yield Settlement?\n\nThis will calculate and drop daily income for all active investment portfolios.')) return;
+
+      btnYields.disabled = true;
+      btnYields.textContent = 'Processing Yields...';
+
+      try {
+        const { data, error } = await supabase.rpc('admin_process_daily_earnings');
+
+        if (error || !data || !data.success) {
+          showToast(data?.message || error?.message || 'Error processing daily earnings.', 'error');
+          btnYields.disabled = false;
+          btnYields.textContent = '⚡ Drop Daily Yields Now';
+          return;
+        }
+
+        showToast(data.message || 'Daily income credited successfully!', 'success');
+        document.getElementById('settlement-status-text').textContent = 
+          `Last executed: Just now (${data.investments_processed} contracts paid, ${formatNaira(data.total_amount_credited)} dropped).`;
+
+        btnYields.disabled = false;
+        btnYields.textContent = '⚡ Drop Daily Yields Now';
+
+        // Refresh live dashboard metrics
+        loadDashboardData();
+      } catch (err) {
+        showToast('Network error triggering earnings.', 'error');
+        btnYields.disabled = false;
+        btnYields.textContent = '⚡ Drop Daily Yields Now';
+      }
+    });
+
+    // Logout
     async function doAdminLogout() {
       await supabase.auth.signOut();
       window.location.replace('/admin/login.html');
