@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>NOVEXA Admin — User Directory & Staff Controls</title>
+  <title>NOVEXA Admin — User Directory & Downline Summary</title>
   <style>
     :root {
       --bg-dark: #050814;
@@ -148,10 +148,13 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: #FFF;
-      padding: 6px 10px;
+      padding: 8px 12px;
       border-radius: var(--radius-sm);
-      font-size: 14px;
+      font-size: 15px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     @media (min-width: 1024px) {
@@ -162,7 +165,7 @@
 
     .admin-content-body {
       padding: 20px;
-      max-width: 1150px;
+      max-width: 1180px;
       width: 100%;
       margin: 0 auto;
     }
@@ -204,6 +207,10 @@
       font-size: 13px;
       color: #FFF;
       outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--border-focus);
     }
 
     .search-icon {
@@ -287,6 +294,19 @@
       vertical-align: middle;
     }
 
+    .downline-pill-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 11px;
+      font-family: monospace;
+      color: var(--text-secondary);
+    }
+
+    .downline-pill-stack strong {
+      color: #FFF;
+    }
+
     .status-badge {
       font-size: 10px;
       font-weight: 700;
@@ -312,6 +332,13 @@
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-action-small.tree-btn {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.35);
+      color: var(--accent-cyan);
     }
 
     .btn-action-small.staff-add {
@@ -387,7 +414,6 @@
 <body>
 
   <div class="admin-app">
-    <!-- Desktop Sidebar with Expanded Navigation -->
     <aside class="admin-sidebar">
       <div class="sidebar-header">
         <div class="brand-mark">N</div>
@@ -413,7 +439,7 @@
     <div class="admin-main">
       <header class="admin-top-nav">
         <div style="display:flex; align-items:center; gap:10px;">
-          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer">&#9776;</button>
+          <button type="button" class="btn-mobile-toggle" id="btn-open-drawer" aria-label="Toggle navigation">&#9776;</button>
           <div style="font-size:15px; font-weight:700; color:#FFF;">User Directory</div>
         </div>
       </header>
@@ -421,7 +447,7 @@
       <div class="admin-content-body">
         <div class="page-title-row">
           <div>
-            <h1 class="page-heading">Investor & Staff Directory</h1>
+            <h1 class="page-heading">Investor Directory & Downline Summary</h1>
             <div style="font-size:12px; color:var(--text-secondary);" id="user-count-label">Loading registered investors...</div>
           </div>
         </div>
@@ -447,18 +473,16 @@
             <thead>
               <tr>
                 <th>Investor</th>
-                <th>User ID</th>
                 <th>Wallet Balance</th>
-                <th>Invested</th>
-                <th>Earnings</th>
+                <th>Downline Network (L1/L2/L3)</th>
                 <th>Role / Staff</th>
                 <th>Status</th>
                 <th>Staff Toggle</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody id="tbody-users">
-              <tr><td colspan="9" style="text-align:center; padding:30px;">Loading users...</td></tr>
+              <tr><td colspan="7" style="text-align:center; padding:30px;">Loading users...</td></tr>
             </tbody>
           </table>
 
@@ -478,7 +502,6 @@
     </div>
   </div>
 
-  <!-- Mobile Drawer -->
   <div class="mobile-drawer-overlay" id="mobile-drawer-overlay">
     <div class="mobile-drawer">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
@@ -510,6 +533,7 @@
     const pageSize = 15;
     let totalCount = 0;
     let staffIds = new Set();
+    let downlineStatsMap = {};
     let searchDebounce = null;
 
     async function verifyAdminAuth() {
@@ -527,6 +551,28 @@
     async function loadStaffIds() {
       const { data } = await supabase.from('staff_members').select('id').eq('is_active', true);
       staffIds = new Set((data || []).map(s => s.id));
+    }
+
+    async function loadBatchDownlineStats(userIds) {
+      if (!userIds || userIds.length === 0) return;
+      downlineStatsMap = {};
+      
+      const { data, error } = await supabase
+        .from('referrals')
+        .select('sponsor_id, level')
+        .in('sponsor_id', userIds);
+
+      if (!error && data) {
+        data.forEach(r => {
+          if (!downlineStatsMap[r.sponsor_id]) {
+            downlineStatsMap[r.sponsor_id] = { l1: 0, l2: 0, l3: 0, total: 0 };
+          }
+          if (r.level === 1) downlineStatsMap[r.sponsor_id].l1++;
+          if (r.level === 2) downlineStatsMap[r.sponsor_id].l2++;
+          if (r.level === 3) downlineStatsMap[r.sponsor_id].l3++;
+          downlineStatsMap[r.sponsor_id].total++;
+        });
+      }
     }
 
     async function loadUsers() {
@@ -561,6 +607,10 @@
       document.getElementById('btn-prev').disabled = currentPage <= 1;
       document.getElementById('btn-next').disabled = to + 1 >= totalCount;
 
+      if (users && users.length > 0) {
+        await loadBatchDownlineStats(users.map(u => u.id));
+      }
+
       renderUsers(users || []);
     }
 
@@ -569,7 +619,7 @@
       const mobContainer = document.getElementById('mobile-users-container');
 
       if (users.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);">No users found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">No users found.</td></tr>`;
         mobContainer.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No users found.</div>`;
         return;
       }
@@ -591,7 +641,15 @@
           ? `<button type="button" class="btn-action-small staff-remove btn-toggle-staff" data-id="${u.id}" data-action="remove" data-name="${u.full_name}">− Staff</button>`
           : `<button type="button" class="btn-action-small staff-add btn-toggle-staff" data-id="${u.id}" data-action="add" data-name="${u.full_name}">+ Staff</button>`;
 
-        // Desktop
+        const dStats = downlineStatsMap[u.id] || { l1: 0, l2: 0, l3: 0, total: 0 };
+        const downlineSummaryHtml = `
+          <div class="downline-pill-stack">
+            <span>L1: <strong>${dStats.l1}</strong> &bull; L2: <strong>${dStats.l2}</strong> &bull; L3: <strong>${dStats.l3}</strong></span>
+            <span style="color:var(--accent-cyan);">Total Downline: <strong>${dStats.total}</strong></span>
+          </div>
+        `;
+
+        // Desktop Row
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>
@@ -599,18 +657,21 @@
               <span class="user-avatar-initials">${initials}</span>
               <div>
                 <div style="font-weight:700; color:#FFF;">${u.full_name}</div>
-                <div style="font-size:11px; color:var(--text-muted);">${u.email}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${u.email} &bull; Code: <strong style="color:var(--accent-cyan);">${u.referral_code}</strong></div>
               </div>
             </div>
           </td>
-          <td><code style="font-size:10px; color:var(--text-muted);">${u.id.slice(0, 8)}...</code></td>
           <td style="font-weight:700; color:#FFF;">${formatNaira(u.wallet_balance)}</td>
-          <td>${formatNaira(u.total_invested)}</td>
-          <td style="color:var(--accent-cyan); font-weight:700;">${formatNaira(u.total_earned)}</td>
+          <td>${downlineSummaryHtml}</td>
           <td>${staffBadge}</td>
           <td>${statusBadge}</td>
           <td>${staffBtn}</td>
-          <td><a href="/admin/user-details.html?id=${u.id}" class="btn-action-small">Manage &rarr;</a></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <a href="/admin/user-details.html?id=${u.id}#downline-section" class="btn-action-small tree-btn" title="View Downline Tree">View Downline</a>
+              <a href="/admin/user-details.html?id=${u.id}" class="btn-action-small">Manage &rarr;</a>
+            </div>
+          </td>
         `;
         tbody.appendChild(tr);
 
@@ -621,23 +682,28 @@
           <div style="display:flex; justify-content:space-between; align-items:flex-start;">
             <div>
               <div style="font-weight:700; color:#FFF; font-size:14px;">${u.full_name}</div>
-              <div style="font-size:11px; color:var(--text-muted);">${u.email}</div>
+              <div style="font-size:11px; color:var(--text-muted);">${u.email} &bull; Ref: <strong style="color:var(--accent-cyan);">${u.referral_code}</strong></div>
             </div>
             <div style="display:flex; gap:6px;">${staffBadge} ${statusBadge}</div>
           </div>
           <div style="display:flex; justify-content:space-between; font-size:12px; border-top:1px dashed var(--border); padding-top:6px;">
             <span>Balance: <strong style="color:#FFF;">${formatNaira(u.wallet_balance)}</strong></span>
-            <span>Invested: <strong>${formatNaira(u.total_invested)}</strong></span>
+            <span>Earned: <strong>${formatNaira(u.total_earned)}</strong></span>
+          </div>
+          <div style="background:#050814; border:1px solid var(--border); border-radius:6px; padding:6px 10px; margin:2px 0;">
+            ${downlineSummaryHtml}
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
             ${staffBtn}
-            <a href="/admin/user-details.html?id=${u.id}" class="btn-action-small">Manage User &rarr;</a>
+            <div style="display:flex; gap:6px;">
+              <a href="/admin/user-details.html?id=${u.id}#downline-section" class="btn-action-small tree-btn">Downline</a>
+              <a href="/admin/user-details.html?id=${u.id}" class="btn-action-small">Manage &rarr;</a>
+            </div>
           </div>
         `;
         mobContainer.appendChild(card);
       });
 
-      // Staff Toggle Handlers
       document.querySelectorAll('.btn-toggle-staff').forEach(btn => {
         btn.addEventListener('click', async () => {
           const userId = btn.getAttribute('data-id');
@@ -647,19 +713,13 @@
           if (action === 'add') {
             if (!confirm(`Add Staff\n\nAre you sure you want to make ${userName} a staff member?`)) return;
             const { data, error } = await supabase.rpc('add_staff_member', { p_user_id: userId });
-            if (error || !data || !data.success) {
-              showToast(data?.message || 'Error adding staff', 'error');
-              return;
-            }
+            if (error || !data || !data.success) { showToast(data?.message || 'Error adding staff', 'error'); return; }
             showToast(`${userName} added as staff`, 'success');
             loadUsers();
           } else {
-            if (!confirm(`Remove Staff\n\nRemove ${userName} from staff? Normal user account and funds will be preserved.`)) return;
+            if (!confirm(`Remove Staff\n\nRemove ${userName} from staff? Normal user account will be preserved.`)) return;
             const { data, error } = await supabase.rpc('remove_staff_member', { p_user_id: userId });
-            if (error || !data || !data.success) {
-              showToast(data?.message || 'Error revoking staff', 'error');
-              return;
-            }
+            if (error || !data || !data.success) { showToast(data?.message || 'Error revoking staff', 'error'); return; }
             showToast(`${userName} staff privileges revoked`, 'success');
             loadUsers();
           }
@@ -677,7 +737,6 @@
     document.getElementById('btn-prev').addEventListener('click', () => { if (currentPage > 1) { currentPage--; loadUsers(); } });
     document.getElementById('btn-next').addEventListener('click', () => { currentPage++; loadUsers(); });
 
-    // Drawer Controls
     const drawer = document.getElementById('mobile-drawer-overlay');
     document.getElementById('btn-open-drawer').addEventListener('click', () => { drawer.style.display = 'block'; });
     document.getElementById('btn-close-drawer').addEventListener('click', () => { drawer.style.display = 'none'; });
