@@ -145,7 +145,7 @@
 
     .admin-content-body {
       padding: 20px;
-      max-width: 1150px;
+      max-width: 1180px;
       width: 100%;
       margin: 0 auto;
     }
@@ -180,6 +180,17 @@
     .status-badge.suspended { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
     .status-badge.staff { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); }
 
+    .tier-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+    .tier-badge.l1 { background: rgba(37, 99, 235, 0.15); color: var(--accent-cyan); }
+    .tier-badge.l2 { background: rgba(245, 158, 11, 0.15); color: var(--gold); }
+    .tier-badge.l3 { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+
     .action-btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .btn-action {
@@ -192,12 +203,12 @@
       font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
+      text-decoration: none;
     }
 
     .btn-action.primary { background: var(--accent); border-color: var(--accent); }
     .btn-action.danger { border-color: rgba(239, 68, 68, 0.4); color: #FCA5A5; }
 
-    /* Financial Grid */
     .fin-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -227,6 +238,7 @@
     .fin-val { font-size: 18px; font-weight: 800; color: #FFF; }
     .fin-val.cyan { color: var(--accent-cyan); }
     .fin-val.gold { color: var(--gold); }
+    .fin-val.green { color: var(--success); }
 
     .section-card {
       background: var(--bg-card);
@@ -241,6 +253,8 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .sc-title {
@@ -251,11 +265,38 @@
       letter-spacing: 0.5px;
     }
 
+    .downline-tabs-row {
+      display: flex;
+      background: #080C1E;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      margin-bottom: 14px;
+      width: fit-content;
+    }
+
+    .tab-downline-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-downline-btn.active {
+      background: var(--bg-card);
+      color: #FFF;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
     .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
     .data-table th { text-align: left; padding: 10px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 10px; text-transform: uppercase; }
     .data-table td { padding: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.04); color: var(--text-secondary); }
 
-    /* Danger Zone */
     .danger-zone-card {
       background: rgba(239, 68, 68, 0.05);
       border: 1px solid rgba(239, 68, 68, 0.35);
@@ -365,11 +406,82 @@
           </div>
           <div class="fin-card">
             <div class="fin-label">Approved Deposits</div>
-            <div class="fin-val" id="fin-deposits">₦0.00</div>
+            <div class="fin-val green" id="fin-deposits">₦0.00</div>
           </div>
         </div>
 
-        <!-- 2. User Products Section -->
+        <!-- USER DOWNLINE & REFERRAL TREE SECTION -->
+        <div class="section-card" id="downline-section">
+          <div class="sc-header">
+            <div>
+              <span class="sc-title">User Downline & 3-Tier Referral Tree</span>
+              <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+                Direct & indirect network for <strong id="tree-user-label" style="color:#FFF;">--</strong> (Code: <strong id="tree-code-label" style="color:var(--accent-cyan);">--</strong>)
+              </div>
+            </div>
+            <button type="button" class="btn-action" id="btn-refresh-downline">&#8635; Refresh Tree</button>
+          </div>
+
+          <!-- Downline Counts & Commission Summary -->
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:16px;">
+            <div style="background:#080C1E; border:1px solid var(--border); padding:10px; border-radius:8px; text-align:center;">
+              <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Level 1 (15%)</div>
+              <div style="font-size:16px; font-weight:800; color:var(--accent-cyan);" id="tree-cnt-l1">0</div>
+              <div style="font-size:11px; color:var(--text-secondary); margin-top:2px;" id="tree-comm-l1">₦0.00</div>
+            </div>
+            <div style="background:#080C1E; border:1px solid var(--border); padding:10px; border-radius:8px; text-align:center;">
+              <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Level 2 (3%)</div>
+              <div style="font-size:16px; font-weight:800; color:var(--gold);" id="tree-cnt-l2">0</div>
+              <div style="font-size:11px; color:var(--text-secondary); margin-top:2px;" id="tree-comm-l2">₦0.00</div>
+            </div>
+            <div style="background:#080C1E; border:1px solid var(--border); padding:10px; border-radius:8px; text-align:center;">
+              <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Level 3 (1%)</div>
+              <div style="font-size:16px; font-weight:800; color:var(--success);" id="tree-cnt-l3">0</div>
+              <div style="font-size:11px; color:var(--text-secondary); margin-top:2px;" id="tree-comm-l3">₦0.00</div>
+            </div>
+            <div style="background:#080C1E; border:1px solid var(--border); padding:10px; border-radius:8px; text-align:center;">
+              <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Total Downline</div>
+              <div style="font-size:16px; font-weight:800; color:#FFF;" id="tree-cnt-total">0</div>
+              <div style="font-size:11px; color:var(--success); margin-top:2px; font-weight:700;" id="tree-comm-total">₦0.00</div>
+            </div>
+          </div>
+
+          <!-- Downline Filter Tabs & Search -->
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+            <div class="downline-tabs-row" style="margin-bottom:0;">
+              <button type="button" class="tab-downline-btn active" data-level="all">All</button>
+              <button type="button" class="tab-downline-btn" data-level="1">Level 1</button>
+              <button type="button" class="tab-downline-btn" data-level="2">Level 2</button>
+              <button type="button" class="tab-downline-btn" data-level="3">Level 3</button>
+            </div>
+
+            <div style="min-width:200px; flex-grow:1; max-width:340px;">
+              <input type="text" id="downline-search-input" class="form-input" style="padding:8px 12px; font-size:12px;" placeholder="Search downline name, email, code...">
+            </div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Downline Member</th>
+                  <th>Relationship / Path</th>
+                  <th>Level</th>
+                  <th>Active Contracts</th>
+                  <th>Wallet & Earnings</th>
+                  <th>Status</th>
+                  <th>Joined</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-downline">
+                <tr><td colspan="8" style="text-align:center; padding:20px;">Loading downline tree...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- User Products Section -->
         <div class="section-card">
           <div class="sc-header">
             <span class="sc-title">User Products & Active Portfolios</span>
@@ -395,7 +507,7 @@
           </div>
         </div>
 
-        <!-- 5. Manual Admin Financial Adjustments Ledger -->
+        <!-- Manual Admin Adjustments Ledger -->
         <div class="section-card">
           <div class="sc-header">
             <span class="sc-title">Administrative Wallet Adjustments History</span>
@@ -419,12 +531,12 @@
           </div>
         </div>
 
-        <!-- 6. Danger Zone: Delete User -->
+        <!-- Danger Zone -->
         <div class="danger-zone-card">
           <div>
             <div style="font-weight:800; color:#FCA5A5; font-size:15px;">Danger Zone</div>
             <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
-              Decommission this account. User active contracts are cancelled and access is revoked while audit history is safely preserved.
+              Decommission this account. User active contracts are cancelled and access is revoked while audit history is preserved.
             </div>
           </div>
           <button type="button" class="btn-action danger" id="btn-open-delete-user">Delete User</button>
@@ -452,7 +564,7 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="grant-note">Administrative Note / Reason</label>
-          <input type="text" id="grant-note" class="form-input" placeholder="e.g. VIP promotional grant" required>
+          <input type="text" id="grant-note" class="form-input" placeholder="e.g. Promotional grant" required>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
           <button type="button" class="btn-action" id="btn-close-grant">Cancel</button>
@@ -473,7 +585,7 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="add-reason">Reason for Credit</label>
-          <input type="text" id="add-reason" class="form-input" placeholder="e.g. Promotional deposit bonus" required>
+          <input type="text" id="add-reason" class="form-input" placeholder="e.g. Deposit reconciliation" required>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
           <button type="button" class="btn-action" id="btn-close-add">Cancel</button>
@@ -494,7 +606,7 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="deduct-reason">Reason for Debit</label>
-          <input type="text" id="deduct-reason" class="form-input" placeholder="e.g. Reconciliation correction" required>
+          <input type="text" id="deduct-reason" class="form-input" placeholder="e.g. Over-credit correction" required>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
           <button type="button" class="btn-action" id="btn-close-deduct">Cancel</button>
@@ -509,7 +621,7 @@
     <div class="modal-card">
       <h2 style="font-size:16px; font-weight:800; color:#FCA5A5; margin-bottom:8px;">Decommission & Delete User</h2>
       <p style="font-size:12px; color:var(--text-secondary); line-height:1.4; margin-bottom:14px;">
-        This action will deactivate the user account, cancel active contracts, and revoke all staff/admin roles. Financial ledger entries are retained for solvency audit integrity.
+        This action will deactivate the user account, cancel active contracts, and revoke all staff roles. Financial ledger entries are retained for solvency audit integrity.
       </p>
       <div style="background:#080C1E; border:1px solid var(--border); padding:10px; border-radius:8px; margin-bottom:14px; font-size:12px;">
         <div>Target: <strong id="del-name" style="color:#FFF;">--</strong></div>
@@ -538,6 +650,9 @@
     let targetUserId = null;
     let targetProfile = null;
     let availablePlans = [];
+    let downlineMembers = [];
+    let activeLevelTab = 'all';
+    let downlineSearchDebounce = null;
 
     async function init() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -554,7 +669,8 @@
       if (!targetUserId) { window.location.replace('/admin/users.html'); return; }
 
       loadPlans();
-      loadUserData();
+      await loadUserData();
+      loadDownline();
     }
 
     async function loadPlans() {
@@ -573,7 +689,9 @@
       document.getElementById('user-email').textContent = profile.email;
       document.getElementById('user-id-disp').textContent = `UUID: ${profile.id}`;
 
-      // Badges
+      document.getElementById('tree-user-label').textContent = profile.full_name;
+      document.getElementById('tree-code-label').textContent = profile.referral_code;
+
       const statBadge = document.getElementById('user-status-badge');
       statBadge.textContent = profile.is_active ? 'Active' : 'Suspended';
       statBadge.className = `status-badge ${profile.is_active ? 'active' : 'suspended'}`;
@@ -581,7 +699,6 @@
       const { data: staffRec } = await supabase.from('staff_members').select('id').eq('id', targetUserId).eq('is_active', true).maybeSingle();
       document.getElementById('user-staff-badge').style.display = staffRec ? 'inline-block' : 'none';
 
-      // Financials
       document.getElementById('fin-balance').textContent = formatNaira(profile.wallet_balance);
       document.getElementById('fin-invested').textContent = formatNaira(profile.total_invested);
       document.getElementById('fin-earned').textContent = formatNaira(profile.total_earned);
@@ -594,6 +711,116 @@
       loadProducts();
       loadAdjustments();
     }
+
+    async function loadDownline() {
+      const tbody = document.getElementById('tbody-downline');
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px;">Loading downline tree...</td></tr>`;
+
+      try {
+        const { data, error } = await supabase.rpc('admin_get_user_downline', {
+          p_user_id: targetUserId
+        });
+
+        if (error || !data || !data.success) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--danger);">Unable to load downline. <button type="button" class="btn-action" id="btn-retry-downline" style="margin-left:10px;">Retry</button></td></tr>`;
+          document.getElementById('btn-retry-downline')?.addEventListener('click', loadDownline);
+          return;
+        }
+
+        const summary = data.summary || { total: 0, l1: 0, l2: 0, l3: 0 };
+        const comms = data.commissions || { total: 0, l1: 0, l2: 0, l3: 0 };
+
+        document.getElementById('tree-cnt-l1').textContent = `${summary.l1} users`;
+        document.getElementById('tree-cnt-l2').textContent = `${summary.l2} users`;
+        document.getElementById('tree-cnt-l3').textContent = `${summary.l3} users`;
+        document.getElementById('tree-cnt-total').textContent = `${summary.total} users`;
+
+        document.getElementById('tree-comm-l1').textContent = formatNaira(comms.l1);
+        document.getElementById('tree-comm-l2').textContent = formatNaira(comms.l2);
+        document.getElementById('tree-comm-l3').textContent = formatNaira(comms.l3);
+        document.getElementById('tree-comm-total').textContent = formatNaira(comms.total);
+
+        downlineMembers = data.members || [];
+        renderDownlineMembers();
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--danger);">Error loading downline.</td></tr>`;
+      }
+    }
+
+    function renderDownlineMembers() {
+      const tbody = document.getElementById('tbody-downline');
+      const searchVal = document.getElementById('downline-search-input').value.trim().toLowerCase();
+
+      const filtered = downlineMembers.filter(m => {
+        if (activeLevelTab !== 'all' && String(m.level) !== activeLevelTab) return false;
+        if (searchVal) {
+          const name = (m.full_name || '').toLowerCase();
+          const email = (m.email || '').toLowerCase();
+          const code = (m.referral_code || '').toLowerCase();
+          const id = (m.id || '').toLowerCase();
+          return name.includes(searchVal) || email.includes(searchVal) || code.includes(searchVal) || id.includes(searchVal);
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        const emptyMsg = activeLevelTab === 'all' 
+          ? 'No downline yet. This user has not referred anyone.' 
+          : `No Level ${activeLevelTab} referrals.`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:24px; color:var(--text-muted);">${emptyMsg}</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      filtered.forEach(m => {
+        const joinDate = new Date(m.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const tierRate = m.level === 1 ? '15%' : m.level === 2 ? '3%' : '1%';
+        const statusBadge = m.is_active 
+          ? `<span class="status-badge active">Active</span>` 
+          : `<span class="status-badge suspended">Suspended</span>`;
+
+        const pathText = m.level === 1 
+          ? `<span style="color:var(--accent-cyan); font-weight:700;">Direct Referral</span>` 
+          : `<span style="color:var(--text-muted);">Referred by <strong>${m.sponsor_name}</strong></span>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div style="font-weight:700; color:#FFF;">${m.full_name}</div>
+            <div style="font-size:11px; color:var(--text-muted);">${m.email} &bull; Ref: <strong style="color:var(--accent-cyan);">${m.referral_code}</strong></div>
+          </td>
+          <td>${pathText}</td>
+          <td><span class="tier-badge l${m.level}">L${m.level} (${tierRate})</span></td>
+          <td><strong style="color:#FFF;">${m.active_products} Active</strong></td>
+          <td>
+            <div style="font-weight:700; color:#FFF;">Bal: ${formatNaira(m.wallet_balance)}</div>
+            <div style="font-size:11px; color:var(--text-secondary);">Earned: ${formatNaira(m.total_earned)}</div>
+          </td>
+          <td>${statusBadge}</td>
+          <td>${joinDate}</td>
+          <td>
+            <a href="/admin/user-details.html?id=${m.id}" class="btn-action" style="padding:4px 8px; font-size:11px;">View User</a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.querySelectorAll('.tab-downline-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-downline-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeLevelTab = btn.getAttribute('data-level');
+        renderDownlineMembers();
+      });
+    });
+
+    document.getElementById('downline-search-input').addEventListener('input', () => {
+      clearTimeout(downlineSearchDebounce);
+      downlineSearchDebounce = setTimeout(renderDownlineMembers, 300);
+    });
+
+    document.getElementById('btn-refresh-downline').addEventListener('click', loadDownline);
 
     async function loadProducts() {
       const tbody = document.getElementById('tbody-products');
@@ -661,7 +888,6 @@
       });
     }
 
-    // Modal Triggers
     const grantModal = document.getElementById('grant-modal');
     document.getElementById('btn-open-grant-product').addEventListener('click', () => { grantModal.style.display = 'flex'; });
     document.getElementById('btn-close-grant').addEventListener('click', () => { grantModal.style.display = 'none'; });
@@ -712,7 +938,6 @@
       loadUserData();
     });
 
-    // Delete User
     const delModal = document.getElementById('delete-modal');
     document.getElementById('btn-open-delete-user').addEventListener('click', () => {
       document.getElementById('del-name').textContent = targetProfile?.full_name || '';
